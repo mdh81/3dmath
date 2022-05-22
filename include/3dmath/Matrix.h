@@ -88,14 +88,14 @@ class Matrix {
             delete[] m_data;
         }
 
-        unsigned getNumberOfRows() const { return numRows; }
-        unsigned getNumberOfColumns() const { return numCols; }
+        size_t getNumberOfRows() const { return numRows; }
+        size_t getNumberOfColumns() const { return numCols; }
         const DataType* getData()  const { return m_data[0]; }
         
         private: 
             void print(std::ostream& os) const {
-                for (unsigned i = 0; i < numRows; ++i) {
-                    for (unsigned j = 0; j < numCols; ++j) {
+                for (size_t i = 0; i < numRows; ++i) {
+                    for (size_t j = 0; j < numCols; ++j) {
                         os << m_data[j][i] << ' ';
                     }
                     os << std::endl;
@@ -113,8 +113,8 @@ class Matrix {
         void assign(const Matrix& other) {
             delete [] m_data;
             m_data = new DataType[numRows][numCols];
-            for(unsigned i = 0; i < numRows; ++i) {
-                for (unsigned j = 0; j < numCols; ++j) {
+            for(size_t i = 0; i < numRows; ++i) {
+                for (size_t j = 0; j < numCols; ++j) {
                     m_data[i][j] = other.m_data[i][j];
                 }
             }
@@ -122,14 +122,14 @@ class Matrix {
 
 };
 
-template<typename DataType, unsigned numRows, unsigned numCols> requires (numRows == numCols)
+template<typename DataType, size_t numRows, size_t numCols> requires (numRows == numCols)
 class IdentityMatrix : public Matrix<DataType,numRows,numCols> {
     private:
         using Matrix<DataType,numRows,numCols>::m_data;
     public:
         IdentityMatrix() {
-            for(unsigned i = 0; i < numCols; ++i) {
-                for (unsigned j = 0; j < numRows; ++j) {
+            for(size_t i = 0; i < numCols; ++i) {
+                for (size_t j = 0; j < numRows; ++j) {
                     if (i == j) {
                         m_data[i][j] = DataType{1};
                     }   
@@ -138,7 +138,7 @@ class IdentityMatrix : public Matrix<DataType,numRows,numCols> {
         }
 };
 
-template<typename DataType, unsigned numRows, unsigned numCols>
+template<typename DataType, size_t numRows, size_t numCols>
 std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCols>& m) {
     m.print(os);
     return os;
