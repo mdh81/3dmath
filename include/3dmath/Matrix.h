@@ -16,7 +16,6 @@ class Matrix {
 
         // Default construction
         Matrix() {
-            
             m_data = new DataType[numRows][numCols]; 
             for(size_t i = 0; i < numRows; ++i) {
                 for (size_t j = 0; j < numCols; ++j) {
@@ -62,16 +61,26 @@ class Matrix {
         
         // Copy construction 
         Matrix(const Matrix& other) {
-            
             m_data = nullptr;
             assign(other);
-
         }
         
         // Copy assignment
         Matrix& operator=(const Matrix& other) {
             assign(other);
             return *this;
+        }
+
+        // Move construction
+        Matrix(Matrix&& other) {
+            m_data = std::move(other.m_data);
+            other.m_data = nullptr;
+        }
+        
+        // Move assignment
+        Matrix& operator=(Matrix&& other) {
+            m_data = std::move(other.m_data);
+            other.m_data = nullptr;
         }
         
         // Destructor 
