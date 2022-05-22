@@ -78,5 +78,27 @@ TEST(Matrix, TestInitialization) {
 }
 
 TEST(Matrix, TestCopyAssignment) {
-    Matrix<float, 4, 5> m1;
+    Matrix<unsigned, 1, 1> m1 {{45U}};
+    Matrix<unsigned, 1, 1> m2(m1);
+    
+    ASSERT_EQ(m2.getData()[0], 45U);
+}
+
+TEST(Matrix, TestMoveConstruction) {
+    Matrix<int, 1, 1> m1 {{10}};
+    auto p1 = m1.getData();
+    Matrix<int, 1, 1> m2(std::move(m1));
+    auto p2 = m2.getData();
+    ASSERT_EQ(p1, p2);
+    ASSERT_EQ(*p1, *p2);
+    ASSERT_EQ(*p1, 10);
+    ASSERT_EQ(m1.getData(), nullptr);
+    Matrix<int, 1, 1> m3 {Matrix<int, 1, 1>{{25}}};
+    ASSERT_EQ(m3.getData()[0], 25);
+}
+
+TEST(Matrix, TestMoveAssignment) {
+    Matrix<int, 1, 1> m1 = Matrix<int,1,1>{{10}};
+    auto p1 = m1.getData();
+    ASSERT_EQ(*p1, 10);
 }
