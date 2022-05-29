@@ -3,6 +3,7 @@
 #include <vector>
 #include <initializer_list>
 #include <iostream>
+#include <fstream>
 using namespace std;
 using namespace math3d;
 
@@ -51,7 +52,7 @@ TEST(Matrix, TestInitialization) {
             Matrix<float, 2, 1> m2({{1.f}, {2.f}, {3.f}});
         } catch (std::invalid_argument& ex) {
             EXPECT_STREQ("Incompatible dimensions: Matrix dimensions are [2,1] "
-                         "Outer initializer list's size is 3", ex.what()); 
+                         "Number of columns in the input is 3", ex.what()); 
             throw;
         }
     }), std::invalid_argument);
@@ -59,10 +60,10 @@ TEST(Matrix, TestInitialization) {
     // Dimensions don't match: Rows don't match
     EXPECT_THROW(({
         try {
-            Matrix<float, 1, 2> m2({{1.f}, {2.f, 3.f}});
+            Matrix<float, 1, 2> m2({{1.f,2.f}, {2.f}});
         } catch (std::invalid_argument& ex) {
             EXPECT_STREQ("Incompatible dimensions: Matrix dimensions are [1,2] "
-                         "One of the inner initializer list's size is 2", ex.what()); 
+                         "Number of rows in column 1 is 2", ex.what()); 
             throw;
         }
     }), std::invalid_argument);
@@ -101,4 +102,28 @@ TEST(Matrix, TestMoveAssignment) {
     Matrix<int, 1, 1> m1 = Matrix<int,1,1>{{10}};
     auto p1 = m1.getData();
     ASSERT_EQ(*p1, 10);
+}
+
+TEST(Matrix, TestPrint) {
+    Matrix<int, 3, 2> m1 ({ {10, 11, 12}, {10, 11, 12} });
+    ofstream ofs("mat.out");   
+    ofs << m1;
+    ifstream ifs("mat.out");
+    string str;
+    bool contentsMatch = false;
+    getline(ifs,str);
+    contentsMatch = str.substr(0, 2) == "10";
+    EXPECT_TRUE(contentsMatch) << "Expecting 10 at 0, 0. Found " << str.substr(0,2) << endl;
+    contentsMatch = str.substr(3) == "10";
+    EXPECT_TRUE(contentsMatch) << "Expecting 10 at 0, 1. Found " << str.substr(3) << endl;
+    getline(ifs, str);
+    contentsMatch = str.substr(0, 2) == "11";
+    EXPECT_TRUE(contentsMatch) << "Expecting 11 at 1, 0. Found " << str.substr(0,2) << endl;
+    contentsMatch = str.substr(3) == "11";
+    EXPECT_TRUE(contentsMatch) << "Expecting 11 at 1, 1. Found " << str.substr(3) << endl;
+    getline(ifs, str);
+    contentsMatch = str.substr(0, 2) == "12";
+    EXPECT_TRUE(contentsMatch) << "Expecting 12 at 2, 0. Found " << str.substr(0,2) << endl;
+    contentsMatch = str.substr(3) == "12";
+    EXPECT_TRUE(contentsMatch) << "Expecting 12 at 2, 1. Found " << str.substr(3) << endl;
 }
