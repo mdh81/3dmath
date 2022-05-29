@@ -5,6 +5,7 @@
 #include <string>
 #include <initializer_list>
 #include <exception>
+#include <memory>
 
 namespace math3d {
 
@@ -16,16 +17,19 @@ class Matrix {
 
         // Default construction
         Matrix() {
-            m_data = new DataType[numRows][numCols]; 
-            for(size_t i = 0; i < numRows; ++i) {
-                for (size_t j = 0; j < numCols; ++j) {
-                    m_data[i][j] = DataType{0};
+            m_data = new DataType[numRows*numCols]; 
+            for(size_t row = 0; row < numRows; ++row) {
+                for (size_t col = 0; col < numCols; ++col) {
+                    m_data[row * numCols + col] = DataType{0};
                 }
             }
-
         }
         
         // Construction via an initializer 
+        // The initializer is expected to be a list of initializers. Each sub-initializer 
+        // defines a column of matrix data. In other words, the input data is expected to be
+        // in the column-major format. Restricting the input format to the storage format
+        // avoids the potential for confusion
         template<typename ListType>
         Matrix(const std::initializer_list<std::initializer_list<ListType>>& initList) {
             
@@ -35,27 +39,32 @@ class Matrix {
             // prevents a crash during destruction in case an exception is thrown and m_data is deleted during stack unrolling 
             m_data = nullptr;
             
+            // Number of columns in input data should match numCols 
             if (numCols != initList.size()) {
                 throw std::invalid_argument(
                         std::string("Incompatible dimensions: Matrix dimensions are [" + 
                                     std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
-                                    "Outer initializer list's size is " + std::to_string(initList.size())));
+                                    "Number of columns in the input is " + std::to_string(initList.size())));
             }
             
-            for (size_t i = 0; i < numCols; ++i) {
-                if (data(initList)[i].size() != numRows) {
+            // Number of rows for each column of the input data should match numRows 
+            for (size_t col = 0; col < numCols; ++col) {
+                if (data(initList)[col].size() != numRows) {
                     throw std::invalid_argument(
                         std::string("Incompatible dimensions: Matrix dimensions are [" + 
                                     std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
-                                    "One of the inner initializer list's size is " + std::to_string(initList.size())));
+                                    "Number of rows in column " + std::to_string(col+1) + 
+                                    " is " + std::to_string(data(initList)[col].size())));
                 }
             }
             
-            m_data = new DataType[numRows][numCols];
-            for (size_t i = 0; i < numCols; ++i) {
-                for (size_t j = 0; j < numRows; ++j) {
-                    m_data[i][j] = data(data(initList)[i])[j]; 
-                } 
+            m_data = new DataType[numRows*numCols];
+
+            // Read and store data in column major format 
+            for (size_t col = 0; col < numCols; ++col) {
+                for (size_t row = 0; row < numRows; ++row) {
+                    m_data[col * numRows + row] = data(data(initList)[col])[row];
+                }
             }
         }
         
@@ -90,35 +99,38 @@ class Matrix {
 
         size_t getNumberOfRows() const { return numRows; }
         size_t getNumberOfColumns() const { return numCols; }
-        const DataType* getData()  const { return m_data[0]; }
+        const DataType* getData()  const { return m_data; }
         
-        private: 
+        //private: 
+        public:
+            // Print column major matrix data in row order format
             void print(std::ostream& os) const {
-                for (size_t i = 0; i < numRows; ++i) {
-                    for (size_t j = 0; j < numCols; ++j) {
-                        os << m_data[j][i] << ' ';
+                for (size_t row = 0; row < numRows; ++row) {
+                    for (size_t col = 0; col < numCols; ++col) {
+                        os << m_data[col * numRows + row];
+                        if (col != numCols - 1) os << ' '; 
                     }
                     os << std::endl;
                 }
             }
 
     protected:
-        // Pointer to an array of columns
-        // This format stores elements of this matrix in contiguous memory
-        // enabling conversion of this type to a pointer and access the stored 
-        // data as a 1D-array 
-        DataType (*m_data)[numCols];
+        DataType* m_data;
 
     private:
         void assign(const Matrix& other) {
             delete [] m_data;
-            m_data = new DataType[numRows][numCols];
-            for(size_t i = 0; i < numRows; ++i) {
-                for (size_t j = 0; j < numCols; ++j) {
-                    m_data[i][j] = other.m_data[i][j];
+            m_data = new DataType[numRows*numCols];
+            for(size_t col = 0; col < numCols; ++col) {
+                for (size_t row = 0; row < numRows; ++row) {
+                    auto indx = col * numRows + row; 
+                    m_data[indx] = other.m_data[indx];
                 }
             }
         }
+    
+    //friend 
+    //std::ostream& operator<<(std::ostream&, const Matrix&);
 
 };
 
@@ -128,13 +140,13 @@ class IdentityMatrix : public Matrix<DataType,numRows,numCols> {
         using Matrix<DataType,numRows,numCols>::m_data;
     public:
         IdentityMatrix() {
-            for(size_t i = 0; i < numCols; ++i) {
-                for (size_t j = 0; j < numRows; ++j) {
-                    if (i == j) {
-                        m_data[i][j] = DataType{1};
-                    }   
+            for(size_t col = 0; col < numCols; ++col) {
+                for (size_t row = 0; row < numRows; ++row) {
+                    if (row == col) {
+                        m_data[col * numRows + row] = DataType{1};
+                    } 
                 }
-            } 
+            }
         }
 };
 
