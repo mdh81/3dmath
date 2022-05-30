@@ -13,7 +13,12 @@ namespace math3d {
 
 template<typename DataType, size_t numRows, size_t numCols>
 class Matrix {
+    
     public:
+        enum class Order {
+            ColumnMajor,
+            RowMajor
+        };
 
         // Default construction
         Matrix() {
@@ -25,47 +30,27 @@ class Matrix {
             }
         }
         
-        // Construction via an initializer 
-        // The initializer is expected to be a list of initializers. Each sub-initializer 
-        // defines a column of matrix data. In other words, the input data is expected to be
-        // in the column-major format. Restricting the input format to the storage format
-        // avoids the potential for confusion
+        // Construction via an initializer list of initializer lists 
+        // Each sub-initializer defines a column or row of matrix data.
+        // The enum Order argument specifies the format of the data. 
+        // If the order is column major, then each sub-initializer is
+        // treated as a column of data otherwise the data is assumed
+        // to be in the row major order
         template<typename ListType>
-        Matrix(const std::initializer_list<std::initializer_list<ListType>>& initList) {
+        Matrix(const std::initializer_list<std::initializer_list<ListType>>& initList, const Order& order = Order::ColumnMajor) {
             
             static_assert(std::is_same<ListType, DataType>::value, 
                           "Matrix and its initializer should be of the same type");
             
-            // prevents a crash during destruction in case an exception is thrown and m_data is deleted during stack unrolling 
+            // prevents a crash during destruction in case an exception is thrown in the below code 
+            // and m_data is deleted during stack unrolling 
             m_data = nullptr;
             
-            // Number of columns in input data should match numCols 
-            if (numCols != initList.size()) {
-                throw std::invalid_argument(
-                        std::string("Incompatible dimensions: Matrix dimensions are [" + 
-                                    std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
-                                    "Number of columns in the input is " + std::to_string(initList.size())));
-            }
-            
-            // Number of rows for each column of the input data should match numRows 
-            for (size_t col = 0; col < numCols; ++col) {
-                if (data(initList)[col].size() != numRows) {
-                    throw std::invalid_argument(
-                        std::string("Incompatible dimensions: Matrix dimensions are [" + 
-                                    std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
-                                    "Number of rows in column " + std::to_string(col+1) + 
-                                    " is " + std::to_string(data(initList)[col].size())));
-                }
-            }
-            
+            // allocate memory
             m_data = new DataType[numRows*numCols];
-
-            // Read and store data in column major format 
-            for (size_t col = 0; col < numCols; ++col) {
-                for (size_t row = 0; row < numRows; ++row) {
-                    m_data[col * numRows + row] = data(data(initList)[col])[row];
-                }
-            }
+            
+            // read and store data in m_data as per the format of the input data 
+            order == Order::ColumnMajor ? readColumnMajor(initList) : readRowMajor(initList);
         }
         
         // Copy construction 
@@ -125,6 +110,64 @@ class Matrix {
                 for (size_t row = 0; row < numRows; ++row) {
                     auto indx = col * numRows + row; 
                     m_data[indx] = other.m_data[indx];
+                }
+            }
+        }
+        
+        void readColumnMajor(const std::initializer_list<std::initializer_list<DataType>>& initList) {
+
+            // Number of columns in input data should match numCols 
+            if (numCols != initList.size()) {
+                throw std::invalid_argument(
+                        std::string("Incompatible dimensions: Matrix dimensions are [" + 
+                                    std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
+                                    "Number of columns in the input is " + std::to_string(initList.size())));
+            }
+            
+            // Number of rows for each column of the input data should match numRows 
+            for (size_t col = 0; col < numCols; ++col) {
+                if (data(initList)[col].size() != numRows) {
+                    throw std::invalid_argument(
+                        std::string("Incompatible dimensions: Matrix dimensions are [" + 
+                                    std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
+                                    "Number of rows in column " + std::to_string(col+1) + 
+                                    " is " + std::to_string(data(initList)[col].size())));
+                }
+            }
+            
+            // Read and store data in column major format 
+            for (size_t col = 0; col < numCols; ++col) {
+                for (size_t row = 0; row < numRows; ++row) {
+                    m_data[col * numRows + row] = data(data(initList)[col])[row];
+                }
+            }
+        }
+        
+        void readRowMajor(const std::initializer_list<std::initializer_list<DataType>>& initList) {
+
+            // Number of rows in input data should match numRows 
+            if (numRows != initList.size()) {
+                throw std::invalid_argument(
+                        std::string("Incompatible dimensions: Matrix dimensions are [" + 
+                                    std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
+                                    "Number of rows in the input is " + std::to_string(initList.size())));
+            }
+            
+            // Number of columns in each row of the input data should match numCols 
+            for (size_t row = 0; row < numRows; ++row) {
+                if (data(initList)[row].size() != numCols) {
+                    throw std::invalid_argument(
+                        std::string("Incompatible dimensions: Matrix dimensions are [" + 
+                                    std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
+                                    "Number of columns in row " + std::to_string(row+1) + 
+                                    " is " + std::to_string(data(initList)[row].size())));
+                }
+            }
+
+            // Read row major data and store in column major format 
+            for (size_t col = 0; col < numCols; ++col) {
+                for (size_t row = 0; row < numRows; ++row) {
+                    m_data[col * numRows + row] = data(data(initList)[row])[col];
                 }
             }
         }
