@@ -127,3 +127,38 @@ TEST(Matrix, TestPrint) {
     contentsMatch = str.substr(3) == "12";
     EXPECT_TRUE(contentsMatch) << "Expecting 12 at 2, 1. Found " << str.substr(3) << endl;
 }
+
+TEST(Matrix, TestRowMajor) {
+
+    Matrix<int, 3, 2> m1 ({ {10, 12}, {13, 14}, {15, 16} }, Matrix<int, 3, 2>::Order::RowMajor);
+    const int* data = m1.getData();
+    EXPECT_EQ(data[0], 10);
+    EXPECT_EQ(data[1], 13);
+    EXPECT_EQ(data[2], 15);
+
+    EXPECT_EQ(data[3], 12);
+    EXPECT_EQ(data[4], 14);
+    EXPECT_EQ(data[5], 16);
+    
+    // Make sure column major internal format is formatted in row major order when printed 
+    ofstream ofs("mat1.out");   
+    ofs << m1;
+    ifstream ifs("mat1.out");
+    string str;
+    bool contentsMatch = false;
+    getline(ifs,str);
+    contentsMatch = str.substr(0, 2) == "10";
+    EXPECT_TRUE(contentsMatch) << "Expecting 10 at 0, 0. Found " << str.substr(0,2) << endl;
+    contentsMatch = str.substr(3) == "12";
+    EXPECT_TRUE(contentsMatch) << "Expecting 12 at 0, 1. Found " << str.substr(3) << endl;
+    getline(ifs, str);
+    contentsMatch = str.substr(0, 2) == "13";
+    EXPECT_TRUE(contentsMatch) << "Expecting 13 at 1, 0. Found " << str.substr(0,2) << endl;
+    contentsMatch = str.substr(3) == "14";
+    EXPECT_TRUE(contentsMatch) << "Expecting 14 at 1, 1. Found " << str.substr(3) << endl;
+    getline(ifs, str);
+    contentsMatch = str.substr(0, 2) == "15";
+    EXPECT_TRUE(contentsMatch) << "Expecting 15 at 2, 0. Found " << str.substr(0,2) << endl;
+    contentsMatch = str.substr(3) == "16";
+    EXPECT_TRUE(contentsMatch) << "Expecting 16 at 2, 1. Found " << str.substr(3) << endl;
+}
