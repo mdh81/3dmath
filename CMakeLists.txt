@@ -13,5 +13,7 @@ target_include_directories(3dmath INTERFACE "$<BUILD_INTERFACE:{header_files}>")
 
 install(DIRECTORY include/3dmath DESTINATION include)
 
+#TODO: Skip gtests from install rule
+
 enable_testing()
 add_subdirectory(tests)
