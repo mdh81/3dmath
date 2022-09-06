@@ -10,9 +10,28 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
     matrix_test 
     matrix_test.cpp)
-target_include_directories(matrix_test PRIVATE ../include)
-target_link_libraries(matrix_test gtest_main)
+
+add_executable(
+    vector_test 
+    vector_test.cpp)
+
+set(allTests
+    matrix_test
+    vector_test)
+
+foreach (test ${allTests})
+    target_include_directories(
+        ${test}
+        PRIVATE ../include
+    )
+    target_link_libraries(
+        ${test}
+        gtest_main
+    )
+endforeach(test)
 
 # Enable test discovery for each test
 include(GoogleTest)
-gtest_discover_tests(matrix_test)
+foreach (test ${allTests})
+    gtest_discover_tests(${test})
+endforeach(test)

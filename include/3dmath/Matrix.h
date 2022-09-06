@@ -36,6 +36,8 @@ class Matrix {
         // If the order is column major, then each sub-initializer is
         // treated as a column of data otherwise the data is assumed
         // to be in the row major order
+        // TODO: Discard ListType and use DataType. It makes no sense to allow the user to specify a
+        // type other than the data type of the matrix
         template<typename ListType>
         Matrix(const std::initializer_list<std::initializer_list<ListType>>& initList, const Order& order = Order::ColumnMajor) {
             
