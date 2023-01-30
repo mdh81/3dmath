@@ -175,7 +175,7 @@ namespace math3d {
                 }
             }
 
-        private:
+        protected:
             std::unique_ptr<DataType[]> m_data; 
 
     }; 
@@ -196,8 +196,30 @@ namespace math3d {
                 : x(m_data.get()[0])
                 , y(m_data.get()[1])
                 , z(m_data.get()[2]) {
+            } };*/
+
+    template<typename T>
+    class Vector2D : public Vector<T, 2> {
+
+        public:
+            T& x;
+            T& y;
+
+            Vector2D()
+                : Vector<T,2>()
+                , x(Vector<T,2>::m_data.get()[0])
+                , y(Vector<T,2>::m_data.get()[1]) {
+
             }
-    };*/
+
+            Vector2D(const std::initializer_list<T>& list)
+                : Vector<T,2> (list)
+                , x(Vector<T,2>::m_data.get()[0])
+                , y(Vector<T,2>::m_data.get()[1]) { 
+                
+            }
+
+    };
 }
 
 
