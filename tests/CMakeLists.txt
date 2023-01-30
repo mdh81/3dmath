@@ -15,9 +15,15 @@ add_executable(
     vector_test 
     vector_test.cpp)
 
+add_executable(
+    line_test 
+    line_test.cpp)
+
+
 set(allTests
     matrix_test
-    vector_test)
+    vector_test
+    line_test)
 
 foreach (test ${allTests})
     target_include_directories(
