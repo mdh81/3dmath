@@ -4,6 +4,7 @@
 #include "Vector.h"
 #include <string>
 #include <sstream>
+#include <limits>
 
 namespace math3d {
 
@@ -40,12 +41,12 @@ namespace math3d {
                 return m_ptOnLine;
             }
 
-            Vector2D getE1Intercept() const {
-                return {fabs(m_a) > 1e-6 ? -m_c/m_a : nan, 0};
+            Vector2D getXIntercept() const {
+                return {fabs(m_a) > 1e-6 ? -m_c/m_a : std::numeric_limits<T>::infinity(), 0};
             }
 
-            Vector2D getE2Intercept() const {
-                return {0, fabs(m_b) > 1e-6 ? -m_c/m_b : nan};
+            Vector2D getYIntercept() const {
+                return {0, fabs(m_b) > 1e-6 ? -m_c/m_b : std::numeric_limits<T>::infinity()};
             }
 
             std::string getImplicitForm() const {
