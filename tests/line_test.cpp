@@ -35,4 +35,21 @@ TEST(Line, ImplicitForm) {
 
     // Assert implicit form is as per the input
     ASSERT_EQ("0x+1y-5=0", implictLine.getImplicitForm()) << "Implicit form of the line was incorrect";
+
+    // Assert E1 intercept is infinity
+    Vector2D e1Int = implictLine.getXIntercept();
+    ASSERT_EQ(std::numeric_limits<float>::infinity(), e1Int.x) << "Line is parallel to x. "
+                                                                  "Expecting intersection with x-axis at infinity";
+    ASSERT_FLOAT_EQ(0, e1Int.y) << "Y coordinate of x-intercept should be 0";
+
+    // Assert E2 intercept is (0,5)
+    Vector2D e2Int = implictLine.getYIntercept();
+    ASSERT_FLOAT_EQ(0, e2Int.x) << "Line is parallel to x. x-intercept should be 0";
+    ASSERT_FLOAT_EQ(5, e2Int.y) << "Line is parallel to x and is 5 units away from x-axis. "
+                                   "Y coordinate of x-intercept should be 5";
+}
+
+TEST(Line, ParametricForm) {
+
+    
 }
