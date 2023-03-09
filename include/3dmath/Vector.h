@@ -110,7 +110,7 @@ namespace math3d {
                 return m_data.get()[index];
             }
             
-            // Compute cross product of this vector and another and return the mutally orthonormal vector 
+            // Compute cross product of this vector and another and return the mutually orthonormal vector
             Vector operator*(const Vector& another) const {
                 // TODO: Investigate possibility of static_assert
                 if (numRows != 3) {
@@ -199,27 +199,36 @@ namespace math3d {
             } };*/
 
     template<typename T>
-    class Vector2D : public Vector<T, 2> {
+    struct Vector2D : public Vector<T, 2> {
 
-        public:
-            T& x;
-            T& y;
+        T& x;
+        T& y;
 
-            Vector2D()
-                : Vector<T,2>()
-                , x(Vector<T,2>::m_data.get()[0])
-                , y(Vector<T,2>::m_data.get()[1]) {
+        Vector2D()
+            : Vector<T,2>()
+            , x(Vector<T,2>::m_data.get()[0])
+            , y(Vector<T,2>::m_data.get()[1]) {
 
-            }
+        }
 
-            Vector2D(const std::initializer_list<T>& list)
-                : Vector<T,2> (list)
-                , x(Vector<T,2>::m_data.get()[0])
-                , y(Vector<T,2>::m_data.get()[1]) { 
-                
-            }
+        Vector2D(const std::initializer_list<T>& list)
+            : Vector<T,2> (list)
+            , x(Vector<T,2>::m_data.get()[0])
+            , y(Vector<T,2>::m_data.get()[1]) { 
+            
+        }
+
+        Vector2D& operator=(const Vector2D& another) {
+            Vector<T,2>::operator=(another);
+            x = another.x;
+            y = another.y;
+            return *this;
+        }
 
     };
+
+    template<typename T>
+    using Point2D = Vector2D<T>;
 }
 
 
