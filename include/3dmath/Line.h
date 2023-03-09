@@ -5,101 +5,145 @@
 #include <string>
 #include <sstream>
 #include <limits>
+#include <sstream>
 
 namespace math3d {
 
     template<typename T>
     class Line2D {
 
-        using Vector2D = math3d::Vector2D<T>;
-
         public:
-            // Parameteric form
-            Line2D(Vector2D const& ptOnLine, Vector2D const& direction) {
+            virtual std::string toString() const = 0;
+            virtual Vector2D<T> getNormal() const = 0;
+            virtual Vector2D<T> getDirection() const = 0;
+            virtual Point2D<T> getPointOnTheLine() const = 0;
+            //virtual void distanceToPoint(Point2D<T> const&) const = 0;
+    };
 
-            }
+    template <typename T>
+    class ParametricLine2D;
 
-            // Implict form
-            Line2D(T const a, T const b, T const c) {
+    template<typename T>
+    class ImplicitLine2D : public Line2D<T> {
+        public:
+            ImplicitLine2D(T const a, T const b, T const c) {
                 m_a = a;
                 m_b = b;
                 m_c = c;
-                computeParametricForm();
             }
 
-            Vector2D getDirection() const {
-                return m_direction;
+            ImplicitLine2D() = delete;
+
+            ParametricLine2D<T> getParametric() const {
+                // Direction vector is the vector perpendicular to the normal
+                Vector2D<T> dirVec{-m_b, m_a};
+
+                // Point on the line. Pick x or y-intercept depending on
+                // whichever one is greater. Geometry tool box recommends
+                // choosing the one with the largest absolute value for
+                // numerical stability
+                // The formula is computed from the implicit form of the line
+                // ax + by + c = 0
+                // By definition, Y is 0 at the x-intercept of the line, so
+                // ax + c = 0
+                // x = -c/a
+                // For the same reason,
+                // y = -c/b 
+                Point2D<T> ptOnLine;
+                if (fabs(m_a) > fabs(m_b)) {
+                    ptOnLine.x = -m_c/m_a;
+                    ptOnLine.y = 0;
+                } else {
+                    ptOnLine.y = -m_c/m_b;
+                    ptOnLine.x = 0;    
+                }
+                return ParametricLine2D(ptOnLine, dirVec);
             }
 
-            Vector2D getNormal() const {
-                // Return a direction that's perpendicular to the line's
-                // direction. We can choose (-d2, d1) or (d1, -d2)
-                return {-m_direction.y, m_direction.x}; 
+            math3d::Vector2D<T> getNormal() const override {
+                return Vector2D<T>{m_a, m_b};
             }
 
-            Vector2D getPointOnTheLine() const {
-                return m_ptOnLine;
+            math3d::Vector2D<T> getDirection() const override {
+                return getParametric().getDirection();
             }
 
-            Vector2D getXIntercept() const {
-                return {fabs(m_a) > 1e-6 ? -m_c/m_a : std::numeric_limits<T>::infinity(), 0};
+            math3d::Vector2D<T> getPointOnTheLine() const override {
+                return getParametric().getPointOnTheLine();
             }
 
-            Vector2D getYIntercept() const {
-                return {0, fabs(m_b) > 1e-6 ? -m_c/m_b : std::numeric_limits<T>::infinity()};
-            }
-
-            std::string getImplicitForm() const {
+            std::string toString() const override {
                 std::stringstream ss;
-                ss << m_a << "x" << (m_b > 0 ? "+" : "") << m_b << "y" << m_c << "=0";  
+                ss << std::setprecision(2);
+                ss << m_a << 'x';
+                ss << std::showpos;
+                ss << m_b << 'y';
+                ss << std::showpos << m_c;
+                ss << "=0";
                 return ss.str();
             }
 
-            std::string getParametericForm() const {
+            private:
+                T m_a;
+                T m_b;
+                T m_c;
+
+    };
+
+    template<typename T>
+    class ParametricLine2D : public Line2D<T> {
+
+        public:
+            ParametricLine2D(Point2D<T> const& ptOnLine, Vector2D<T> const& direction) {
+                m_point = ptOnLine;
+                m_direction = direction;
+            }
+
+            ParametricLine2D() = delete;
+
+            ImplicitLine2D<T> getImplicit() const {
+                // Compute A and B as coordinates of the normal vector
+                Vector2D<T> normal;
+                normal.x = -m_direction.y;
+                normal.y = m_direction.x; 
+
+                // Compute C from X or Y intercept. Using the same
+                // recommendation from Geometry toolbox, use the largest
+                // absolute value of the intercept for numerical stability
+                T c;
+                if (fabs(normal.x) > fabs(normal.y)) {
+                    c = -(normal.x * m_point.x);
+                } else {
+                    c = -(normal.y * m_point.y);
+                }
+
+                return ImplicitLine2D(normal.x, normal.y, c);
+            }
+
+            Vector2D<T> getNormal() const override {
+                return getImplicit().getNormal();
+            }
+
+            Vector2D<T> getDirection() const override {
+                return m_direction;
+            }
+
+            Vector2D<T> getPointOnTheLine() const override {
+                return m_point;
+            }
+
+            std::string toString() const override {
                 std::stringstream ss;
-                ss << std::setprecision(3);
-                ss << m_ptOnLine; 
+                ss << std::setprecision(2);
+                ss << m_point;
                 ss << "+t";
                 ss << m_direction;
                 return ss.str();
             }
 
         private:
-            void computeParametricForm() {
-                // Direction vector of the line will be perpendicular to 
-                // the normal. Given a direction (d1, d2), it's perpendicular
-                // can be either (-d2, d1) or (d2, -d1), we choose the former
-                m_direction.x = -m_b;
-                m_direction.y =  m_a;
-
-                // Choose x or y intercept as the point on the line
-                // Page 39 in Geometry Toolbox suggests using the intercept
-                // that is closest to the origin to improve the "numerical
-                // stability" of calculations. It makes an interesting observation
-                // that if ||a|| > ||b|| then x intercept is closer, otherwise y
-                // is closer
-                // NOTE: Lines that are parallel to either x or y axis are implicitly
-                // handled by the comparision, so there is no need to check for division
-                // by zero to determine that the line is parallel to x or y
-                if (fabs(m_a) > fabs(m_b)) {
-                    m_ptOnLine.x = -m_c/m_a;
-                    m_ptOnLine.y = 0;
-                } else {
-                    m_ptOnLine.x = 0;
-                    m_ptOnLine.y = -m_c/m_b;
-                } 
-            }
-
-            void computeImplicitForm() {
-
-            }
-
-        private:
-            Vector2D m_ptOnLine;
-            Vector2D m_direction;
-            T m_a;
-            T m_b;
-            T m_c;
+            Point2D<T> m_point;
+            Vector2D<T> m_direction;
     };
 }
 

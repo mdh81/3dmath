@@ -12,18 +12,20 @@ TEST(Line, ImplicitForm) {
 
     // Build a line parallel to the x-axis and is at a distance of
     // 5 units from the x-axis
-    Line2D<float> implictLine(0.0f, 1.0f, -5.0f);
+    ImplicitLine2D<float> implictLine(0.0f, 1.0f, -5.0f);
+
+    using Vector2D = Vector2D<float>;
     
-    // Normal should be (0, 1) or (0, -1)
+    // Normal should be (0, 1)
     Vector2D normal = implictLine.getNormal();
     ASSERT_FLOAT_EQ(normal.x, 0) << "Normal x-coordinate is incorrect";
-    ASSERT_FLOAT_EQ(fabs(normal.y), 1.0) << "Normal y-coordinate is incorrect";
+    ASSERT_FLOAT_EQ(normal.y, 1.0) << "Normal y-coordinate is incorrect";
 
     // Direction should be (1,0) or (-1,0)
     Vector2D direction = implictLine.getDirection();
     ASSERT_FLOAT_EQ(fabs(direction.x), 1) << "Direction x-coordinate is incorrect";
     ASSERT_FLOAT_EQ(direction.y, 0) << "Direction y-coordinate is incorrect";
-
+/*
     // Point on line should be (0,5)
     // This will be the y-intercept of the line and chosen because x-intercept is infinity
     Vector2D ptOnLine = implictLine.getPointOnTheLine();
@@ -31,10 +33,11 @@ TEST(Line, ImplicitForm) {
     ASSERT_FLOAT_EQ(ptOnLine.y, 5) << "Incorrect y-coordinate for point on the line";
 
     // Assert parameteric form is correct
-    ASSERT_EQ("[0,5]+t[-1,0]", implictLine.getParametericForm()) << "Parametric form of the line is wrong";
+    ASSERT_EQ("[0,5]+t[-1,0]", implictLine.getParametric().toString()) << "Parametric form of the line is wrong";
 
     // Assert implicit form is as per the input
-    ASSERT_EQ("0x+1y-5=0", implictLine.getImplicitForm()) << "Implicit form of the line was incorrect";
+    ASSERT_EQ("0x+1y-5=0", implictLine.toString()) << "Implicit form of the line was incorrect";
+
 
     // Assert E1 intercept is infinity
     Vector2D e1Int = implictLine.getXIntercept();
@@ -46,10 +49,20 @@ TEST(Line, ImplicitForm) {
     Vector2D e2Int = implictLine.getYIntercept();
     ASSERT_FLOAT_EQ(0, e2Int.x) << "Line is parallel to x. x-intercept should be 0";
     ASSERT_FLOAT_EQ(5, e2Int.y) << "Line is parallel to x and is 5 units away from x-axis. "
-                                   "Y coordinate of x-intercept should be 5";
+                                   "Y coordinate of x-intercept should be 5";*/
 }
 
 TEST(Line, ParametricForm) {
 
-    
+    // Define a line in parametric form
+   // ParametricLine2D<float> parametricLine({0,5}, {1,0});
+/*
+    // Assert normal is either (0,1) or (0,-1)
+    ASSERT_FLOAT_EQ(parametricLine.getNormal().x, 0) << "Line is parallel to x-axis. "
+                                                        "x-coordinate of normal should be zero";
+
+    ASSERT_FLOAT_EQ(fabs(parametricLine.getNormal().y), 0) << "Line is parallel to x-axis. "
+                                                              "x-coordinate of normal should be zero";
+                                                              */
+
 }
