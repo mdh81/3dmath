@@ -7,6 +7,7 @@
 #include <exception>
 #include <memory>
 #include <cmath>
+#include <array>
 
 namespace math3d {
     
@@ -29,9 +30,8 @@ namespace math3d {
         
         public:
             Vector() {
-                m_data = std::make_unique<DataType[]>(numRows);
                 for (unsigned i = 0; i < numRows; ++i) {
-                    m_data.get()[i] = 0.f;
+                    m_data[i] = 0.f;
                 }
             }
 
@@ -41,9 +41,8 @@ namespace math3d {
                                                  std::to_string(numRows) + " Input size is " +
                                                  std::to_string(vals.size()));
                 }
-                m_data = std::make_unique<DataType[]>(numRows);
                 for (size_t i = 0; i < vals.size(); ++i) {
-                    m_data.get()[i] = data(vals)[i];
+                    m_data[i] = data(vals)[i];
                 }
             }
 
@@ -51,14 +50,6 @@ namespace math3d {
                this->operator=(other); 
             } 
 
-            Vector(Vector&& rval) {
-                // NOTE: Unlike copy constructor, we are unable to invoke move assignment
-                // from the move constructor. The rval's data pointer is not set to null
-                // Is r-value using pass by copy semantics?
-                m_data = std::move(rval.m_data);
-                rval.m_data = nullptr;
-            }
-            
             // Conversion constructor to build from a STL vector
             // TODO: Support building from other container types 
             Vector(const std::vector<DataType>& v) {
@@ -67,47 +58,44 @@ namespace math3d {
                                                  std::to_string(numRows) + " Input size is " +
                                                  std::to_string(v.size()));
                 }
-                m_data = std::make_unique<DataType[]>(numRows);
                 for (size_t i = 0; i < v.size(); ++i) {
-                    m_data.get()[i] = v[i];
+                    m_data[i] = v[i];
                 }
             }
 
             Vector& operator=(const Vector& rhs) { 
-                m_data.reset(new DataType[numRows]);
                 for (unsigned i = 0; i < numRows; ++i) {
-                    m_data.get()[i] = rhs.m_data.get()[i];
+                    m_data[i] = rhs.m_data[i];
                 } 
                 return *this; 
-            }
-            
-            Vector& operator=(Vector&& rval) { 
-                m_data = std::move(rval.m_data);
-                rval.m_data = nullptr;
-                return *this;
             }
             
             // Add this vector to another and return the sum
             Vector operator+(const Vector& another) const {
                 Vector <DataType, numRows> result;
                 for (unsigned i = 0; i < numRows; ++i) {
-                    result.m_data.get()[i] = this->m_data.get()[i] + another.m_data.get()[i];
+                    result.m_data[i] = this->m_data[i] + another.m_data[i];
                 }
                 return result;
             } 
 
             // Subtract this vector from another and return the difference
             Vector operator-(const Vector& another) const {
-                const float* lhs = getData();
-                const float* rhs = another.getData(); 
-                return Vector<float,3>({lhs[0]-rhs[0], lhs[1]-rhs[1], lhs[2]-rhs[2]});
+                return Vector<float,3>({m_data[0]-another.m_data[0], m_data[1]-another.m_data[1], m_data[2]-another.m_data[2]});
             }
 
-            float& operator[](const unsigned index) const {
+            DataType const& operator[](const unsigned index) const {
                 if (index >= numRows) 
                     throw std::invalid_argument(std::to_string(index) + " is out of bounds."
                                                 " Vector dimension is " + std::to_string(numRows));
-                return m_data.get()[index];
+                return m_data[index];
+            }
+
+            DataType& operator[](const unsigned index) {
+                if (index >= numRows)
+                    throw std::invalid_argument(std::to_string(index) + " is out of bounds."
+                                                " Vector dimension is " + std::to_string(numRows));
+                return m_data[index];
             }
             
             // Compute cross product of this vector and another and return the mutually orthonormal vector
@@ -127,33 +115,29 @@ namespace math3d {
 
             Vector& normalize() {
                 float norm = length();
-                float* v = const_cast<float*>(getData());
                 for (size_t i = 0; i < numRows; ++i) {
-                    v[i] /= norm;
+                    m_data[i] /= norm;
                 }
                 return *this;
             }
 
             float length() {
-                const float* v = getData();
                 float result = 0;
                 for (size_t i = 0; i < numRows; ++i) {
-                    result += (v[i] * v[i]);
+                    result += (m_data[i] * m_data[i]);
                 }
                 return sqrt(result);
             }
 
             void operator/=(const DataType scalar) {
-                float* v = m_data.get();
                 for (size_t i = 0; i < numRows; ++i) {
-                    v[i] /= scalar;
+                    m_data[i] /= scalar;
                 }
             }
 
             void operator+=(const Vector& another) {
-                float* v = m_data.get();
                 for (size_t i = 0; i < numRows; ++i) {
-                    v[i] += another[i];
+                    m_data[i] += another[i];
                 }
             }
 
@@ -164,7 +148,7 @@ namespace math3d {
                 return proj;
             }
             
-            DataType const* getData() const { return m_data.get(); }
+            DataType const* getData() const { return m_data.data(); }
 
         protected:
             void print(std::ostream& os) const override {
@@ -176,7 +160,7 @@ namespace math3d {
             }
 
         protected:
-            std::unique_ptr<DataType[]> m_data; 
+            std::array<DataType, numRows> m_data;
 
     }; 
 
@@ -185,18 +169,31 @@ namespace math3d {
         return os;
     }
     
-    // TODO: Define convenience class managing 3D vectors 
-    /*template <typename T>
-    class 3DVector : public Vector<T, 3> {
+    template <typename T>
+    class Vector3D : public Vector<T, 3> {
         public:
             T& x;
             T& y;
             T& z;
-            3DVector() 
-                : x(m_data.get()[0])
-                , y(m_data.get()[1])
-                , z(m_data.get()[2]) {
-            } };*/
+            Vector3D()
+                : x(Vector<T,3>::m_data[0])
+                , y(Vector<T,3>::m_data[1])
+                , z(Vector<T,3>::m_data[2]) {
+            }
+
+            Vector3D(const std::initializer_list<T>& list)
+                    : Vector<T,3> (list)
+                    , x(Vector<T,3>::m_data[0])
+                    , y(Vector<T,3>::m_data[1])
+                    , z(Vector<T,3>::m_data[2]) {
+
+            }
+
+            Vector3D& operator=(const Vector3D& another) {
+                Vector<T,3>::operator=(another);
+                return *this;
+            }
+    };
 
     template<typename T>
     struct Vector2D : public Vector<T, 2> {
@@ -204,24 +201,23 @@ namespace math3d {
         T& x;
         T& y;
 
+        // Bind x and y to element 0 and 1 of the raw array
         Vector2D()
             : Vector<T,2>()
-            , x(Vector<T,2>::m_data.get()[0])
-            , y(Vector<T,2>::m_data.get()[1]) {
+            , x(Vector<T,2>::m_data[0])
+            , y(Vector<T,2>::m_data[1]) {
 
         }
 
         Vector2D(const std::initializer_list<T>& list)
             : Vector<T,2> (list)
-            , x(Vector<T,2>::m_data.get()[0])
-            , y(Vector<T,2>::m_data.get()[1]) { 
+            , x(Vector<T,2>::m_data[0])
+            , y(Vector<T,2>::m_data[1]) {
             
         }
 
         Vector2D& operator=(const Vector2D& another) {
             Vector<T,2>::operator=(another);
-            x = another.x;
-            y = another.y;
             return *this;
         }
 

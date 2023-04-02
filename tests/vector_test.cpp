@@ -65,29 +65,6 @@ TEST(Vector, CopyAssignment) {
 
 }
 
-TEST(Vector, MoveConstruction) {
-    Vector<float, 4> v(Vector<float,4>{1,2,3,4});
-    Vector<float, 4> v1(std::move(v));
-    float const* data = v1.getData();
-    ASSERT_FLOAT_EQ(1, data[0]);
-    ASSERT_FLOAT_EQ(2, data[1]);
-    ASSERT_FLOAT_EQ(3, data[2]);
-    ASSERT_FLOAT_EQ(4, data[3]);
-    ASSERT_EQ(nullptr, v.getData());
-}
-
-TEST(Vector, MoveAssignment) {
-    Vector<float, 4> v(Vector<float,4>{1,2,3,4});
-    Vector<float, 4> v1;
-    v1 = std::move(v);
-    float const* data = v1.getData();
-    ASSERT_FLOAT_EQ(1, data[0]);
-    ASSERT_FLOAT_EQ(2, data[1]);
-    ASSERT_FLOAT_EQ(3, data[2]);
-    ASSERT_FLOAT_EQ(4, data[3]);
-    ASSERT_EQ(nullptr, v.getData());
-}
-
 TEST(Vector, VectorAddition) {
     Vector<float, 3> v1({1,2,3});
     Vector<float, 3> v2({1,2,3});
