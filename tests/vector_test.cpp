@@ -162,18 +162,18 @@ TEST(Vector, BuildFromSTLVector) {
 }
 
 TEST(Vector2D, EmplaceConstructor) {
-    std::vector<Point2D<float>> points;
-    points.emplace_back(0.f, 1.f);
-    ASSERT_FLOAT_EQ(points[0].x, 0.f);
-    ASSERT_FLOAT_EQ(points[0].y, 1.f);
+    std::vector<Vector2D<float>> vectors;
+    vectors.emplace_back(0.f, 1.f);
+    ASSERT_FLOAT_EQ(vectors[0].x, 0.f);
+    ASSERT_FLOAT_EQ(vectors[0].y, 1.f);
 }
 
 TEST(Vector3D, EmplaceConstructor) {
-    std::vector<Point3D<float>> points;
-    points.emplace_back(0.f, 1.f, 2.f);
-    ASSERT_FLOAT_EQ(points[0].x, 0.f);
-    ASSERT_FLOAT_EQ(points[0].y, 1.f);
-    ASSERT_FLOAT_EQ(points[0].z, 2.f);
+    std::vector<Vector3D<float>> vectors;
+    vectors.emplace_back(0.f, 1.f, 2.f);
+    ASSERT_FLOAT_EQ(vectors[0].x, 0.f);
+    ASSERT_FLOAT_EQ(vectors[0].y, 1.f);
+    ASSERT_FLOAT_EQ(vectors[0].z, 2.f);
 }
 
 TEST(Vector, WriteData) {
