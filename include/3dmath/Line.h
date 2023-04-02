@@ -10,6 +10,9 @@
 namespace math3d {
 
     template<typename T>
+    using Point2D = Vector2D<T>;
+
+    template<typename T>
     class Line2D {
 
         public:
