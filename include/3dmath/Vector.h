@@ -205,55 +205,51 @@ namespace math3d {
     };
     
     template <typename T>
-    class Vector3D : public Vector<T, 3> {
-        public:
-            T& x;
-            T& y;
-            T& z;
-            Vector3D()
-                : x(Vector<T,3>::m_data[0])
+    struct Vector3D : public Vector<T, 3> {
+        T& x;
+        T& y;
+        T& z;
+        Vector3D()
+            : x(Vector<T,3>::m_data[0])
+            , y(Vector<T,3>::m_data[1])
+            , z(Vector<T,3>::m_data[2]) {
+        }
+
+        // Emplace support constructor
+        Vector3D(T const x, T const y, T const z)
+        : Vector3D() {
+            this->x = x;
+            this->y = y;
+            this->z = z;
+        }
+
+        // Define explicitly to get around implicit deletion due to reference member
+        Vector3D(const std::initializer_list<T>& list)
+                : Vector<T,3> (list)
+                , x(Vector<T,3>::m_data[0])
                 , y(Vector<T,3>::m_data[1])
                 , z(Vector<T,3>::m_data[2]) {
-            }
 
-            // Emplace support constructor
-            Vector3D(T const x, T const y, T const z)
-            : Vector3D() {
-                this->x = x;
-                this->y = y;
-                this->z = z;
-            }
+        }
 
-            // Define explicitly to get around implicit deletion due to reference member
-            Vector3D(const std::initializer_list<T>& list)
-                    : Vector<T,3> (list)
-                    , x(Vector<T,3>::m_data[0])
-                    , y(Vector<T,3>::m_data[1])
-                    , z(Vector<T,3>::m_data[2]) {
+        // Define explicitly to get around implicit deletion due to reference member
+        Vector3D& operator=(const Vector3D& another) {
+            Vector<T,3>::operator=(another);
+            x = Vector<T,3>::m_data[0];
+            y = Vector<T,3>::m_data[1];
+            z = Vector<T,3>::m_data[2];
+            return *this;
+        }
 
-            }
-
-            // Define explicitly to get around implicit deletion due to reference member
-            Vector3D& operator=(const Vector3D& another) {
-                Vector<T,3>::operator=(another);
-                return *this;
-            }
-
-            // Conversion constructor to build a Vector3D from Vector<T,3>
-            // Allows the following expression:
-            // Vector3D a = <another vector3D>.normalize();
-            Vector3D(Vector<T,3> const& another)
-                : Vector<T,3>(another)
-                , x(Vector<T, 3>::m_data[0])
-                , y(Vector<T, 3>::m_data[1])
-                , z(Vector<T, 3>::m_data[2]) { }
+        // Conversion constructor to build a Vector3D from Vector<T,3>
+        // Allows the following expression:
+        // Vector3D c = a + b;
+        Vector3D(Vector<T,3> const& another)
+            : Vector<T,3>(another)
+            , x(Vector<T, 3>::m_data[0])
+            , y(Vector<T, 3>::m_data[1])
+            , z(Vector<T, 3>::m_data[2]) { }
     };
-
-    template<typename T>
-    using Point2D = Vector2D<T>;
-
-    template<typename T>
-    using Point3D = Vector3D<T>;
 }
 
 

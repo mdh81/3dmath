@@ -197,3 +197,12 @@ TEST(Vector3D, ConvertFromBase) {
     ASSERT_FLOAT_EQ(v3.y, 0);
     ASSERT_FLOAT_EQ(v3.z, 1);
 }
+
+TEST(Vector3D, Assign) {
+    Vector3D<float> v1(1, 0, 0);
+    Vector3D<float> v2(0, 1, 0);
+    v2 = v1;
+    ASSERT_FLOAT_EQ(v2.x, 1);
+    ASSERT_FLOAT_EQ(v2.y, 0);
+    ASSERT_FLOAT_EQ(v2.z, 0);
+}
