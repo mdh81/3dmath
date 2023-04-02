@@ -175,3 +175,25 @@ TEST(Vector3D, EmplaceConstructor) {
     ASSERT_FLOAT_EQ(points[0].y, 1.f);
     ASSERT_FLOAT_EQ(points[0].z, 2.f);
 }
+
+TEST(Vector, WriteData) {
+    Vector3D<float> v3;
+    v3.getData()[0] = 5.f;
+    v3.getData()[1] = 50.f;
+    v3.getData()[2] = 500.f;
+    ASSERT_FLOAT_EQ(v3.x, 5.f);
+    ASSERT_FLOAT_EQ(v3.y, 50.f);
+    ASSERT_FLOAT_EQ(v3.z, 500.f);
+}
+
+TEST(Vector3D, ConvertFromBase) {
+    Vector3D<float> v1(1, 0, 0);
+    Vector3D<float> v2(0, 1, 0);
+    // v1 x v2 returns vector<float, 3>, which is technically not
+    // a Vector3D<float>, but the conversion constructor makes
+    // the vector semantics work
+    Vector3D<float> v3 = v1 * v2;
+    ASSERT_FLOAT_EQ(v3.x, 0);
+    ASSERT_FLOAT_EQ(v3.y, 0);
+    ASSERT_FLOAT_EQ(v3.z, 1);
+}

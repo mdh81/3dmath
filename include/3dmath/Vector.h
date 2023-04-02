@@ -100,13 +100,10 @@ namespace math3d {
             
             // Compute cross product of this vector and another and return the mutually orthonormal vector
             Vector operator*(const Vector& another) const {
-                // TODO: Investigate possibility of static_assert
-                if (numRows != 3) {
-                    throw std::runtime_error("Cross product can only be computed for 3D vectors");
-                }
+                static_assert(numRows == 3, "Cross product can only be computed for 3D vectors");
                 Vector<DataType, numRows> result;
-                const float* v1 = getData();
-                const float* v2 = another.getData();
+                auto* v1 = getData();
+                auto* v2 = another.getData();
                 result[0] = v1[1]*v2[2] - v1[2]*v2[1];
                 result[1] = v2[0]*v1[2] - v1[0]*v2[2];
                 result[2] = v1[0]*v2[1] - v1[1]*v2[0];
@@ -149,6 +146,7 @@ namespace math3d {
             }
             
             DataType const* getData() const { return m_data.data(); }
+            DataType* getData() { return m_data.data(); }
 
         protected:
             void print(std::ostream& os) const override {
@@ -240,6 +238,15 @@ namespace math3d {
                 Vector<T,3>::operator=(another);
                 return *this;
             }
+
+            // Conversion constructor to build a Vector3D from Vector<T,3>
+            // Allows the following expression:
+            // Vector3D a = <another vector3D>.normalize();
+            Vector3D(Vector<T,3> const& another)
+                : Vector<T,3>(another)
+                , x(Vector<T, 3>::m_data[0])
+                , y(Vector<T, 3>::m_data[1])
+                , z(Vector<T, 3>::m_data[2]) { }
     };
 
     template<typename T>
