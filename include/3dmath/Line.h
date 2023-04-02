@@ -36,7 +36,9 @@ namespace math3d {
 
             ParametricLine2D<T> getParametric() const {
                 // Direction vector is the vector perpendicular to the normal
-                Vector2D<T> dirVec{-m_b, m_a};
+                Vector2D<T> dirVec;
+                dirVec.x = -m_b;
+                dirVec.y = m_a;
 
                 // Point on the line. Pick x or y-intercept depending on
                 // whichever one is greater. Geometry tool box recommends
@@ -117,7 +119,7 @@ namespace math3d {
                     c = -(normal.y * m_point.y);
                 }
 
-                return ImplicitLine2D(normal.x, normal.y, c);
+                return ImplicitLine2D<T>(normal.x, normal.y, c);
             }
 
             Vector2D<T> getNormal() const override {
