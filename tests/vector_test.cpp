@@ -160,3 +160,18 @@ TEST(Vector, BuildFromSTLVector) {
     for(auto i : {0,1,2,3,4})
         ASSERT_FLOAT_EQ(v[i], 8.3f);
 }
+
+TEST(Vector2D, EmplaceConstructor) {
+    std::vector<Point2D<float>> points;
+    points.emplace_back(0.f, 1.f);
+    ASSERT_FLOAT_EQ(points[0].x, 0.f);
+    ASSERT_FLOAT_EQ(points[0].y, 1.f);
+}
+
+TEST(Vector3D, EmplaceConstructor) {
+    std::vector<Point3D<float>> points;
+    points.emplace_back(0.f, 1.f, 2.f);
+    ASSERT_FLOAT_EQ(points[0].x, 0.f);
+    ASSERT_FLOAT_EQ(points[0].y, 1.f);
+    ASSERT_FLOAT_EQ(points[0].z, 2.f);
+}

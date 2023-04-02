@@ -10,10 +10,10 @@
 #include <array>
 
 namespace math3d {
-    
+
     // A do-nothing non-template base class to enable printing a vector via
     // stream insertion overload operator If the stream operator is defined as
-    // a friend of the template derived type, because of the fact that the
+    // a friend of the template derived type, because the
     // friend function definition is not tied to the template instantiation,
     // the friend function remains undefined leading to linker errors. Making
     // the friend function take a non-template parameter avoids this issue 
@@ -168,6 +168,43 @@ namespace math3d {
         v.print(os);
         return os;
     }
+
+    template<typename T>
+    struct Vector2D : public Vector<T, 2> {
+
+        T& x;
+        T& y;
+
+        // Bind x and y to element 0 and 1 of the raw array
+        Vector2D()
+                : Vector<T,2>()
+                , x(Vector<T,2>::m_data[0])
+                , y(Vector<T,2>::m_data[1]) {
+
+        }
+
+        // Emplace support constructor
+        Vector2D(T const x, T const y)
+        : Vector2D() {
+            this->x = x;
+            this->y = y;
+        }
+
+        // Define explicitly to get around implicit deletion due to reference member
+        Vector2D(std::initializer_list<T> const& list)
+                : Vector<T,2> (list)
+                , x(Vector<T,2>::m_data[0])
+                , y(Vector<T,2>::m_data[1]) {
+
+        }
+
+        // Define explicitly to get around implicit deletion due to reference member
+        Vector2D& operator=(Vector2D const& another) {
+            Vector<T,2>::operator=(another);
+            return *this;
+        }
+
+    };
     
     template <typename T>
     class Vector3D : public Vector<T, 3> {
@@ -181,6 +218,15 @@ namespace math3d {
                 , z(Vector<T,3>::m_data[2]) {
             }
 
+            // Emplace support constructor
+            Vector3D(T const x, T const y, T const z)
+            : Vector3D() {
+                this->x = x;
+                this->y = y;
+                this->z = z;
+            }
+
+            // Define explicitly to get around implicit deletion due to reference member
             Vector3D(const std::initializer_list<T>& list)
                     : Vector<T,3> (list)
                     , x(Vector<T,3>::m_data[0])
@@ -189,6 +235,7 @@ namespace math3d {
 
             }
 
+            // Define explicitly to get around implicit deletion due to reference member
             Vector3D& operator=(const Vector3D& another) {
                 Vector<T,3>::operator=(another);
                 return *this;
@@ -196,35 +243,10 @@ namespace math3d {
     };
 
     template<typename T>
-    struct Vector2D : public Vector<T, 2> {
-
-        T& x;
-        T& y;
-
-        // Bind x and y to element 0 and 1 of the raw array
-        Vector2D()
-            : Vector<T,2>()
-            , x(Vector<T,2>::m_data[0])
-            , y(Vector<T,2>::m_data[1]) {
-
-        }
-
-        Vector2D(const std::initializer_list<T>& list)
-            : Vector<T,2> (list)
-            , x(Vector<T,2>::m_data[0])
-            , y(Vector<T,2>::m_data[1]) {
-            
-        }
-
-        Vector2D& operator=(const Vector2D& another) {
-            Vector<T,2>::operator=(another);
-            return *this;
-        }
-
-    };
+    using Point2D = Vector2D<T>;
 
     template<typename T>
-    using Point2D = Vector2D<T>;
+    using Point3D = Vector3D<T>;
 }
 
 
