@@ -79,7 +79,11 @@ namespace math3d {
 
             // Subtract this vector from another and return the difference
             Vector operator-(const Vector& another) const {
-                return Vector<float,3>({m_data[0]-another.m_data[0], m_data[1]-another.m_data[1], m_data[2]-another.m_data[2]});
+                Vector <DataType, numRows> result;
+                for (unsigned i = 0; i < numRows; ++i) {
+                    result.m_data[i] = this->m_data[i] - another.m_data[i];
+                }
+                return result;
             }
 
             DataType const& operator[](const unsigned index) const {
@@ -108,6 +112,14 @@ namespace math3d {
                 return result; 
             }
 
+            Vector operator*(DataType const scalar) const {
+                Vector<DataType, numRows> result;
+                for(auto i = 0; i < numRows; ++i) {
+                    result[i] = scalar * m_data[i];
+                }
+                return result;
+            }
+
             Vector& normalize() {
                 float norm = length();
                 for (size_t i = 0; i < numRows; ++i) {
@@ -116,7 +128,7 @@ namespace math3d {
                 return *this;
             }
 
-            float length() {
+            float length() const {
                 float result = 0;
                 for (size_t i = 0; i < numRows; ++i) {
                     result += (m_data[i] * m_data[i]);
@@ -136,7 +148,7 @@ namespace math3d {
                 }
             }
 
-            float dot(const Vector& another) {
+            float dot(const Vector& another) const {
                 float proj = 0.f;
                 for (size_t i = 0; i < numRows; ++i)
                     proj += this->operator[](i) * another[i];
@@ -163,6 +175,11 @@ namespace math3d {
     inline std::ostream& operator << (std::ostream& os, const VectorBase& v) {
         v.print(os);
         return os;
+    }
+
+    template <typename DataType, unsigned numRows>
+    Vector<DataType, numRows> operator*(DataType const scalar, Vector<DataType, numRows> const& vector) {
+        return vector * scalar;
     }
 
     template<typename T>
@@ -198,6 +215,15 @@ namespace math3d {
         Vector2D& operator=(Vector2D const& another) {
             Vector<T,2>::operator=(another);
             return *this;
+        }
+
+        // Conversion constructor to build a Vector3D from Vector<T,3>
+        // Allows the following expression:
+        // Vector3D c = a + b;
+        Vector2D(Vector<T,2> const& another)
+        : Vector<T,2>(another)
+        , x(Vector<T, 2>::m_data[0])
+        , y(Vector<T, 2>::m_data[1]) {
         }
 
     };
