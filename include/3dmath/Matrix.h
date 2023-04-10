@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <exception>
 #include <memory>
+#include "Vector.h"
 
 namespace math3d {
 
@@ -36,15 +37,9 @@ class Matrix {
         // If the order is column major, then each sub-initializer is
         // treated as a column of data otherwise the data is assumed
         // to be in the row major order
-        // TODO: Discard ListType and use DataType. It makes no sense to allow the user to specify a
-        // type other than the data type of the matrix
-        template<typename ListType>
-        Matrix(const std::initializer_list<std::initializer_list<ListType>>& initList, const Order& order = Order::ColumnMajor) {
+        Matrix(const std::initializer_list<std::initializer_list<DataType>>& initList, const Order& order = Order::ColumnMajor) {
             
-            static_assert(std::is_same<ListType, DataType>::value, 
-                          "Matrix and its initializer should be of the same type");
-            
-            // prevents a crash during destruction in case an exception is thrown in the below code 
+            // prevents a crash during destruction in case an exception is thrown in the below code
             // and m_data is deleted during stack unrolling 
             m_data = nullptr;
             
@@ -84,17 +79,27 @@ class Matrix {
             delete[] m_data;
         }
 
+        // Vector multiplication
+        auto operator*(Vector<DataType, numRows> const& inputVector) {
+            Vector<DataType, numRows> outputVector;
+            for (auto row = 0u; row < numRows; ++row) {
+                for (auto col = 0u; col < numCols; ++col) {
+                    outputVector[row] += m_data[col * numRows + row] * inputVector[col];
+                }
+            }
+            return outputVector;
+        }
+
         size_t getNumberOfRows() const { return numRows; }
         size_t getNumberOfColumns() const { return numCols; }
         const DataType* getData()  const { return m_data; }
         
-        //private: 
         public:
             // Print column major matrix data in row order format
             void print(std::ostream& os) const {
                 for (size_t row = 0; row < numRows; ++row) {
                     for (size_t col = 0; col < numCols; ++col) {
-                        os << m_data[col * numRows + row];
+                        os << std::setw(10) << std::setprecision(6) << m_data[col * numRows + row];
                         if (col != numCols - 1) os << ' '; 
                     }
                     os << std::endl;
@@ -170,26 +175,6 @@ class Matrix {
             for (size_t col = 0; col < numCols; ++col) {
                 for (size_t row = 0; row < numRows; ++row) {
                     m_data[col * numRows + row] = data(data(initList)[row])[col];
-                }
-            }
-        }
-    
-    //friend 
-    //std::ostream& operator<<(std::ostream&, const Matrix&);
-
-};
-
-template<typename DataType, size_t numRows, size_t numCols> requires (numRows == numCols)
-class IdentityMatrix : public Matrix<DataType,numRows,numCols> {
-    private:
-        using Matrix<DataType,numRows,numCols>::m_data;
-    public:
-        IdentityMatrix() {
-            for(size_t col = 0; col < numCols; ++col) {
-                for (size_t row = 0; row < numRows; ++row) {
-                    if (row == col) {
-                        m_data[col * numRows + row] = DataType{1};
-                    } 
                 }
             }
         }

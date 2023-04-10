@@ -1,9 +1,13 @@
 #include "gtest/gtest.h"
 #include "3dmath/Matrix.h"
+#include "3dmath/IdentityMatrix.h"
+#include "3dmath/OrthographicProjectionMatrix.h"
+#include "3dmath/Vector.h"
 #include <vector>
 #include <initializer_list>
 #include <iostream>
 #include <fstream>
+#include <regex>
 using namespace std;
 using namespace math3d;
 
@@ -112,16 +116,24 @@ TEST(Matrix, TestPrint) {
     string str;
     bool contentsMatch = false;
     getline(ifs,str);
+    regex collapseSpaces (R"(\s+)");
+    regex trimLeading (R"(^\s)");
+    str = regex_replace(str, collapseSpaces, " ");
+    str = regex_replace(str, trimLeading, "");
     contentsMatch = str.substr(0, 2) == "10";
     EXPECT_TRUE(contentsMatch) << "Expecting 10 at 0, 0. Found " << str.substr(0,2) << endl;
     contentsMatch = str.substr(3) == "10";
     EXPECT_TRUE(contentsMatch) << "Expecting 10 at 0, 1. Found " << str.substr(3) << endl;
     getline(ifs, str);
+    str = regex_replace(str, collapseSpaces, " ");
+    str = regex_replace(str, trimLeading, "");
     contentsMatch = str.substr(0, 2) == "11";
     EXPECT_TRUE(contentsMatch) << "Expecting 11 at 1, 0. Found " << str.substr(0,2) << endl;
     contentsMatch = str.substr(3) == "11";
     EXPECT_TRUE(contentsMatch) << "Expecting 11 at 1, 1. Found " << str.substr(3) << endl;
     getline(ifs, str);
+    str = regex_replace(str, collapseSpaces, " ");
+    str = regex_replace(str, trimLeading, "");
     contentsMatch = str.substr(0, 2) == "12";
     EXPECT_TRUE(contentsMatch) << "Expecting 12 at 2, 0. Found " << str.substr(0,2) << endl;
     contentsMatch = str.substr(3) == "12";
@@ -146,19 +158,68 @@ TEST(Matrix, TestRowMajor) {
     ifstream ifs("mat1.out");
     string str;
     bool contentsMatch = false;
+    regex collapseSpaces (R"(\s+)");
+    regex trimLeading (R"(^\s)");
     getline(ifs,str);
+    str = regex_replace(str, collapseSpaces, " ");
+    str = regex_replace(str, trimLeading, "");
     contentsMatch = str.substr(0, 2) == "10";
     EXPECT_TRUE(contentsMatch) << "Expecting 10 at 0, 0. Found " << str.substr(0,2) << endl;
     contentsMatch = str.substr(3) == "12";
     EXPECT_TRUE(contentsMatch) << "Expecting 12 at 0, 1. Found " << str.substr(3) << endl;
     getline(ifs, str);
+    str = regex_replace(str, collapseSpaces, " ");
+    str = regex_replace(str, trimLeading, "");
     contentsMatch = str.substr(0, 2) == "13";
     EXPECT_TRUE(contentsMatch) << "Expecting 13 at 1, 0. Found " << str.substr(0,2) << endl;
     contentsMatch = str.substr(3) == "14";
     EXPECT_TRUE(contentsMatch) << "Expecting 14 at 1, 1. Found " << str.substr(3) << endl;
     getline(ifs, str);
+    str = regex_replace(str, collapseSpaces, " ");
+    str = regex_replace(str, trimLeading, "");
     contentsMatch = str.substr(0, 2) == "15";
     EXPECT_TRUE(contentsMatch) << "Expecting 15 at 2, 0. Found " << str.substr(0,2) << endl;
     contentsMatch = str.substr(3) == "16";
     EXPECT_TRUE(contentsMatch) << "Expecting 16 at 2, 1. Found " << str.substr(3) << endl;
+}
+
+TEST(Matrix, VectorMultiplicationScaling) {
+    Vector4D<float> v {10, 10, 10, 1};
+    Matrix<float, 4, 4> scalingMatrix {{2, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 2, 0}, {0, 0, 0, 1}};
+    Vector4D<float> result = scalingMatrix * v;
+    ASSERT_FLOAT_EQ(result.x, 20.f) << "Multiplication results are wrong. Incorrect x coordinate";
+    ASSERT_FLOAT_EQ(result.y, 20.f) << "Multiplication results are wrong. Incorrect y coordinate";
+    ASSERT_FLOAT_EQ(result.z, 20.f) << "Multiplication results are wrong. Incorrect z coordinate";
+    ASSERT_FLOAT_EQ(result.w, 1.f) << "Multiplication results are wrong. Incorrect w coordinate";
+}
+
+TEST(Matrix, VectorMultiplicationTranslation) {
+    Vector4D<float> v {10, 10, 10, 1};
+    Matrix<float, 4, 4> translationMatrix {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {10, 10, 10, 1}};
+    Vector4D<float> result = translationMatrix * v;
+    ASSERT_FLOAT_EQ(result.x, 20.f) << "Multiplication results are wrong. Incorrect x coordinate";
+    ASSERT_FLOAT_EQ(result.y, 20.f) << "Multiplication results are wrong. Incorrect y coordinate";
+    ASSERT_FLOAT_EQ(result.z, 20.f) << "Multiplication results are wrong. Incorrect z coordinate";
+    ASSERT_FLOAT_EQ(result.w, 1.f) << "Multiplication results are wrong. Incorrect w coordinate";
+}
+
+TEST(Matrix, OrthographicProjectionMatrixWithInvalidBounds) {
+    EXPECT_THROW({
+         try {
+             [[maybe_unused]]
+             auto orthoMatrix = OrthographicProjectionMatrix<float>({{0,0}, {0,0}, {0,0}});
+         } catch (std::runtime_error &ex) {
+             throw;
+         }
+    }, std::runtime_error) << "Expected a runtime error when invalid bounds are specified";
+}
+
+TEST(Matrix, OrthographicProjectionMatrix) {
+    OrthographicProjectionMatrix<float> testMatrix({{-10,10}, {-20,20}, {-30,30}});
+    Vector4D<float> vertex { -10, -20, -30, 1 };
+    Vector4D<float> result = testMatrix * vertex;
+    ASSERT_FLOAT_EQ(-1, result.x) << "x-coordinate is incorrect after projection";
+    ASSERT_FLOAT_EQ(-1, result.y) << "x-coordinate is incorrect after projection";
+    ASSERT_FLOAT_EQ(+1, result.z) << "x-coordinate is incorrect after projection";
+    ASSERT_FLOAT_EQ(+1, result.w) << "x-coordinate is incorrect after projection";
 }
