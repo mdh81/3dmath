@@ -1,9 +1,6 @@
 #include "gtest/gtest.h"
 #include "3dmath/Vector.h"
 #include <vector>
-#include <initializer_list>
-#include <iostream>
-#include <fstream>
 using namespace std;
 using namespace math3d;
 
@@ -25,7 +22,7 @@ TEST(Vector, InitializerConstruction) {
     ASSERT_FLOAT_EQ(30.0, data[3]);
     EXPECT_THROW(({
         try {
-            Vector<float, 3> v {1.0, 10.0, 20.0, 30.0};
+            Vector<float, 3> {1.0, 10.0, 20.0, 30.0};
         } catch (std::invalid_argument& ex) {
             EXPECT_STREQ("Dimension mismatch: Vector's dimension is 3 "
                          "Input size is 4", ex.what()); 
@@ -205,4 +202,20 @@ TEST(Vector3D, Assign) {
     ASSERT_FLOAT_EQ(v2.x, 1);
     ASSERT_FLOAT_EQ(v2.y, 0);
     ASSERT_FLOAT_EQ(v2.z, 0);
+}
+
+TEST(Vector3D, ScalarMultiplication) {
+    Vector3D<float> v1(1, 2, 3);
+    Vector3D<float> v2 = v1 * 1.5f;
+    ASSERT_FLOAT_EQ(v2.x, 1.5f);
+    ASSERT_FLOAT_EQ(v2.y, 3.0f);
+    ASSERT_FLOAT_EQ(v2.z, 4.5f);
+}
+
+TEST(Vector3D, ScalarPreMultiplication) {
+    Vector3D<float> v1(1, 2, 3);
+    Vector3D<float> v2 = 1.5f * v1;
+    ASSERT_FLOAT_EQ(v2.x, 1.5f);
+    ASSERT_FLOAT_EQ(v2.y, 3.0f);
+    ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }

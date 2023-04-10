@@ -19,7 +19,6 @@ add_executable(
     line_test 
     line_test.cpp)
 
-
 set(allTests
     matrix_test
     vector_test
