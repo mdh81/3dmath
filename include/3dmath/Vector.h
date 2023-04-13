@@ -19,7 +19,7 @@ namespace math3d {
         protected:
             virtual void print(std::ostream& os) const = 0;
 
-        friend std::ostream& operator << (std::ostream& os, const VectorBase& v);
+        friend std::ostream& operator << (std::ostream& os, VectorBase const& v);
     };
     
     // A vector in column major format 
@@ -33,7 +33,7 @@ namespace math3d {
                 }
             }
 
-            Vector(const std::initializer_list<DataType>& vals) {
+            Vector(std::initializer_list<DataType> const& vals) {
                 if (vals.size() != numRows) {
                     throw std::invalid_argument("Dimension mismatch: Vector's dimension is " + 
                                                  std::to_string(numRows) + " Input size is " +
@@ -44,13 +44,13 @@ namespace math3d {
                 }
             }
 
-            Vector(const Vector& other) {
+            Vector(Vector const& other) {
                this->operator=(other); 
-            } 
+            }
 
             // Conversion constructor to build from a STL vector
             // TODO: Support building from other container types 
-            Vector(const std::vector<DataType>& v) {
+            Vector(std::vector<DataType> const& v) {
                 if (numRows != v.size()) { 
                     throw std::invalid_argument("Dimension mismatch: Vector's dimension is " + 
                                                  std::to_string(numRows) + " Input size is " +
@@ -61,7 +61,7 @@ namespace math3d {
                 }
             }
 
-            Vector& operator=(const Vector& rhs) { 
+            Vector& operator=(Vector const& rhs) {
                 for (unsigned i = 0; i < numRows; ++i) {
                     m_data[i] = rhs.m_data[i];
                 } 
@@ -69,7 +69,7 @@ namespace math3d {
             }
             
             // Add this vector to another and return the sum
-            Vector operator+(const Vector& another) const {
+            Vector operator+(Vector const& another) const {
                 Vector <DataType, numRows> result;
                 for (unsigned i = 0; i < numRows; ++i) {
                     result.m_data[i] = this->m_data[i] + another.m_data[i];
@@ -78,7 +78,7 @@ namespace math3d {
             } 
 
             // Subtract this vector from another and return the difference
-            Vector operator-(const Vector& another) const {
+            Vector operator-(Vector const& another) const {
                 Vector <DataType, numRows> result;
                 for (unsigned i = 0; i < numRows; ++i) {
                     result.m_data[i] = this->m_data[i] - another.m_data[i];
@@ -101,7 +101,7 @@ namespace math3d {
             }
             
             // Compute cross product of this vector and another and return the mutually orthonormal vector
-            Vector operator*(const Vector& another) const {
+            Vector operator*(Vector const& another) const {
                 static_assert(numRows == 3, "Cross product can only be computed for 3D vectors");
                 Vector<DataType, numRows> result;
                 auto* v1 = getData();
@@ -142,13 +142,13 @@ namespace math3d {
                 }
             }
 
-            void operator+=(const Vector& another) {
+            void operator+=(Vector const& another) {
                 for (size_t i = 0; i < numRows; ++i) {
                     m_data[i] += another[i];
                 }
             }
 
-            float dot(const Vector& another) const {
+            float dot(Vector const& another) const {
                 float proj = 0.f;
                 for (size_t i = 0; i < numRows; ++i)
                     proj += this->operator[](i) * another[i];
@@ -172,13 +172,13 @@ namespace math3d {
 
     }; 
 
-    inline std::ostream& operator << (std::ostream& os, const VectorBase& v) {
+    inline std::ostream& operator << (std::ostream& os, VectorBase const& v) {
         v.print(os);
         return os;
     }
 
     template <typename DataType, unsigned numRows>
-    Vector<DataType, numRows> operator*(DataType const scalar, Vector<DataType, numRows> const& vector) {
+    Vector<DataType, numRows> operator*(DataType scalar, Vector<DataType, numRows> const& vector) {
         return vector * scalar;
     }
 
@@ -248,7 +248,7 @@ namespace math3d {
         }
 
         // Define explicitly to get around implicit deletion due to reference member
-        Vector3D(const std::initializer_list<T>& list)
+        Vector3D(std::initializer_list<T> const& list)
         : Vector<T,3> (list)
         , x(Vector<T,3>::m_data[0])
         , y(Vector<T,3>::m_data[1])
@@ -257,7 +257,7 @@ namespace math3d {
         }
 
         // Define explicitly to get around implicit deletion due to reference member
-        Vector3D& operator=(const Vector3D& another) {
+        Vector3D& operator=(Vector3D const& another) {
             Vector<T,3>::operator=(another);
             x = Vector<T,3>::m_data[0];
             y = Vector<T,3>::m_data[1];
@@ -300,7 +300,7 @@ namespace math3d {
         }
 
         // Define explicitly to get around implicit deletion due to reference member
-        Vector4D(const std::initializer_list<T>& list)
+        Vector4D(std::initializer_list<T> const& list)
         : Vector<T,4> (list)
         , x(Vector<T,4>::m_data[0])
         , y(Vector<T,4>::m_data[1])
@@ -309,7 +309,7 @@ namespace math3d {
         }
 
         // Define explicitly to get around implicit deletion due to reference member
-        Vector4D& operator=(const Vector4D& another) {
+        Vector4D& operator=(Vector4D const& another) {
             Vector<T,4>::operator=(another);
             x = Vector<T,4>::m_data[0];
             y = Vector<T,4>::m_data[1];
