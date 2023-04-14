@@ -48,6 +48,10 @@ namespace math3d {
                this->operator=(other); 
             }
 
+            Vector(Vector&& other) noexcept {
+                m_data = std::move(other.m_data);
+            }
+
             // Conversion constructor to build from a STL vector
             // TODO: Support building from other container types 
             Vector(std::vector<DataType> const& v) {
@@ -226,6 +230,12 @@ namespace math3d {
         , y(Vector<T, 2>::m_data[1]) {
         }
 
+        Vector2D(Vector2D<T>&& rvalue) noexcept
+        : Vector<T,2>(rvalue)
+        , x(Vector<T, 2>::m_data[0])
+        , y(Vector<T, 2>::m_data[1]) {
+        }
+
     };
 
     template <typename T>
@@ -274,6 +284,13 @@ namespace math3d {
         , y(Vector<T, 3>::m_data[1])
         , z(Vector<T, 3>::m_data[2]) {
 
+        }
+
+        Vector3D(Vector3D<T>&& rvalue) noexcept
+        : Vector<T,3>(rvalue)
+        , x(Vector<T, 3>::m_data[0])
+        , y(Vector<T, 3>::m_data[1])
+        , z(Vector<T, 3>::m_data[2]) {
         }
     };
 

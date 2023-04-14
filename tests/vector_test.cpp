@@ -219,3 +219,8 @@ TEST(Vector3D, ScalarPreMultiplication) {
     ASSERT_FLOAT_EQ(v2.y, 3.0f);
     ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }
+
+TEST(Vector, Move) {
+    Vector3D<float> v(Vector3D<float>{10, 20, 30});
+    Vector3D<float> v1(std::move(v));
+}
