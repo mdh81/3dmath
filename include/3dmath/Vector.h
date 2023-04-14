@@ -189,14 +189,17 @@ namespace math3d {
     template<typename T>
     struct Vector2D : public Vector<T, 2> {
 
+#define INIT_MEMBERS2D \
+      x(Vector<T,2>::m_data[0]) \
+    , y(Vector<T,2>::m_data[1])
+
         T& x;
         T& y;
 
         // Bind x and y to element 0 and 1 of the raw array
         Vector2D()
         : Vector<T,2>()
-        , x(Vector<T,2>::m_data[0])
-        , y(Vector<T,2>::m_data[1]) {
+        , INIT_MEMBERS2D {
 
         }
 
@@ -209,9 +212,8 @@ namespace math3d {
 
         // Define explicitly to get around implicit deletion due to reference member
         Vector2D(std::initializer_list<T> const& list)
-                : Vector<T,2> (list)
-                , x(Vector<T,2>::m_data[0])
-                , y(Vector<T,2>::m_data[1]) {
+        : Vector<T,2> (list)
+        , INIT_MEMBERS2D {
 
         }
 
@@ -226,27 +228,35 @@ namespace math3d {
         // Vector3D c = a + b;
         Vector2D(Vector<T,2> const& another)
         : Vector<T,2>(another)
-        , x(Vector<T, 2>::m_data[0])
-        , y(Vector<T, 2>::m_data[1]) {
+        , INIT_MEMBERS2D {
         }
 
         Vector2D(Vector2D<T>&& rvalue) noexcept
         : Vector<T,2>(rvalue)
-        , x(Vector<T, 2>::m_data[0])
-        , y(Vector<T, 2>::m_data[1]) {
+        , INIT_MEMBERS2D {
+        }
+
+        Vector2D(Vector2D<T> const& another)
+        : Vector<T,2>(another)
+        , INIT_MEMBERS2D {
+
         }
 
     };
 
     template <typename T>
     struct Vector3D : public Vector<T, 3> {
+
+#define INIT_MEMBERS3D \
+    x(Vector<T,3>::m_data[0]) \
+    , y(Vector<T,3>::m_data[1]) \
+    , z(Vector<T,3>::m_data[2])
+
         T& x;
         T& y;
         T& z;
         Vector3D()
-            : x(Vector<T,3>::m_data[0])
-            , y(Vector<T,3>::m_data[1])
-            , z(Vector<T,3>::m_data[2]) {
+        : INIT_MEMBERS3D {
         }
 
         // Emplace support constructor
@@ -260,9 +270,7 @@ namespace math3d {
         // Define explicitly to get around implicit deletion due to reference member
         Vector3D(std::initializer_list<T> const& list)
         : Vector<T,3> (list)
-        , x(Vector<T,3>::m_data[0])
-        , y(Vector<T,3>::m_data[1])
-        , z(Vector<T,3>::m_data[2]) {
+        , INIT_MEMBERS3D {
 
         }
 
@@ -280,31 +288,35 @@ namespace math3d {
         // Vector3D c = a + b;
         Vector3D(Vector<T,3> const& another)
         : Vector<T,3>(another)
-        , x(Vector<T, 3>::m_data[0])
-        , y(Vector<T, 3>::m_data[1])
-        , z(Vector<T, 3>::m_data[2]) {
+        , INIT_MEMBERS3D {
+        }
 
+        Vector3D(Vector3D<T> const& another) noexcept
+        : Vector<T,3>(another)
+        , INIT_MEMBERS3D {
         }
 
         Vector3D(Vector3D<T>&& rvalue) noexcept
         : Vector<T,3>(rvalue)
-        , x(Vector<T, 3>::m_data[0])
-        , y(Vector<T, 3>::m_data[1])
-        , z(Vector<T, 3>::m_data[2]) {
+        , INIT_MEMBERS3D {
         }
     };
 
     template <typename T>
     struct Vector4D : public Vector<T, 4> {
+
+#define INIT_MEMBERS4D \
+    x(Vector<T,4>::m_data[0]) \
+    , y(Vector<T,4>::m_data[1]) \
+    , z(Vector<T,4>::m_data[2]) \
+    , w(Vector<T,4>::m_data[3])
+
         T& x;
         T& y;
         T& z;
         T& w;
         Vector4D()
-        : x(Vector<T,4>::m_data[0])
-        , y(Vector<T,4>::m_data[1])
-        , z(Vector<T,4>::m_data[2])
-        , w(Vector<T,4>::m_data[3]) {
+        : INIT_MEMBERS4D {
         }
 
         // Emplace support constructor
@@ -319,10 +331,7 @@ namespace math3d {
         // Define explicitly to get around implicit deletion due to reference member
         Vector4D(std::initializer_list<T> const& list)
         : Vector<T,4> (list)
-        , x(Vector<T,4>::m_data[0])
-        , y(Vector<T,4>::m_data[1])
-        , z(Vector<T,4>::m_data[2])
-        , w(Vector<T,4>::m_data[3]) {
+        , INIT_MEMBERS4D {
         }
 
         // Define explicitly to get around implicit deletion due to reference member
@@ -340,11 +349,12 @@ namespace math3d {
         // Vector4D c = a + b;
         Vector4D(Vector<T,4> const& another)
         : Vector<T,4>(another)
-        , x(Vector<T,4>::m_data[0])
-        , y(Vector<T,4>::m_data[1])
-        , z(Vector<T,4>::m_data[2])
-        , w(Vector<T,4>::m_data[3]) {
+        , INIT_MEMBERS4D {
+        }
 
+        Vector4D(Vector4D<T>&& rvalue) noexcept
+        : Vector<T,4>(rvalue)
+        , INIT_MEMBERS2D {
         }
     };
 
