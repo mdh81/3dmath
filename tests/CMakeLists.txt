@@ -8,21 +8,21 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_executable(
-    matrix_test 
+    matrix_test.test
     matrix_test.cpp)
 
 add_executable(
-    vector_test 
+    vector_test.test
     vector_test.cpp)
 
 add_executable(
-    line_test 
+    line_test.test
     line_test.cpp)
 
 set(allTests
-    matrix_test
-    vector_test
-    line_test)
+    matrix_test.test
+    vector_test.test
+    line_test.test)
 
 foreach (test ${allTests})
     target_include_directories(
