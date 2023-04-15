@@ -158,20 +158,6 @@ TEST(Vector, BuildFromSTLVector) {
         ASSERT_FLOAT_EQ(v[i], 8.3f);
 }
 
-TEST(Vector2D, EmplaceConstructor) {
-    std::vector<Vector2D<float>> vectors;
-    vectors.emplace_back(0.f, 1.f);
-    ASSERT_FLOAT_EQ(vectors[0].x, 0.f);
-    ASSERT_FLOAT_EQ(vectors[0].y, 1.f);
-}
-
-TEST(Vector3D, EmplaceConstructor) {
-    std::vector<Vector3D<float>> vectors;
-    vectors.emplace_back(0.f, 1.f, 2.f);
-    ASSERT_FLOAT_EQ(vectors[0].x, 0.f);
-    ASSERT_FLOAT_EQ(vectors[0].y, 1.f);
-    ASSERT_FLOAT_EQ(vectors[0].z, 2.f);
-}
 
 TEST(Vector, WriteData) {
     Vector3D<float> v3;
@@ -183,44 +169,85 @@ TEST(Vector, WriteData) {
     ASSERT_FLOAT_EQ(v3.z, 500.f);
 }
 
-TEST(Vector3D, ConvertFromBase) {
-    Vector3D<float> v1(1, 0, 0);
-    Vector3D<float> v2(0, 1, 0);
-    // v1 x v2 returns vector<float, 3>, which is technically not
-    // a Vector3D<float>, but the conversion constructor makes
-    // the vector semantics work
-    Vector3D<float> v3 = v1 * v2;
-    ASSERT_FLOAT_EQ(v3.x, 0);
-    ASSERT_FLOAT_EQ(v3.y, 0);
-    ASSERT_FLOAT_EQ(v3.z, 1);
-}
-
-TEST(Vector3D, Assign) {
-    Vector3D<float> v1(1, 0, 0);
-    Vector3D<float> v2(0, 1, 0);
-    v2 = v1;
-    ASSERT_FLOAT_EQ(v2.x, 1);
-    ASSERT_FLOAT_EQ(v2.y, 0);
-    ASSERT_FLOAT_EQ(v2.z, 0);
-}
-
-TEST(Vector3D, ScalarMultiplication) {
-    Vector3D<float> v1(1, 2, 3);
+TEST(Vector, ScalarMultiplication) {
+    Vector3D<float> v1({1, 2, 3});
     Vector3D<float> v2 = v1 * 1.5f;
     ASSERT_FLOAT_EQ(v2.x, 1.5f);
     ASSERT_FLOAT_EQ(v2.y, 3.0f);
     ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }
 
-TEST(Vector3D, ScalarPreMultiplication) {
-    Vector3D<float> v1(1, 2, 3);
+TEST(Vector, ScalarPreMultiplication) {
+    Vector3D<float> v1({1, 2, 3});
     Vector3D<float> v2 = 1.5f * v1;
     ASSERT_FLOAT_EQ(v2.x, 1.5f);
     ASSERT_FLOAT_EQ(v2.y, 3.0f);
     ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }
 
-TEST(Vector, Move) {
-    Vector3D<float> v(Vector3D<float>{10, 20, 30});
-    Vector3D<float> v1(std::move(v));
+TEST(VectorConvenienceMembers, Construction) {
+    Vector3D<float> v1;
+    ASSERT_FLOAT_EQ(v1.x, 0);
+    ASSERT_FLOAT_EQ(v1.y, 0);
+    ASSERT_FLOAT_EQ(v1.z, 0);
+    Vector3D<float> v2({10.f, 20.f, 30.f});
+    ASSERT_FLOAT_EQ(v2.x, 10.f);
+    ASSERT_FLOAT_EQ(v2.y, 20.f);
+    ASSERT_FLOAT_EQ(v2.z, 30.f);
 }
+
+TEST(VectorConvenienceMembers, CopyAssignment) {
+    Vector3D<float> v1({1, 0, 0});
+    Vector3D<float> v2({0, 1, 0});
+    v2 = v1;
+    ASSERT_FLOAT_EQ(v2.x, 1);
+    ASSERT_FLOAT_EQ(v2.y, 0);
+    ASSERT_FLOAT_EQ(v2.z, 0);
+}
+
+TEST(VectorConvenienceMembers, CopyConstruction) {
+    Vector3D<float> v1({1, 0, 0});
+    Vector3D<float> v2(v1);
+    ASSERT_FLOAT_EQ(v2.x, 1);
+    ASSERT_FLOAT_EQ(v2.y, 0);
+    ASSERT_FLOAT_EQ(v2.z, 0);
+}
+
+TEST(VectorConvenienceMembers, MoveConstruction) {
+    auto v =  Vector3D<float>{10, 20, 30};
+    Vector3D<float> v1(std::move(v));
+    ASSERT_FLOAT_EQ(v1.x, 10);
+    ASSERT_FLOAT_EQ(v1.y, 20);
+    ASSERT_FLOAT_EQ(v1.z, 30);
+    std::string exceptionMessage;
+    ASSERT_THROW({
+        try {
+            v.x = 100.f;
+        } catch(std::runtime_error& ex) {
+            exceptionMessage = ex.what();
+            throw ex;
+        }
+    }, std::runtime_error) << "Expected an invalid access exception";
+    ASSERT_EQ(exceptionMessage, "Invalid access!");
+}
+
+TEST(VectorConvenienceMembers, MoveAssignment) {
+    auto v =  Vector3D<float>{10, 20, 30};
+    Vector3D<float> v1;
+    v1 = std::move(v);
+    ASSERT_FLOAT_EQ(v1.x, 10);
+    ASSERT_FLOAT_EQ(v1.y, 20);
+    ASSERT_FLOAT_EQ(v1.z, 30);
+    std::string exceptionMessage;
+    ASSERT_THROW({
+         try {
+             v.x = 100.f;
+         } catch(std::runtime_error& ex) {
+             exceptionMessage = ex.what();
+             throw ex;
+         }
+    }, std::runtime_error) << "Expected an invalid access exception";
+    ASSERT_EQ(exceptionMessage, "Invalid access!");
+}
+
+
