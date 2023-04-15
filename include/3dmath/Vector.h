@@ -22,10 +22,10 @@ namespace math3d {
         friend std::ostream& operator << (std::ostream& os, VectorBase const& v);
     };
     
-    // A vector in column major format
-    template<typename T, unsigned numRows>
+    // A vector whose elements are stored in contiguous memory
+    template<typename T, unsigned Size>
     class Vector : public VectorBase {
-        static_assert(numRows > 1, "Size of a vector should be greater than 1");
+        static_assert(Size > 1, "Size of a vector should be greater than 1");
         // Proxy to an element in the vector
         struct Proxy;
     public:
@@ -119,12 +119,12 @@ namespace math3d {
             T* data {};
 
             // Allow the outer class Vector to call reset() to facilitate move operations
-            friend Vector<T, numRows>;
+            friend Vector<T, Size>;
         };
 
         // These macros prevent code duplication in vector's constructors and operators
         #define SET_CONVENIENCE_MEMBERS           \
-            switch (numRows) {                    \
+            switch (Size) {                    \
             case 4:                               \
                 w.bind(data[3]);                  \
             case 3:                               \
@@ -149,10 +149,10 @@ namespace math3d {
             }
 
             Vector(std::initializer_list<T> const& vals) {
-                if (vals.size() != numRows) {
-                    throw std::invalid_argument("Dimension mismatch: Vector's dimension is " + 
-                                                 std::to_string(numRows) + " Input size is " +
-                                                 std::to_string(vals.size()));
+                if (vals.size() != Size) {
+                    throw std::invalid_argument("Dimension mismatch: Vector's dimension is " +
+                                                std::to_string(Size) + " Input size is " +
+                                                std::to_string(vals.size()));
                 }
                 for (size_t i = 0; i < vals.size(); ++i) {
                     data[i] = std::data(vals)[i];
@@ -166,7 +166,7 @@ namespace math3d {
             }
 
             Vector& operator=(Vector const& rhs) {
-                for (unsigned i = 0; i < numRows; ++i) {
+                for (unsigned i = 0; i < Size; ++i) {
                     data[i] = rhs.data[i];
                 }
                 return *this;
@@ -186,10 +186,10 @@ namespace math3d {
 
             // Conversion constructor to build from a STL vector
             Vector(std::vector<T> const& v) {
-                if (numRows != v.size()) { 
-                    throw std::invalid_argument("Dimension mismatch: Vector's dimension is " + 
-                                                 std::to_string(numRows) + " Input size is " +
-                                                 std::to_string(v.size()));
+                if (Size != v.size()) {
+                    throw std::invalid_argument("Dimension mismatch: Vector's dimension is " +
+                                                std::to_string(Size) + " Input size is " +
+                                                std::to_string(v.size()));
                 }
                 for (size_t i = 0; i < v.size(); ++i) {
                     data[i] = v[i];
@@ -199,8 +199,8 @@ namespace math3d {
 
             // Add this vector to another and return the sum
             Vector operator+(Vector const& another) const {
-                Vector <T, numRows> result;
-                for (unsigned i = 0; i < numRows; ++i) {
+                Vector <T, Size> result;
+                for (unsigned i = 0; i < Size; ++i) {
                     result.data[i] = this->data[i] + another.data[i];
                 }
                 return result;
@@ -208,31 +208,31 @@ namespace math3d {
 
             // Subtract this vector from another and return the difference
             Vector operator-(Vector const& another) const {
-                Vector <T, numRows> result;
-                for (unsigned i = 0; i < numRows; ++i) {
+                Vector <T, Size> result;
+                for (unsigned i = 0; i < Size; ++i) {
                     result.data[i] = this->data[i] - another.data[i];
                 }
                 return result;
             }
 
             T const& operator[](const unsigned index) const {
-                if (index >= numRows) 
+                if (index >= Size)
                     throw std::invalid_argument(std::to_string(index) + " is out of bounds."
-                                                " Vector dimension is " + std::to_string(numRows));
+                                                " Vector dimension is " + std::to_string(Size));
                 return data[index];
             }
 
             T& operator[](const unsigned index) {
-                if (index >= numRows)
+                if (index >= Size)
                     throw std::invalid_argument(std::to_string(index) + " is out of bounds."
-                                                " Vector dimension is " + std::to_string(numRows));
+                                                " Vector dimension is " + std::to_string(Size));
                 return data[index];
             }
             
             // Compute cross product of this vector and another and return the mutually orthonormal vector
             Vector operator*(Vector const& another) const {
-                static_assert(numRows == 3, "Cross product can only be computed for 3D vectors");
-                Vector<T, numRows> result;
+                static_assert(Size == 3, "Cross product can only be computed for 3D vectors");
+                Vector<T, Size> result;
                 auto* v1 = getData();
                 auto* v2 = another.getData();
                 result[0] = v1[1]*v2[2] - v1[2]*v2[1];
@@ -242,8 +242,8 @@ namespace math3d {
             }
 
             Vector operator*(T const scalar) const {
-                Vector<T, numRows> result;
-                for(auto i = 0; i < numRows; ++i) {
+                Vector<T, Size> result;
+                for(auto i = 0; i < Size; ++i) {
                     result[i] = scalar * data[i];
                 }
                 return result;
@@ -251,7 +251,7 @@ namespace math3d {
 
             Vector& normalize() {
                 float norm = length();
-                for (size_t i = 0; i < numRows; ++i) {
+                for (size_t i = 0; i < Size; ++i) {
                     data[i] /= norm;
                 }
                 return *this;
@@ -259,27 +259,27 @@ namespace math3d {
 
             T length() const {
                 T result = 0;
-                for (size_t i = 0; i < numRows; ++i) {
+                for (size_t i = 0; i < Size; ++i) {
                     result += (data[i] * data[i]);
                 }
                 return static_cast<T> (sqrt(result));
             }
 
             void operator/=(const T scalar) {
-                for (size_t i = 0; i < numRows; ++i) {
+                for (size_t i = 0; i < Size; ++i) {
                     data[i] /= scalar;
                 }
             }
 
             void operator+=(Vector const& another) {
-                for (size_t i = 0; i < numRows; ++i) {
+                for (size_t i = 0; i < Size; ++i) {
                     data[i] += another[i];
                 }
             }
 
             float dot(Vector const& another) const {
                 float proj = 0.f;
-                for (size_t i = 0; i < numRows; ++i)
+                for (size_t i = 0; i < Size; ++i)
                     proj += this->operator[](i) * another[i];
                 return proj;
             }
@@ -290,14 +290,14 @@ namespace math3d {
         protected:
             void print(std::ostream& os) const override {
                 os << '['; 
-                for (auto i = 0; i < numRows; ++i) {
+                for (auto i = 0; i < Size; ++i) {
                     os << (*this)[i];
-                    os << ((i == numRows-1) ? ']' : ',');
+                    os << ((i == Size - 1) ? ']' : ',');
                 }
             }
 
         protected:
-            std::array<T, numRows> data{};
+            std::array<T, Size> data{};
     };
 
     inline std::ostream& operator << (std::ostream& os, VectorBase const& v) {
