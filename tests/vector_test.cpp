@@ -250,4 +250,38 @@ TEST(VectorConvenienceMembers, MoveAssignment) {
     ASSERT_EQ(exceptionMessage, "Invalid access!");
 }
 
+TEST(VectorConvenienceMembers, AddAssignmentOperator) {
+    auto v =  Vector3D<float>{10, 20, 30};
+    v.x += 45.f;
+    ASSERT_FLOAT_EQ(v.x, 55);
+    Vector3D<float> v1;
+    v1.x += v.x;
+    ASSERT_FLOAT_EQ(v1.x, 55);
+}
 
+TEST(VectorConvenienceMembers, SubtractAssignmentOperator) {
+    auto v =  Vector3D<float>{10, 20, 30};
+    v.x -= 45.f;
+    ASSERT_FLOAT_EQ(v.x, -35);
+    Vector3D<float> v1;
+    v1.x -= v.x;
+    ASSERT_FLOAT_EQ(v1.x, 35);
+}
+
+TEST(VectorConvenienceMembers, MultiplyAssignmentOperator) {
+    auto v =  Vector3D<float>{10, 20, 30};
+    v.x *= 45.f;
+    ASSERT_FLOAT_EQ(v.x, 450);
+    Vector3D<float> v1;
+    v.x *= v1.x;
+    ASSERT_FLOAT_EQ(v1.x, 0);
+}
+
+TEST(VectorConvenienceMembers, DivideAssignmentOperator) {
+    auto v =  Vector3D<float>{10, 20, 30};
+    v.x /= 45.f;
+    ASSERT_FLOAT_EQ(v.x, 1/4.5);
+    Vector3D<float> v1;
+    v1.x /= v.x;
+    ASSERT_FLOAT_EQ(v1.x, 0);
+}
