@@ -23,91 +23,191 @@ namespace math3d {
     };
     
     // A vector in column major format 
-    template<typename DataType, unsigned numRows>
+    template<typename T, unsigned numRows>
     class Vector : public VectorBase {
-        
-        public:
-            Vector() {
-                for (unsigned i = 0; i < numRows; ++i) {
-                    m_data[i] = 0.f;
+        static_assert(numRows > 1, "Size of a vector should be greater than 1");
+        // Proxy to an element in the vector
+        struct Proxy;
+    public:
+        // Vector data accessors that allow 1,2, 3 and 4D vectors to be used in semantically meaningful fashion.
+        // For example:
+        //      using Point2D = Vector<float, 2>
+        //      Point2D origin{10, 10};
+        //      origin.x += 10
+        //      origin.y += 10;
+        // or
+        //      using RGBColor = Vector<float,3>
+        //      RGBColor color{RED, GREEN, BLUE}
+        //      glClearColor(color.r, color.g, color.b);
+        union {Proxy x{}; Proxy r;};
+        union {Proxy y{}; Proxy g;};
+        union {Proxy z{}; Proxy b;};
+        union {Proxy w{}; Proxy a;};
+
+    private:
+        // Definition of element proxy. Proxy is defined private so clients of vector cannot create proxies external to a vector
+        struct Proxy {
+            // Update element pointed to by the proxy to T. value is const T& to accept both l and rvalues
+            // e.g.
+            // using Point3D = Vector<float,3>;
+            // Point3D p1, p2;
+            // p1.x = 100.f
+            // or
+            // p2.x = p1.x;
+            void operator=(T const& value) {
+                if (!data) {
+                    throw std::runtime_error("Invalid access!");
+                }
+                *data = value;
+            }
+            // Convert to T so a proxy can be used in expressions that involve T
+            // e.g.
+            // void someFunction(float val);
+            // using Point3D = Vector<float,3>;
+            // Point3D p1;
+            // someFunction(p1.x);
+
+            operator T() {          // NOLINT: Supress implicit conversion clang-tidy warning since we want Proxy to be
+                                    //         converted to T implicitly without client calling Proxy.operator T() or
+                                    //         doing an ugly cast
+                return *data;
+            }
+            operator T() const {    // NOLINT
+                return *data;
+            }
+
+        private:
+            // Clear the proxy. Permits a Vector to be moved meaningfully by allowing the r-value that's moved to have its proxies
+            // null-ed out. Defined private to prevent clients of vector from clobbering the internal state of a vector
+            void reset() {
+                data = nullptr;
+            }
+
+            void bind(T& element) {
+                if(!data) {
+                    data = &element;
+                } else {
+                    throw std::runtime_error("Proxy already bound");
                 }
             }
 
-            Vector(std::initializer_list<DataType> const& vals) {
+            T* data {};
+
+            // Allow the outer class Vector to call reset() to facilitate move operations
+            friend Vector<T, numRows>;
+        };
+
+        // These macros prevent code duplication in vector's constructors and operators
+        #define SET_CONVENIENCE_MEMBERS           \
+            switch (numRows) {                    \
+            case 4:                               \
+                w.bind(data[3]);                  \
+            case 3:                               \
+                z.bind(data[2]);                  \
+            case 2:                               \
+                y.bind(data[1]);                  \
+            case 1:                               \
+                x.bind(data[0]);                  \
+            default:                              \
+                break;                            \
+            }
+
+        #define RESET_CONVENIENCE_MEMBERS(Vector) \
+            Vector.x.reset();                     \
+            Vector.y.reset();                     \
+            Vector.z.reset();                     \
+            Vector.w.reset();
+
+        public:
+            Vector() {
+                SET_CONVENIENCE_MEMBERS;
+            }
+
+            Vector(std::initializer_list<T> const& vals) {
                 if (vals.size() != numRows) {
                     throw std::invalid_argument("Dimension mismatch: Vector's dimension is " + 
                                                  std::to_string(numRows) + " Input size is " +
                                                  std::to_string(vals.size()));
                 }
                 for (size_t i = 0; i < vals.size(); ++i) {
-                    m_data[i] = data(vals)[i];
+                    data[i] = std::data(vals)[i];
                 }
+                SET_CONVENIENCE_MEMBERS;
             }
 
             Vector(Vector const& other) {
-               this->operator=(other); 
+               this->operator=(other);
+               SET_CONVENIENCE_MEMBERS;
+            }
+
+            Vector& operator=(Vector const& rhs) {
+                for (unsigned i = 0; i < numRows; ++i) {
+                    data[i] = rhs.data[i];
+                }
+                return *this;
             }
 
             Vector(Vector&& other) noexcept {
-                m_data = std::move(other.m_data);
+                data = std::move(other.data);
+                SET_CONVENIENCE_MEMBERS;
+                RESET_CONVENIENCE_MEMBERS(other);
+            }
+
+            Vector& operator=(Vector&& other) noexcept {
+                data = std::move(other.data);
+                RESET_CONVENIENCE_MEMBERS(other);
+                return *this;
             }
 
             // Conversion constructor to build from a STL vector
-            // TODO: Support building from other container types 
-            Vector(std::vector<DataType> const& v) {
+            Vector(std::vector<T> const& v) {
                 if (numRows != v.size()) { 
                     throw std::invalid_argument("Dimension mismatch: Vector's dimension is " + 
                                                  std::to_string(numRows) + " Input size is " +
                                                  std::to_string(v.size()));
                 }
                 for (size_t i = 0; i < v.size(); ++i) {
-                    m_data[i] = v[i];
+                    data[i] = v[i];
                 }
+                SET_CONVENIENCE_MEMBERS;
             }
 
-            Vector& operator=(Vector const& rhs) {
-                for (unsigned i = 0; i < numRows; ++i) {
-                    m_data[i] = rhs.m_data[i];
-                } 
-                return *this; 
-            }
-            
             // Add this vector to another and return the sum
             Vector operator+(Vector const& another) const {
-                Vector <DataType, numRows> result;
+                Vector <T, numRows> result;
                 for (unsigned i = 0; i < numRows; ++i) {
-                    result.m_data[i] = this->m_data[i] + another.m_data[i];
+                    result.data[i] = this->data[i] + another.data[i];
                 }
                 return result;
             } 
 
             // Subtract this vector from another and return the difference
             Vector operator-(Vector const& another) const {
-                Vector <DataType, numRows> result;
+                Vector <T, numRows> result;
                 for (unsigned i = 0; i < numRows; ++i) {
-                    result.m_data[i] = this->m_data[i] - another.m_data[i];
+                    result.data[i] = this->data[i] - another.data[i];
                 }
                 return result;
             }
 
-            DataType const& operator[](const unsigned index) const {
+            T const& operator[](const unsigned index) const {
                 if (index >= numRows) 
                     throw std::invalid_argument(std::to_string(index) + " is out of bounds."
                                                 " Vector dimension is " + std::to_string(numRows));
-                return m_data[index];
+                return data[index];
             }
 
-            DataType& operator[](const unsigned index) {
+            T& operator[](const unsigned index) {
                 if (index >= numRows)
                     throw std::invalid_argument(std::to_string(index) + " is out of bounds."
                                                 " Vector dimension is " + std::to_string(numRows));
-                return m_data[index];
+                return data[index];
             }
             
             // Compute cross product of this vector and another and return the mutually orthonormal vector
             Vector operator*(Vector const& another) const {
                 static_assert(numRows == 3, "Cross product can only be computed for 3D vectors");
-                Vector<DataType, numRows> result;
+                Vector<T, numRows> result;
                 auto* v1 = getData();
                 auto* v2 = another.getData();
                 result[0] = v1[1]*v2[2] - v1[2]*v2[1];
@@ -116,10 +216,10 @@ namespace math3d {
                 return result; 
             }
 
-            Vector operator*(DataType const scalar) const {
-                Vector<DataType, numRows> result;
+            Vector operator*(T const scalar) const {
+                Vector<T, numRows> result;
                 for(auto i = 0; i < numRows; ++i) {
-                    result[i] = scalar * m_data[i];
+                    result[i] = scalar * data[i];
                 }
                 return result;
             }
@@ -127,28 +227,28 @@ namespace math3d {
             Vector& normalize() {
                 float norm = length();
                 for (size_t i = 0; i < numRows; ++i) {
-                    m_data[i] /= norm;
+                    data[i] /= norm;
                 }
                 return *this;
             }
 
-            float length() const {
-                float result = 0;
+            T length() const {
+                T result = 0;
                 for (size_t i = 0; i < numRows; ++i) {
-                    result += (m_data[i] * m_data[i]);
+                    result += (data[i] * data[i]);
                 }
-                return sqrt(result);
+                return static_cast<T> (sqrt(result));
             }
 
-            void operator/=(const DataType scalar) {
+            void operator/=(const T scalar) {
                 for (size_t i = 0; i < numRows; ++i) {
-                    m_data[i] /= scalar;
+                    data[i] /= scalar;
                 }
             }
 
             void operator+=(Vector const& another) {
                 for (size_t i = 0; i < numRows; ++i) {
-                    m_data[i] += another[i];
+                    data[i] += another[i];
                 }
             }
 
@@ -159,8 +259,8 @@ namespace math3d {
                 return proj;
             }
             
-            DataType const* getData() const { return m_data.data(); }
-            DataType* getData() { return m_data.data(); }
+            T const* getData() const { return data.data(); }
+            T* getData() { return data.data(); }
 
         protected:
             void print(std::ostream& os) const override {
@@ -172,9 +272,8 @@ namespace math3d {
             }
 
         protected:
-            std::array<DataType, numRows> m_data;
-
-    }; 
+            std::array<T, numRows> data{};
+    };
 
     inline std::ostream& operator << (std::ostream& os, VectorBase const& v) {
         v.print(os);
@@ -187,175 +286,12 @@ namespace math3d {
     }
 
     template<typename T>
-    struct Vector2D : public Vector<T, 2> {
+    using Vector2D = Vector<T,2>;
 
-#define INIT_MEMBERS2D \
-      x(Vector<T,2>::m_data[0]) \
-    , y(Vector<T,2>::m_data[1])
+    template<typename T>
+    using Vector3D = Vector<T,3>;
 
-        T& x;
-        T& y;
-
-        // Bind x and y to element 0 and 1 of the raw array
-        Vector2D()
-        : Vector<T,2>()
-        , INIT_MEMBERS2D {
-
-        }
-
-        // Emplace support constructor
-        Vector2D(T const x, T const y)
-        : Vector2D() {
-            this->x = x;
-            this->y = y;
-        }
-
-        // Define explicitly to get around implicit deletion due to reference member
-        Vector2D(std::initializer_list<T> const& list)
-        : Vector<T,2> (list)
-        , INIT_MEMBERS2D {
-
-        }
-
-        // Define explicitly to get around implicit deletion due to reference member
-        Vector2D& operator=(Vector2D const& another) {
-            Vector<T,2>::operator=(another);
-            return *this;
-        }
-
-        // Conversion constructor to build a Vector3D from Vector<T,3>
-        // Allows the following expression:
-        // Vector3D c = a + b;
-        Vector2D(Vector<T,2> const& another)
-        : Vector<T,2>(another)
-        , INIT_MEMBERS2D {
-        }
-
-        Vector2D(Vector2D<T>&& rvalue) noexcept
-        : Vector<T,2>(rvalue)
-        , INIT_MEMBERS2D {
-        }
-
-        Vector2D(Vector2D<T> const& another)
-        : Vector<T,2>(another)
-        , INIT_MEMBERS2D {
-
-        }
-
-    };
-
-    template <typename T>
-    struct Vector3D : public Vector<T, 3> {
-
-#define INIT_MEMBERS3D \
-    x(Vector<T,3>::m_data[0]) \
-    , y(Vector<T,3>::m_data[1]) \
-    , z(Vector<T,3>::m_data[2])
-
-        T& x;
-        T& y;
-        T& z;
-        Vector3D()
-        : INIT_MEMBERS3D {
-        }
-
-        // Emplace support constructor
-        Vector3D(T const x, T const y, T const z)
-        : Vector3D() {
-            this->x = x;
-            this->y = y;
-            this->z = z;
-        }
-
-        // Define explicitly to get around implicit deletion due to reference member
-        Vector3D(std::initializer_list<T> const& list)
-        : Vector<T,3> (list)
-        , INIT_MEMBERS3D {
-
-        }
-
-        // Define explicitly to get around implicit deletion due to reference member
-        Vector3D& operator=(Vector3D const& another) {
-            Vector<T,3>::operator=(another);
-            x = Vector<T,3>::m_data[0];
-            y = Vector<T,3>::m_data[1];
-            z = Vector<T,3>::m_data[2];
-            return *this;
-        }
-
-        // Conversion constructor to build a Vector3D from Vector<T,3>
-        // Allows the following expression:
-        // Vector3D c = a + b;
-        Vector3D(Vector<T,3> const& another)
-        : Vector<T,3>(another)
-        , INIT_MEMBERS3D {
-        }
-
-        Vector3D(Vector3D<T> const& another) noexcept
-        : Vector<T,3>(another)
-        , INIT_MEMBERS3D {
-        }
-
-        Vector3D(Vector3D<T>&& rvalue) noexcept
-        : Vector<T,3>(rvalue)
-        , INIT_MEMBERS3D {
-        }
-    };
-
-    template <typename T>
-    struct Vector4D : public Vector<T, 4> {
-
-#define INIT_MEMBERS4D \
-    x(Vector<T,4>::m_data[0]) \
-    , y(Vector<T,4>::m_data[1]) \
-    , z(Vector<T,4>::m_data[2]) \
-    , w(Vector<T,4>::m_data[3])
-
-        T& x;
-        T& y;
-        T& z;
-        T& w;
-        Vector4D()
-        : INIT_MEMBERS4D {
-        }
-
-        // Emplace support constructor
-        Vector4D(T const x, T const y, T const z)
-        : Vector4D() {
-            this->x = x;
-            this->y = y;
-            this->z = z;
-            this->w = w;
-        }
-
-        // Define explicitly to get around implicit deletion due to reference member
-        Vector4D(std::initializer_list<T> const& list)
-        : Vector<T,4> (list)
-        , INIT_MEMBERS4D {
-        }
-
-        // Define explicitly to get around implicit deletion due to reference member
-        Vector4D& operator=(Vector4D const& another) {
-            Vector<T,4>::operator=(another);
-            x = Vector<T,4>::m_data[0];
-            y = Vector<T,4>::m_data[1];
-            z = Vector<T,4>::m_data[2];
-            w = Vector<T,4>::m_data[3];
-            return *this;
-        }
-
-        // Conversion constructor to build a Vector4D from Vector<T,4>
-        // Allows the following expression:
-        // Vector4D c = a + b;
-        Vector4D(Vector<T,4> const& another)
-        : Vector<T,4>(another)
-        , INIT_MEMBERS4D {
-        }
-
-        Vector4D(Vector4D<T>&& rvalue) noexcept
-        : Vector<T,4>(rvalue)
-        , INIT_MEMBERS2D {
-        }
-    };
+    template<typename T>
+    using Vector4D = Vector<T,4>;
 
 }
