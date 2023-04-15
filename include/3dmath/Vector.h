@@ -22,7 +22,7 @@ namespace math3d {
         friend std::ostream& operator << (std::ostream& os, VectorBase const& v);
     };
     
-    // A vector in column major format 
+    // A vector in column major format
     template<typename T, unsigned numRows>
     class Vector : public VectorBase {
         static_assert(numRows > 1, "Size of a vector should be greater than 1");
@@ -66,7 +66,6 @@ namespace math3d {
             // using Point3D = Vector<float,3>;
             // Point3D p1;
             // someFunction(p1.x);
-
             operator T() {          // NOLINT: Supress implicit conversion clang-tidy warning since we want Proxy to be
                                     //         converted to T implicitly without client calling Proxy.operator T() or
                                     //         doing an ugly cast
@@ -74,6 +73,32 @@ namespace math3d {
             }
             operator T() const {    // NOLINT
                 return *data;
+            }
+
+            // Convenience functions for using vectors and their convenience members shorthand expressions
+            void operator+=(T const& another) {
+                *data += another;
+            }
+            void operator-=(T const& another) {
+                *data -= another;
+            }
+            void operator*=(T const& another) {
+                *data *= another;
+            }
+            void operator/=(T const& another) {
+                *data /= another;
+            }
+            void operator+=(Proxy const& another) {
+                *data += *(another.data);
+            }
+            void operator-=(Proxy const& another) {
+                *data -= *(another.data);
+            }
+            void operator*=(Proxy const& another) {
+                *data *= *(another.data);
+            }
+            void operator/=(Proxy const& another) {
+                *data /= *(another.data);
             }
 
         private:
