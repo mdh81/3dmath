@@ -1,3 +1,17 @@
 build/
 .*swp
 .*swo
+bin/
+*.cmake
+*.test
+*.DS_STORE
+CMakeCache.txt
+CMakeFiles/
+Makefile
+Testing/
+_deps/
+install_manifest.txt
+lib/
+tests/CMakeFiles/
+tests/Makefile
+tests/*.out
