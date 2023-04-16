@@ -226,7 +226,7 @@ TEST(Matrix, OrthographicProjectionMatrix) {
 
 TEST(Matrix, ConversionToPointer) {
     IdentityMatrix<float, 3, 3> identityMatrix;
-    float* matrixData = identityMatrix;
+    float const* matrixData = identityMatrix;
     ASSERT_FLOAT_EQ(matrixData[0], 1.);
     ASSERT_FLOAT_EQ(matrixData[4], 1.);
     ASSERT_FLOAT_EQ(matrixData[8], 1.);
