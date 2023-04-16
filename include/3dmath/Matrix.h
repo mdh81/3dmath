@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <exception>
 #include <memory>
+#include <iomanip>
 #include "Vector.h"
 
 namespace math3d {
@@ -86,8 +87,8 @@ class Matrix {
 
         [[nodiscard]] size_t getNumberOfRows() const { return numRows; }
         [[nodiscard]] size_t getNumberOfColumns() const { return numCols; }
-        const DataType* getData()  const { return m_data.get(); }
-        
+        const DataType* getData() const { return m_data.get(); }
+
         public:
             // Print column major matrix data in row order format
             void print(std::ostream& os) const {
