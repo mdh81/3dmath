@@ -58,8 +58,15 @@ namespace math3d {
             z.min = -0.5f * sideLength;
             z.max = +0.5f * sideLength;
         }
-
+        friend std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D);
     };
+
+    template<typename T>
+    inline std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D) {
+        os << "Min:[" << bounds3D.x.min << "," << bounds3D.y.min << "," << bounds3D.z.min << "] ";
+        os << "Max:[" << bounds3D.y.max << "," << bounds3D.y.max << "," << bounds3D.z.max << "]";
+        return os;
+    }
 
     constexpr float tolerance = 1e-6;
 
