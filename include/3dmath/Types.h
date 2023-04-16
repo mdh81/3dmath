@@ -83,8 +83,6 @@ namespace math3d {
         T length() const {
             return sqrt((x.length() * x.length()) + (y.length() * y.length()) + (z.length() * z.length()));
         }
-
-        friend std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D);
     };
 
     template<typename T>
