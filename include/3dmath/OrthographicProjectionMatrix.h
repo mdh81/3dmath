@@ -12,7 +12,7 @@ private:
     using Matrix<DataType, 4u, 4u>::m_data;
 public:
     // OpenGL uses a left-handed system for normalized device coordinates, so z has to be inverted
-    OrthographicProjectionMatrix(Bounds3d<DataType> const& bounds3D, bool invertZ = true) {
+    OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D, bool invertZ = true) {
         // Bounding box has to have valid extents
         if (isZero(bounds3D.x) || isZero(bounds3D.y) || isZero(bounds3D.z)) {
             throw std::runtime_error("Unable to compute orthographic projection: Invalid bounds!");

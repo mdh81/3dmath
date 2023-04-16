@@ -11,7 +11,7 @@ namespace math3d {
     };
 
     template<typename T>
-    struct Bounds3d {
+    struct Bounds3D {
         Extent<T> x;
         Extent<T> y;
         Extent<T> z;
