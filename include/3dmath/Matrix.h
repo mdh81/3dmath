@@ -79,6 +79,10 @@ class Matrix {
             delete[] m_data;
         }
 
+        operator DataType*() {
+            return m_data;
+        }
+
         // Vector multiplication
         auto operator*(Vector<DataType, numRows> const& inputVector) {
             Vector<DataType, numRows> outputVector;
