@@ -79,6 +79,11 @@ namespace math3d {
             z.min = -0.5f * sideLength;
             z.max = +0.5f * sideLength;
         }
+
+        T length() const {
+            return sqrt((x.length() * x.length()) + (y.length() * y.length()) + (z.length() * z.length()));
+        }
+
         friend std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D);
     };
 
