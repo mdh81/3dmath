@@ -11,7 +11,7 @@
 using namespace std;
 using namespace math3d;
 
-TEST(Matrix, TestDefaultConstruction) {
+TEST(Matrix, DefaultConstruction) {
     // Assert all matrix entries are zeroes
     Matrix<float, 10, 10> m; 
     ASSERT_EQ(m.getNumberOfRows(), 10);
@@ -22,7 +22,7 @@ TEST(Matrix, TestDefaultConstruction) {
     }
 }
 
-TEST(Matrix, TestIdentity) {
+TEST(Matrix, Identity) {
     
     // Assert identity matrix is a diagonal matrix
     IdentityMatrix<float, 3, 3> m1; 
@@ -35,7 +35,7 @@ TEST(Matrix, TestIdentity) {
     }
 }
 
-TEST(Matrix, TestCopyConstruction) {
+TEST(Matrix, CopyConstruction) {
     
     IdentityMatrix<float, 3, 3>m1;
     IdentityMatrix<float, 3, 3>m2(m1);
@@ -48,7 +48,7 @@ TEST(Matrix, TestCopyConstruction) {
     }
 }
 
-TEST(Matrix, TestInitialization) {
+TEST(Matrix, Initialization) {
     
     // Dimensions don't match: Columns don't match
     EXPECT_THROW(({
@@ -82,14 +82,14 @@ TEST(Matrix, TestInitialization) {
 
 }
 
-TEST(Matrix, TestCopyAssignment) {
+TEST(Matrix, CopyAssignment) {
     Matrix<unsigned, 1, 1> m1 {{45U}};
     Matrix<unsigned, 1, 1> m2(m1);
     
     ASSERT_EQ(m2.getData()[0], 45U);
 }
 
-TEST(Matrix, TestMoveConstruction) {
+TEST(Matrix, MoveConstruction) {
     Matrix<int, 1, 1> m1 {{10}};
     auto p1 = m1.getData();
     Matrix<int, 1, 1> m2(std::move(m1));
@@ -102,13 +102,13 @@ TEST(Matrix, TestMoveConstruction) {
     ASSERT_EQ(m3.getData()[0], 25);
 }
 
-TEST(Matrix, TestMoveAssignment) {
+TEST(Matrix, MoveAssignment) {
     Matrix<int, 1, 1> m1 = Matrix<int,1,1>{{10}};
     auto p1 = m1.getData();
     ASSERT_EQ(*p1, 10);
 }
 
-TEST(Matrix, TestPrint) {
+TEST(Matrix, Print) {
     Matrix<int, 3, 2> m1 ({ {10, 11, 12}, {10, 11, 12} });
     ofstream ofs("mat.out");   
     ofs << m1;
@@ -140,7 +140,7 @@ TEST(Matrix, TestPrint) {
     EXPECT_TRUE(contentsMatch) << "Expecting 12 at 2, 1. Found " << str.substr(3) << endl;
 }
 
-TEST(Matrix, TestRowMajor) {
+TEST(Matrix, RowMajor) {
 
     Matrix<int, 3, 2> m1 ({ {10, 12}, {13, 14}, {15, 16} }, Matrix<int, 3, 2>::Order::RowMajor);
     const int* data = m1.getData();
