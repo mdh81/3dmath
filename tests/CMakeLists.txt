@@ -19,10 +19,15 @@ add_executable(
     line_test.test
     line_test.cpp)
 
+add_executable(
+    types_test.test
+    types_test.cpp)
+
 set(allTests
     matrix_test.test
     vector_test.test
-    line_test.test)
+    line_test.test
+    types_test.test)
 
 foreach (test ${allTests})
     target_include_directories(

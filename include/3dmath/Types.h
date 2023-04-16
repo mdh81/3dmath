@@ -8,7 +8,7 @@ namespace math3d {
         T min;
         T max;
         T length() const { return max - min; }
-        T center() const { 0.5f*(max + min); }
+        T center() const { return 0.5f*(max + min); }
     };
 
     template<typename T>
@@ -17,49 +17,6 @@ namespace math3d {
         Extent<T> y;
         Extent<T> z;
 
-        Bounds3D(std::initializer_list<T> const& initializerList) {
-            std::string invalidListErrorMessage =
-                    "Incorrect initializer list. "
-                    "Use format {{xmin, ymin, zmin}, {xmax, ymax, zmax}}";
-            if (initializerList.size() != 2) {
-                throw std::runtime_error(invalidListErrorMessage);
-            }
-            for (auto i : {0, 1}) {
-                if (data(initializerList)[i].size() != 3) {
-                    throw std::runtime_error(invalidListErrorMessage);
-                }
-            }
-            x.min = data(data(initializerList)[0])[0];
-            y.min = data(data(initializerList)[0])[1];
-            z.min = data(data(initializerList)[0])[2];
-
-            x.max = data(data(initializerList)[1])[0];
-            y.max = data(data(initializerList)[1])[1];
-            z.max = data(data(initializerList)[1])[2];
-        }
-
-        Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
-            std::string invalidListErrorMessage =
-                "Incorrect initializer list. "
-                "Use format {{xmin, xmax}, {ymin, ymax}, {zmin, zmax}}";
-            if (initializerList.size() != 3) {
-                throw std::runtime_error(invalidListErrorMessage);
-            }
-            for (auto i : {0, 1, 2}) {
-                if (data(initializerList)[i].size() != 2) {
-                    throw std::runtime_error(invalidListErrorMessage);
-                }
-            }
-            x.min = data(data(initializerList)[0])[0];
-            x.max = data(data(initializerList)[0])[1];
-
-            y.min = data(data(initializerList)[1])[0];
-            y.max = data(data(initializerList)[1])[1];
-
-            z.min = data(data(initializerList)[2])[0];
-            z.max = data(data(initializerList)[2])[1];
-        }
-
         Bounds3D() {
             x.min = std::numeric_limits<float>::max();
             y.min = std::numeric_limits<float>::max();
@@ -67,6 +24,51 @@ namespace math3d {
             x.max = -x.min;
             y.max = -y.min;
             z.max = -z.min;
+        }
+
+        Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
+            std::string invalidListErrorMessage =
+                    "Incorrect initializer list. "
+                    "Use one of these two formats:"
+                    "{{xmin, ymin, zmin}, {xmax, ymax, zmax}} or "
+                    "{{xmin, xmax},{ymin, ymax},{zmin,zmax}}";
+            if (initializerList.size() != 2 && initializerList.size() !=3) {
+                throw std::runtime_error(invalidListErrorMessage);
+            }
+            switch (initializerList.size()) {
+                case 2: {
+                    for (auto i : {0, 1}) {
+                        if (data(initializerList)[i].size() != 3) {
+                            throw std::runtime_error(invalidListErrorMessage);
+                        }
+                    }
+                    x.min = data(data(initializerList)[0])[0];
+                    y.min = data(data(initializerList)[0])[1];
+                    z.min = data(data(initializerList)[0])[2];
+
+                    x.max = data(data(initializerList)[1])[0];
+                    y.max = data(data(initializerList)[1])[1];
+                    z.max = data(data(initializerList)[1])[2];
+                }
+                break;
+                case 3: {
+                    for (auto i : {0, 1, 2}) {
+                        if (data(initializerList)[i].size() != 2) {
+                            throw std::runtime_error(invalidListErrorMessage);
+                        }
+                    }
+                    x.min = data(data(initializerList)[0])[0];
+                    x.max = data(data(initializerList)[0])[1];
+
+                    y.min = data(data(initializerList)[1])[0];
+                    y.max = data(data(initializerList)[1])[1];
+
+                    z.min = data(data(initializerList)[2])[0];
+                    z.max = data(data(initializerList)[2])[1];
+                }
+                break;
+            }
+
         }
 
         // Builds a symmetric bounding box where each side is
@@ -82,6 +84,10 @@ namespace math3d {
 
         T length() const {
             return sqrt((x.length() * x.length()) + (y.length() * y.length()) + (z.length() * z.length()));
+        }
+
+        [[nodiscard]] Vector3D<float> center() const {
+            return {x.center(), y.center(), z.center()};
         }
     };
 
