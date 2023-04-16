@@ -223,3 +223,14 @@ TEST(Matrix, OrthographicProjectionMatrix) {
     ASSERT_FLOAT_EQ(+1, result.z) << "x-coordinate is incorrect after projection";
     ASSERT_FLOAT_EQ(+1, result.w) << "x-coordinate is incorrect after projection";
 }
+
+TEST(Matrix, ConversionToPointer) {
+    IdentityMatrix<float, 3, 3> identityMatrix;
+    float* matrixData = identityMatrix;
+    ASSERT_FLOAT_EQ(matrixData[0], 1.);
+    ASSERT_FLOAT_EQ(matrixData[4], 1.);
+    ASSERT_FLOAT_EQ(matrixData[8], 1.);
+    for (auto i : {1,2,3,5,6,7}) {
+        ASSERT_FLOAT_EQ(matrixData[i], 0.);
+    }
+}
