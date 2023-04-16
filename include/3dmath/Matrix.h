@@ -22,8 +22,7 @@ class Matrix {
         };
 
         // Default construction
-        Matrix() {
-            m_data = new DataType[numRows*numCols]; 
+        Matrix() : m_data(new DataType[numRows * numCols]) {
             for(size_t row = 0; row < numRows; ++row) {
                 for (size_t col = 0; col < numCols; ++col) {
                     m_data[row * numCols + col] = DataType{0};
@@ -39,12 +38,8 @@ class Matrix {
         // to be in the row major order
         Matrix(const std::initializer_list<std::initializer_list<DataType>>& initList, const Order& order = Order::ColumnMajor) {
             
-            // prevents a crash during destruction in case an exception is thrown in the below code
-            // and m_data is deleted during stack unrolling 
-            m_data = nullptr;
-            
             // allocate memory
-            m_data = new DataType[numRows*numCols];
+            m_data.reset(new DataType[numRows*numCols]);
             
             // read and store data in m_data as per the format of the input data 
             order == Order::ColumnMajor ? readColumnMajor(initList) : readRowMajor(initList);
@@ -52,7 +47,6 @@ class Matrix {
         
         // Copy construction 
         Matrix(const Matrix& other) {
-            m_data = nullptr;
             assign(other);
         }
         
@@ -63,24 +57,20 @@ class Matrix {
         }
 
         // Move construction
-        Matrix(Matrix&& other) {
+        Matrix(Matrix&& other)  noexcept {
             m_data = std::move(other.m_data);
-            other.m_data = nullptr;
         }
         
         // Move assignment
-        Matrix& operator=(Matrix&& other) {
+        Matrix& operator=(Matrix&& other)  noexcept {
             m_data = std::move(other.m_data);
-            other.m_data = nullptr;
         }
         
         // Destructor 
-        ~Matrix() {
-            delete[] m_data;
-        }
+        ~Matrix()  = default;
 
-        operator DataType*() {
-            return m_data;
+        operator DataType const*() { // NOLINT: Implicit conversion is the point of defining this operator
+            return m_data.get();
         }
 
         // Vector multiplication
@@ -94,9 +84,9 @@ class Matrix {
             return outputVector;
         }
 
-        size_t getNumberOfRows() const { return numRows; }
-        size_t getNumberOfColumns() const { return numCols; }
-        const DataType* getData()  const { return m_data; }
+        [[nodiscard]] size_t getNumberOfRows() const { return numRows; }
+        [[nodiscard]] size_t getNumberOfColumns() const { return numCols; }
+        const DataType* getData()  const { return m_data.get(); }
         
         public:
             // Print column major matrix data in row order format
@@ -111,16 +101,15 @@ class Matrix {
             }
 
     protected:
-        DataType* m_data;
+        std::unique_ptr<DataType[]> m_data;
 
     private:
         void assign(const Matrix& other) {
-            delete [] m_data;
-            m_data = new DataType[numRows*numCols];
+            m_data.reset(new DataType[numRows * numCols]);
             for(size_t col = 0; col < numCols; ++col) {
                 for (size_t row = 0; row < numRows; ++row) {
-                    auto indx = col * numRows + row; 
-                    m_data[indx] = other.m_data[indx];
+                    auto index = col * numRows + row;
+                    m_data[index] = other.m_data[index];
                 }
             }
         }
