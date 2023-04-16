@@ -17,6 +17,27 @@ namespace math3d {
         Extent<T> y;
         Extent<T> z;
 
+        Bounds3D(std::initializer_list<T> const& initializerList) {
+            std::string invalidListErrorMessage =
+                    "Incorrect initializer list. "
+                    "Use format {{xmin, ymin, zmin}, {xmax, ymax, zmax}}";
+            if (initializerList.size() != 2) {
+                throw std::runtime_error(invalidListErrorMessage);
+            }
+            for (auto i : {0, 1}) {
+                if (data(initializerList)[i].size() != 3) {
+                    throw std::runtime_error(invalidListErrorMessage);
+                }
+            }
+            x.min = data(data(initializerList)[0])[0];
+            y.min = data(data(initializerList)[0])[1];
+            z.min = data(data(initializerList)[0])[2];
+
+            x.max = data(data(initializerList)[1])[0];
+            y.max = data(data(initializerList)[1])[1];
+            z.max = data(data(initializerList)[1])[2];
+        }
+
         Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
             std::string invalidListErrorMessage =
                 "Incorrect initializer list. "
