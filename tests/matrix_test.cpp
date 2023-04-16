@@ -2,9 +2,7 @@
 #include "3dmath/Matrix.h"
 #include "3dmath/IdentityMatrix.h"
 #include "3dmath/OrthographicProjectionMatrix.h"
-#include "3dmath/Vector.h"
 #include <vector>
-#include <initializer_list>
 #include <iostream>
 #include <fstream>
 #include <regex>
