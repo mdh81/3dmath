@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "3dmath/Vector.h"
-#include "3dmath/Types.h"
+#include "3dmath/OtherTypes.h"
 #include <vector>
 using namespace std;
 using namespace math3d;

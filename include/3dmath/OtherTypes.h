@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <string>
+#include <initializer_list>
+#include "Vector.h"
 
 namespace math3d {
     template <typename T>
