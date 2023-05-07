@@ -21,12 +21,7 @@ namespace math3d {
         Extent<T> z;
 
         Bounds3D() {
-            x.min = std::numeric_limits<float>::max();
-            y.min = std::numeric_limits<float>::max();
-            z.min = std::numeric_limits<float>::max();
-            x.max = -x.min;
-            y.max = -y.min;
-            z.max = -z.min;
+            reset();
         }
 
         Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
@@ -89,8 +84,17 @@ namespace math3d {
             return sqrt((x.length() * x.length()) + (y.length() * y.length()) + (z.length() * z.length()));
         }
 
-        [[nodiscard]] Vector3D<float> center() const {
+        [[nodiscard]] Vector3D<T> center() const {
             return {x.center(), y.center(), z.center()};
+        }
+
+        void reset() {
+            x.min = std::numeric_limits<T>::max();
+            y.min = std::numeric_limits<T>::max();
+            z.min = std::numeric_limits<T>::max();
+            x.max = -x.min;
+            y.max = -y.min;
+            z.max = -z.min;
         }
     };
 

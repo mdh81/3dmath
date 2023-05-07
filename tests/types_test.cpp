@@ -59,3 +59,14 @@ TEST(Bounds3D, SymmetricBounds) {
     ASSERT_FLOAT_EQ(bounds.z.max, +0.5);
 }
 
+TEST(Bounds3D, Reset) {
+    Bounds3D<float> bounds{{-1,-1,-1},{+1,+1,+1}};
+    bounds.reset();
+    ASSERT_FLOAT_EQ(bounds.x.min, +std::numeric_limits<float>::max());
+    ASSERT_FLOAT_EQ(bounds.x.max, -std::numeric_limits<float>::max());
+    ASSERT_FLOAT_EQ(bounds.y.min, +std::numeric_limits<float>::max());
+    ASSERT_FLOAT_EQ(bounds.y.max, -std::numeric_limits<float>::max());
+    ASSERT_FLOAT_EQ(bounds.z.min, +std::numeric_limits<float>::max());
+    ASSERT_FLOAT_EQ(bounds.z.max, -std::numeric_limits<float>::max());
+}
+
