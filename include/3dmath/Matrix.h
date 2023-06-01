@@ -89,6 +89,35 @@ class Matrix {
         [[nodiscard]] size_t getNumberOfColumns() const { return numCols; }
         const DataType* getData() const { return m_data.get(); }
 
+        Vector<float, numCols> operator[](unsigned columnIndex) {
+            Vector<float, numCols> columnVector;
+            for (size_t row = 0; row < numRows; ++row) {
+                columnVector[row] = m_data[columnIndex * numRows + row];
+            }
+            return columnVector;
+        }
+
+        Vector<float, numCols> operator()(unsigned rowIndex) {
+            Vector<float, numRows> rowVector;
+            auto offset = rowIndex;
+            for (size_t col = 0; col < numCols; ++col) {
+                rowVector[col] = m_data[offset];
+                offset += numCols;
+            }
+            return rowVector;
+    }
+
+        Matrix transpose() {
+            Matrix <DataType, numCols, numRows> transposedMatrix;
+            auto& transposedData = transposedMatrix.m_data;
+            for (auto row = 0u; row < numRows; ++row) {
+                for (auto col = 0u; col < numCols; ++col) {
+                    transposedData[row * numCols + col] = m_data[col * numRows + row];
+                }
+            }
+            return transposedMatrix;
+        }
+
         public:
             // Print column major matrix data in row order format
             void print(std::ostream& os) const {
