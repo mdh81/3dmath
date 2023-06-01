@@ -77,7 +77,6 @@ TEST(Matrix, Initialization) {
     ASSERT_EQ(data[1], 2);
     ASSERT_EQ(data[2], 3);
     ASSERT_EQ(data[3], 4);
-
 }
 
 TEST(Matrix, CopyAssignment) {
@@ -231,4 +230,63 @@ TEST(Matrix, ConversionToPointer) {
     for (auto i : {1,2,3,5,6,7}) {
         ASSERT_FLOAT_EQ(matrixData[i], 0.);
     }
+}
+
+TEST(Matrix, ColumnExtraction) {
+    Matrix<float, 3, 3> matrix { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
+    auto column0 = matrix[0];
+    ASSERT_FLOAT_EQ(column0[0], 1);
+    ASSERT_FLOAT_EQ(column0[1], 2);
+    ASSERT_FLOAT_EQ(column0[2], 3);
+
+    auto column1 = matrix[1];
+    ASSERT_FLOAT_EQ(column1[0], 4);
+    ASSERT_FLOAT_EQ(column1[1], 5);
+    ASSERT_FLOAT_EQ(column1[2], 6);
+
+    auto column2 = matrix[2];
+    ASSERT_FLOAT_EQ(column2[0], 7);
+    ASSERT_FLOAT_EQ(column2[1], 8);
+    ASSERT_FLOAT_EQ(column2[2], 9);
+}
+
+TEST(Matrix, RowExtraction) {
+    Matrix<float, 3, 3> matrix { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
+    auto row0 = matrix(0);
+    ASSERT_FLOAT_EQ(row0[0], 1);
+    ASSERT_FLOAT_EQ(row0[1], 4);
+    ASSERT_FLOAT_EQ(row0[2], 7);
+
+    auto row1 = matrix(1);
+    ASSERT_FLOAT_EQ(row1[0], 2);
+    ASSERT_FLOAT_EQ(row1[1], 5);
+    ASSERT_FLOAT_EQ(row1[2], 8);
+
+    auto row2 = matrix(2);
+    ASSERT_FLOAT_EQ(row2[0], 3);
+    ASSERT_FLOAT_EQ(row2[1], 6);
+    ASSERT_FLOAT_EQ(row2[2], 9);
+}
+
+TEST(Matrix, Transpose) {
+    // Inner init list is a column since the default order is column major
+    Matrix<float, 3, 3> matrix {
+        {1, 4, 7},
+        {2, 5, 8},
+        {3, 6, 9} };
+    auto transposedMatrix = matrix.transpose();
+    auto column0 = transposedMatrix[0];
+    ASSERT_FLOAT_EQ(column0[0], 1);
+    ASSERT_FLOAT_EQ(column0[1], 2);
+    ASSERT_FLOAT_EQ(column0[2], 3);
+
+    auto column1 = transposedMatrix[1];
+    ASSERT_FLOAT_EQ(column1[0], 4);
+    ASSERT_FLOAT_EQ(column1[1], 5);
+    ASSERT_FLOAT_EQ(column1[2], 6);
+
+    auto column2 = transposedMatrix[2];
+    ASSERT_FLOAT_EQ(column2[0], 7);
+    ASSERT_FLOAT_EQ(column2[1], 8);
+    ASSERT_FLOAT_EQ(column2[2], 9);
 }
