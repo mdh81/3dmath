@@ -97,7 +97,7 @@ namespace math3d {
             z.max = -z.min;
         }
 
-        bool contains(Vector<T, 3> const& point) {
+        bool contains(Vector<T, 3> const& point) const {
             bool withinXExtent = (point.x > x.min && point.x < x.max) ||
                                  fabs(point.x - x.min) < 1e-6 ||
                                  fabs(point.x - x.max) < 1e-6;
