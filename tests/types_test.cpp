@@ -70,3 +70,13 @@ TEST(Bounds3D, Reset) {
     ASSERT_FLOAT_EQ(bounds.z.max, -std::numeric_limits<float>::max());
 }
 
+
+TEST(Bounds3D, Contains) {
+    Bounds3D<float> bounds{{-1,-1,-1},{+1,+1,+1}};
+    ASSERT_TRUE(bounds.contains({-1,-1,-1}));
+    ASSERT_TRUE(bounds.contains({+1,+1,+1}));
+    ASSERT_TRUE(bounds.contains({0,0,0}));
+    ASSERT_FALSE(bounds.contains({-5, 0, 0}));
+    ASSERT_FALSE(bounds.contains({0, -5, 0}));
+    ASSERT_FALSE(bounds.contains({0, 0, -5}));
+}

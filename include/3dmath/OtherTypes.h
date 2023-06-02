@@ -96,6 +96,22 @@ namespace math3d {
             y.max = -y.min;
             z.max = -z.min;
         }
+
+        bool contains(Vector<T, 3> const& point) {
+            bool withinXExtent = (point.x > x.min && point.x < x.max) ||
+                                 fabs(point.x - x.min) < 1e-6 ||
+                                 fabs(point.x - x.max) < 1e-6;
+
+            bool withinYExtent = (point.y > y.min && point.y < y.max) ||
+                                 fabs(point.y - y.min) < 1e-6 ||
+                                 fabs(point.y - y.max) < 1e-6;
+
+            bool withinZExtent = (point.z > z.min && point.z < z.max) ||
+                                 fabs(point.z - z.min) < 1e-6 ||
+                                 fabs(point.z - z.max) < 1e-6;
+
+            return withinXExtent && withinYExtent && withinZExtent;
+        }
     };
 
     template<typename T>
