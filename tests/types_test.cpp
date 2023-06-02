@@ -80,3 +80,10 @@ TEST(Bounds3D, Contains) {
     ASSERT_FALSE(bounds.contains({0, -5, 0}));
     ASSERT_FALSE(bounds.contains({0, 0, -5}));
 }
+
+TEST(Bounds3D, ConstructFrom2DBounds) {
+    Bounds3D<float> bounds{{-1,-1},{+1,+1}};
+    ASSERT_FLOAT_EQ(bounds.z.length(), 0.f);
+    ASSERT_FLOAT_EQ(bounds.x.length(), 2.f);
+    ASSERT_FLOAT_EQ(bounds.y.length(), 2.f);
+}

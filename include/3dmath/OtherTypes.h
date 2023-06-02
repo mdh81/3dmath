@@ -36,17 +36,17 @@ namespace math3d {
             switch (initializerList.size()) {
                 case 2: {
                     for (auto i : {0, 1}) {
-                        if (data(initializerList)[i].size() != 3) {
+                        if (data(initializerList)[i].size() != 2) {
                             throw std::runtime_error(invalidListErrorMessage);
                         }
                     }
                     x.min = data(data(initializerList)[0])[0];
                     y.min = data(data(initializerList)[0])[1];
-                    z.min = data(data(initializerList)[0])[2];
+                    z.min = static_cast<T>(0);
 
                     x.max = data(data(initializerList)[1])[0];
                     y.max = data(data(initializerList)[1])[1];
-                    z.max = data(data(initializerList)[1])[2];
+                    z.max = static_cast<T>(0);
                 }
                 break;
                 case 3: {
