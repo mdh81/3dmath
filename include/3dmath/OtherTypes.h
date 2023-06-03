@@ -27,46 +27,24 @@ namespace math3d {
         Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
             std::string invalidListErrorMessage =
                     "Incorrect initializer list. "
-                    "Use one of these two formats:"
-                    "{{xmin, ymin, zmin}, {xmax, ymax, zmax}} or "
-                    "{{xmin, xmax},{ymin, ymax},{zmin,zmax}}";
-            if (initializerList.size() != 2 && initializerList.size() !=3) {
+                    "Use format:"
+                    "{{Minimum X, Minimum Y, Minimum Z}, {Maximum X, Maximum Y, Maximum Z}} "
+                    "For 2D bounds, Z extents can be skipped";
+            bool formatIsCorrect =
+                    initializerList.size() == 2 &&
+                    (data(initializerList)[0].size() == 2 ||  data(initializerList)[0].size() == 3) &&
+                    data(initializerList)[0].size() == data(initializerList)[1].size();
+            if (!formatIsCorrect) {
                 throw std::runtime_error(invalidListErrorMessage);
             }
-            switch (initializerList.size()) {
-                case 2: {
-                    for (auto i : {0, 1}) {
-                        if (data(initializerList)[i].size() != 2) {
-                            throw std::runtime_error(invalidListErrorMessage);
-                        }
-                    }
-                    x.min = data(data(initializerList)[0])[0];
-                    y.min = data(data(initializerList)[0])[1];
-                    z.min = static_cast<T>(0);
 
-                    x.max = data(data(initializerList)[1])[0];
-                    y.max = data(data(initializerList)[1])[1];
-                    z.max = static_cast<T>(0);
-                }
-                break;
-                case 3: {
-                    for (auto i : {0, 1, 2}) {
-                        if (data(initializerList)[i].size() != 2) {
-                            throw std::runtime_error(invalidListErrorMessage);
-                        }
-                    }
-                    x.min = data(data(initializerList)[0])[0];
-                    x.max = data(data(initializerList)[0])[1];
+            x.min = data(data(initializerList)[0])[0];
+            y.min = data(data(initializerList)[0])[1];
+            z.min = data(initializerList)[0].size() == 2 ? static_cast<T>(0) : data(data(initializerList)[0])[2];
 
-                    y.min = data(data(initializerList)[1])[0];
-                    y.max = data(data(initializerList)[1])[1];
-
-                    z.min = data(data(initializerList)[2])[0];
-                    z.max = data(data(initializerList)[2])[1];
-                }
-                break;
-            }
-
+            x.max = data(data(initializerList)[1])[0];
+            y.max = data(data(initializerList)[1])[1];
+            z.max = data(initializerList)[0].size() == 2 ? static_cast<T>(0) : data(data(initializerList)[1])[2];
         }
 
         // Builds a symmetric bounding box where each side is

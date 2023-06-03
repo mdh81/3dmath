@@ -24,15 +24,15 @@ TEST(Bounds3D, UninitializedBounds) {
 }
 
 TEST(Bounds3D, InitializedBounds) {
-    Bounds3D<float> bounds{{-1, 1}, {-1, 1}, {-1, 1}};
-    ASSERT_FLOAT_EQ(bounds.x.length(), 2);
-    ASSERT_FLOAT_EQ(bounds.y.length(), 2);
-    ASSERT_FLOAT_EQ(bounds.z.length(), 2);
-
     Bounds3D<float> bounds1{{-1,-1,-1},{+1,+1,+1}};
     ASSERT_FLOAT_EQ(bounds1.x.length(), 2);
     ASSERT_FLOAT_EQ(bounds1.y.length(), 2);
     ASSERT_FLOAT_EQ(bounds1.z.length(), 2);
+
+
+    Bounds3D<float> bounds2d{{-1,-1},{+1,+1}};
+    ASSERT_FLOAT_EQ(bounds2d.x.length(), 2);
+    ASSERT_FLOAT_EQ(bounds2d.y.length(), 2);
 }
 
 TEST(Bounds3D, Getters) {
