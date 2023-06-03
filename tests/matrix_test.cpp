@@ -212,7 +212,7 @@ TEST(Matrix, OrthographicProjectionMatrixWithInvalidBounds) {
 }
 
 TEST(Matrix, OrthographicProjectionMatrix) {
-    OrthographicProjectionMatrix<float> testMatrix({{-10,10}, {-20,20}, {-30,30}});
+    OrthographicProjectionMatrix<float> testMatrix({{-10,-20,-30}, {10,20, 30}});
     Vector4D<float> vertex { -10, -20, -30, 1 };
     Vector4D<float> result = testMatrix * vertex;
     ASSERT_FLOAT_EQ(-1, result.x) << "x-coordinate is incorrect after projection";
