@@ -51,7 +51,7 @@ TEST(Matrix, Initialization) {
     // Dimensions don't match: Columns don't match
     EXPECT_THROW(({
         try {
-            Matrix<float, 2, 1> m2({{1.f}, {2.f}, {3.f}});
+            Matrix<float, 2, 1> m2({{1.f}, {2.f}, {3.f}}, Order::ColumnMajor);
         } catch (std::invalid_argument& ex) {
             EXPECT_STREQ("Incompatible dimensions: Matrix dimensions are [2,1] "
                          "Number of columns in the input is 3", ex.what()); 
@@ -62,7 +62,7 @@ TEST(Matrix, Initialization) {
     // Dimensions don't match: Rows don't match
     EXPECT_THROW(({
         try {
-            Matrix<float, 1, 2> m2({{1.f,2.f}, {2.f}});
+            Matrix<float, 1, 2> m2({{1.f,2.f}, {2.f}}, Order::ColumnMajor);
         } catch (std::invalid_argument& ex) {
             EXPECT_STREQ("Incompatible dimensions: Matrix dimensions are [1,2] "
                          "Number of rows in column 1 is 2", ex.what()); 
@@ -70,12 +70,12 @@ TEST(Matrix, Initialization) {
         }
     }), std::invalid_argument);
     
-    // Assert column major matrix is filled correctly 
+    // Assert row major matrix is filled correctly
     Matrix<int, 2, 2> m3 {{1,2},{3,4}};
     int const* data = m3.getData();
     ASSERT_EQ(data[0], 1);
-    ASSERT_EQ(data[1], 2);
-    ASSERT_EQ(data[2], 3);
+    ASSERT_EQ(data[1], 3);
+    ASSERT_EQ(data[2], 2);
     ASSERT_EQ(data[3], 4);
 }
 
@@ -106,7 +106,7 @@ TEST(Matrix, MoveAssignment) {
 }
 
 TEST(Matrix, Print) {
-    Matrix<int, 3, 2> m1 ({ {10, 11, 12}, {10, 11, 12} });
+    Matrix<int, 3, 2> m1 ({ {10, 11, 12}, {10, 11, 12} }, Order::ColumnMajor);
     ofstream ofs("mat.out");   
     ofs << m1;
     ifstream ifs("mat.out");
@@ -139,7 +139,7 @@ TEST(Matrix, Print) {
 
 TEST(Matrix, RowMajor) {
 
-    Matrix<int, 3, 2> m1 ({ {10, 12}, {13, 14}, {15, 16} }, Matrix<int, 3, 2>::Order::RowMajor);
+    Matrix<int, 3, 2> m1 ({ {10, 12}, {13, 14}, {15, 16} }, Order::RowMajor);
     const int* data = m1.getData();
     EXPECT_EQ(data[0], 10);
     EXPECT_EQ(data[1], 13);
@@ -192,7 +192,7 @@ TEST(Matrix, VectorMultiplicationScaling) {
 
 TEST(Matrix, VectorMultiplicationTranslation) {
     Vector4D<float> v {10, 10, 10, 1};
-    Matrix<float, 4, 4> translationMatrix {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {10, 10, 10, 1}};
+    Matrix<float, 4, 4> translationMatrix {{1, 0, 0, 10}, {0, 1, 0, 10}, {0, 0, 1, 10}, {0, 0, 0, 1}};
     Vector4D<float> result = translationMatrix * v;
     ASSERT_FLOAT_EQ(result.x, 20.f) << "Multiplication results are wrong. Incorrect x coordinate";
     ASSERT_FLOAT_EQ(result.y, 20.f) << "Multiplication results are wrong. Incorrect y coordinate";
@@ -236,17 +236,17 @@ TEST(Matrix, ColumnExtraction) {
     Matrix<float, 3, 3> matrix { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
     auto column0 = matrix[0];
     ASSERT_FLOAT_EQ(column0[0], 1);
-    ASSERT_FLOAT_EQ(column0[1], 2);
-    ASSERT_FLOAT_EQ(column0[2], 3);
+    ASSERT_FLOAT_EQ(column0[1], 4);
+    ASSERT_FLOAT_EQ(column0[2], 7);
 
     auto column1 = matrix[1];
-    ASSERT_FLOAT_EQ(column1[0], 4);
+    ASSERT_FLOAT_EQ(column1[0], 2);
     ASSERT_FLOAT_EQ(column1[1], 5);
-    ASSERT_FLOAT_EQ(column1[2], 6);
+    ASSERT_FLOAT_EQ(column1[2], 8);
 
     auto column2 = matrix[2];
-    ASSERT_FLOAT_EQ(column2[0], 7);
-    ASSERT_FLOAT_EQ(column2[1], 8);
+    ASSERT_FLOAT_EQ(column2[0], 3);
+    ASSERT_FLOAT_EQ(column2[1], 6);
     ASSERT_FLOAT_EQ(column2[2], 9);
 }
 
@@ -254,22 +254,22 @@ TEST(Matrix, RowExtraction) {
     Matrix<float, 3, 3> matrix { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
     auto row0 = matrix(0);
     ASSERT_FLOAT_EQ(row0[0], 1);
-    ASSERT_FLOAT_EQ(row0[1], 4);
-    ASSERT_FLOAT_EQ(row0[2], 7);
+    ASSERT_FLOAT_EQ(row0[1], 2);
+    ASSERT_FLOAT_EQ(row0[2], 3);
 
     auto row1 = matrix(1);
-    ASSERT_FLOAT_EQ(row1[0], 2);
+    ASSERT_FLOAT_EQ(row1[0], 4);
     ASSERT_FLOAT_EQ(row1[1], 5);
-    ASSERT_FLOAT_EQ(row1[2], 8);
+    ASSERT_FLOAT_EQ(row1[2], 6);
 
     auto row2 = matrix(2);
-    ASSERT_FLOAT_EQ(row2[0], 3);
-    ASSERT_FLOAT_EQ(row2[1], 6);
+    ASSERT_FLOAT_EQ(row2[0], 7);
+    ASSERT_FLOAT_EQ(row2[1], 8);
     ASSERT_FLOAT_EQ(row2[2], 9);
 }
 
 TEST(Matrix, Transpose) {
-    // Inner init list is a column since the default order is column major
+    // Inner init list is a row since the default order is row major
     Matrix<float, 3, 3> matrix {
         {1, 4, 7},
         {2, 5, 8},
@@ -277,16 +277,16 @@ TEST(Matrix, Transpose) {
     auto transposedMatrix = matrix.transpose();
     auto column0 = transposedMatrix[0];
     ASSERT_FLOAT_EQ(column0[0], 1);
-    ASSERT_FLOAT_EQ(column0[1], 2);
-    ASSERT_FLOAT_EQ(column0[2], 3);
+    ASSERT_FLOAT_EQ(column0[1], 4);
+    ASSERT_FLOAT_EQ(column0[2], 7);
 
     auto column1 = transposedMatrix[1];
-    ASSERT_FLOAT_EQ(column1[0], 4);
+    ASSERT_FLOAT_EQ(column1[0], 2);
     ASSERT_FLOAT_EQ(column1[1], 5);
-    ASSERT_FLOAT_EQ(column1[2], 6);
+    ASSERT_FLOAT_EQ(column1[2], 8);
 
     auto column2 = transposedMatrix[2];
-    ASSERT_FLOAT_EQ(column2[0], 7);
-    ASSERT_FLOAT_EQ(column2[1], 8);
+    ASSERT_FLOAT_EQ(column2[0], 3);
+    ASSERT_FLOAT_EQ(column2[1], 6);
     ASSERT_FLOAT_EQ(column2[2], 9);
 }

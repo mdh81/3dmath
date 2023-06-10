@@ -13,14 +13,30 @@ namespace math3d {
 
 // A column-major matrix that stores its elements in contiguous memory
 
+// By default, the implementation assumes that the input data passed to it
+// is in row major order. Allowing the client to use row-major order allows
+// the client to lay out columns of their column-major matrices as columns.
+// For example,
+// auto myMatrix = Matrix<float, 4, 4> {
+// {a, e, i, m},
+// {b, f, j, n},
+// {c, g, k, o},
+// {d, h, l, p}};
+// If the code assumed column-major then this matrix in code would be
+// transposed and could cause misinterpretation.
+//
+// The order of the input can be controlled by using the constructor
+// argument Order.
+enum class Order {
+    ColumnMajor,
+    RowMajor
+};
+
 template<typename DataType, size_t numRows, size_t numCols>
 class Matrix {
     
     public:
-        enum class Order {
-            ColumnMajor,
-            RowMajor
-        };
+
 
         // Default construction
         Matrix() : m_data(new DataType[numRows * numCols]) {
@@ -37,7 +53,7 @@ class Matrix {
         // If the order is column major, then each sub-initializer is
         // treated as a column of data otherwise the data is assumed
         // to be in the row major order
-        Matrix(const std::initializer_list<std::initializer_list<DataType>>& initList, const Order& order = Order::ColumnMajor) {
+        Matrix(const std::initializer_list<std::initializer_list<DataType>>& initList, const Order& order = Order::RowMajor) {
             
             // allocate memory
             m_data.reset(new DataType[numRows*numCols]);
