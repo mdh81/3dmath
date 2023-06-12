@@ -54,7 +54,7 @@ namespace math3d {
             // p1.x = 100.f
             // or
             // p2.x = p1.x;
-            void operator=(T const& value) {
+            void operator=(T const& value) { // NOLINT: We are intentionally using a different signature for = operator
                 if (!data) {
                     throw std::runtime_error("Invalid access!");
                 }
@@ -75,7 +75,7 @@ namespace math3d {
                 return *data;
             }
 
-            // Convenience functions for using vectors and their convenience members shorthand expressions
+            // Convenience functions for using vector's convenience members in shorthand expressions
             void operator+=(T const& another) {
                 *data += another;
             }
@@ -185,7 +185,7 @@ namespace math3d {
             }
 
             // Conversion constructor to build from a STL vector
-            Vector(std::vector<T> const& v) {
+            explicit Vector(std::vector<T> const& v) {
                 if (Size != v.size()) {
                     throw std::invalid_argument("Dimension mismatch: Vector's dimension is " +
                                                 std::to_string(Size) + " Input size is " +
@@ -250,11 +250,20 @@ namespace math3d {
             }
 
             Vector& normalize() {
-                float norm = length();
+                T norm = length();
                 for (size_t i = 0; i < Size; ++i) {
                     data[i] /= norm;
                 }
                 return *this;
+            }
+
+            Vector normalize() const {
+                T norm = length();
+                Vector<T, Size> result;
+                for (size_t i = 0; i < Size; ++i) {
+                    result.data[i] /= norm;
+                }
+                return result;
             }
 
             T length() const {
