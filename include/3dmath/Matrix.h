@@ -101,10 +101,22 @@ class Matrix {
             return outputVector;
         }
 
-        [[nodiscard]] size_t getNumberOfRows() const { return numRows; }
-        [[nodiscard]] size_t getNumberOfColumns() const { return numCols; }
-        const DataType* getData() const { return m_data.get(); }
+        [[nodiscard]]
+        size_t getNumberOfRows() const {
+            return numRows;
+        }
 
+        [[nodiscard]]
+        size_t getNumberOfColumns() const {
+            return numCols;
+        }
+
+        [[nodiscard]]
+        const DataType* getData() const {
+            return m_data.get();
+        }
+
+        [[nodiscard]]
         Vector<float, numCols> operator[](unsigned columnIndex) {
             Vector<float, numCols> columnVector;
             for (size_t row = 0; row < numRows; ++row) {
@@ -113,6 +125,7 @@ class Matrix {
             return columnVector;
         }
 
+        [[nodiscard]]
         Vector<float, numCols> operator()(unsigned rowIndex) {
             Vector<float, numRows> rowVector;
             auto offset = rowIndex;
@@ -121,7 +134,7 @@ class Matrix {
                 offset += numCols;
             }
             return rowVector;
-    }
+        }
 
         Matrix transpose() {
             Matrix <DataType, numCols, numRows> transposedMatrix;

@@ -8,7 +8,7 @@
 #include <sstream>
 
 namespace math3d {
-
+    // TODO: Make Line a primitive
     template<typename T>
     using Point2D = Vector2D<T>;
 
