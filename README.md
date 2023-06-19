@@ -5,7 +5,7 @@ A header-only 3D math library.
 ## Conventions
 This library uses the standard right-handed coordinate system 
 
-![RHS](Right_handed_system.jpg)
+<img alt="Right-handed system" src="https://github.com/mdh81/3dmath/blob/master/Right_handed_system.jpg?raw=true" width="25%" height="25%" class="center">
 
 ## Derivations
 
