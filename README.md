@@ -1,6 +1,12 @@
 # 3dmath
 
-A header-only 3D math library
+A header-only 3D math library. This library uses a right-handed coordinate system where
++x points to the right and +y points up.
+
+## Conversion of spherical coordinates to cartesian coordinates
+
+![Derivation of spherical to cartesian](derivations/Spherical_to_Cartesian.jpg)
+
 
 ## Orthographic Projection Matrix
 
