@@ -26,7 +26,6 @@ TEST(Sphere, GeometryGenerationVertices) {
     sphere.generateGeometry();
     auto resolution = sphere.getResolution();
     ASSERT_EQ(sphere.getVertices().size(), resolution * (resolution - 1) + 2) << "Number of vertices in the sphere is wrong";
-    sphere.writeToSTL("S10.stl");
 }
 
 TEST(Sphere, GeometryGenerationConnectivity) {
