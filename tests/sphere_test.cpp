@@ -63,8 +63,8 @@ TEST(Sphere, WriteToSTL) {
     //  way to compare geometries
     math3d::Sphere {{10, 10, 10}, 10, 16}.writeToSTL("Sphere.stl");
     ASSERT_TRUE(
-            math3d::test::TestSupport::areFilesEqual(
+            math3d::test::TestSupport::areBinarySTLFilesEqual(
                     "Sphere.stl",
-                    std::filesystem::path("baseline")/"Sphere.stl")) << "Geometry in STL file is different";
+                    std::filesystem::path("baseline") / "Sphere.stl")) << "Geometry in STL file is different";
 }
 
