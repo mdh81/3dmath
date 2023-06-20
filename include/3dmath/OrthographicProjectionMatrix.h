@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IdentityMatrix.h"
-#include "OtherTypes.h"
+#include "SupportingTypes.h"
 namespace math3d {
 
 template<typename DataType>
