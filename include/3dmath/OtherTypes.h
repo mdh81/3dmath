@@ -121,25 +121,4 @@ namespace math3d {
         return isZero(std::fabs(extent.max - extent.min));
     }
 
-    // TODO: Ray is a primitive
-    class Ray {
-        public:
-            Ray() = default;
-            ~Ray() = default;
-
-        [[nodiscard]]
-        Vector3D<float> const& getDirection() const {
-            return direction;
-        }
-
-        [[nodiscard]]
-        Vector3D<float> const& getOrigin() const {
-            return origin;
-        }
-
-    private:
-            Vector3D<float> direction;
-            Vector3D<float> origin;
-    };
-
 }

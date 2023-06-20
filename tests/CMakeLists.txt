@@ -33,13 +33,19 @@ add_executable(
     sphere_test.cpp
 )
 
+add_executable(
+    polar_coordinates_test.test
+    polar_coordinates_test.cpp
+)
+
 set(allTests
     matrix_test.test
     vector_test.test
     line_test.test
     types_test.test
     sphere_test.test
-    convex_primitive_test.test)
+    convex_primitive_test.test
+    polar_coordinates_test.test)
 
 foreach (test ${allTests})
     target_include_directories(
@@ -56,5 +62,5 @@ endforeach(test)
 # Enable test discovery for each test
 include(GoogleTest)
 foreach (test ${allTests})
-    gtest_discover_tests(${test})
+    gtest_discover_tests(${test} PROPERTIES ENVIRONMENT "outputDir=${CMAKE_BINARY_DIR}/outputFiles")
 endforeach(test)
