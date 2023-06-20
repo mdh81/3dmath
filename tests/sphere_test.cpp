@@ -59,8 +59,6 @@ TEST(Sphere, GeometryGenerationConnectivity) {
 }
 
 TEST(Sphere, WriteToSTL) {
-    // TODO: Unreliable because of floating point precision differences. Find a better
-    //  way to compare geometries
     math3d::Sphere {{10, 10, 10}, 10, 16}.writeToSTL("Sphere.stl");
     ASSERT_TRUE(
             math3d::test::TestSupport::areBinarySTLFilesEqual(
