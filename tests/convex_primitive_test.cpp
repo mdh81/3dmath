@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "3dmath/Vector.h"
-#include "3dmath/OtherTypes.h"
+#include "3dmath/SupportingTypes.h"
 #include "3dmath/primitives/ConvexPrimitive.h"
 #include "3dmath/primitives/Sphere.h"
 using namespace std;
