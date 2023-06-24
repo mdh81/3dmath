@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include "../Vector.h"
+#include "../SupportingTypes.h"
 
 namespace math3d {
 
