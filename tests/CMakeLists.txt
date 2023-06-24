@@ -38,6 +38,11 @@ add_executable(
     polar_coordinates_test.cpp
 )
 
+add_executable(
+    ray_test.test
+    ray_test.cpp
+)
+
 set(allTests
     matrix_test.test
     vector_test.test
@@ -45,7 +50,8 @@ set(allTests
     types_test.test
     sphere_test.test
     convex_primitive_test.test
-    polar_coordinates_test.test)
+    polar_coordinates_test.test
+    ray_test.test)
 
 foreach (test ${allTests})
     target_include_directories(

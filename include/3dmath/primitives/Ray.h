@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Primitive.h"
+#include "../SupportingTypes.h"
 #include "../Utilities.h"
 
 namespace math3d {
@@ -16,10 +17,13 @@ namespace math3d {
 
         ~Ray() = default;
 
+        // See https://github.com/mdh81/3dmath/blob/master/derivations/PointDistanceToRay.jpg
+        [[nodiscard]]
         float distanceToPoint(Point const& point) const {
-            auto originToPoint = point - getOrigin();
-            float angle = originToPoint.dot(direction);
-            return sin(angle) * originToPoint.length();
+            auto v = point - getOrigin();
+            auto lengthOfV = v.length();
+            float angle = acos(v.dot(direction) / lengthOfV);
+            return lengthOfV * sin(angle) ;
         }
 
         // Please refer to
@@ -43,7 +47,7 @@ namespace math3d {
             // Check if the intersection point is on the line by computing the perpendicular distance between this ray
             // and the point
 
-
+            return {};
         }
 
         [[nodiscard]]
@@ -54,6 +58,9 @@ namespace math3d {
         [[nodiscard]]
         Vector3D<float> const &getOrigin() const {
             return vertices.at(0);
+        }
+
+        void generateGeometry() override {
         }
 
     private:
