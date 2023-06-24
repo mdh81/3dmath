@@ -15,6 +15,9 @@ This section lists proof for formulas used for different features implemented by
 
 ![Derivation of spherical to cartesian](derivations/Spherical_to_Cartesian.jpg)
 
+### Ray-Ray intersection
+![Ray-Ray intersection](derivations/RayRayIntersection.jpg)
+
 
 ### Orthographic Projection Matrix
 

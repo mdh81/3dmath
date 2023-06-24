@@ -12,7 +12,7 @@ namespace math3d {
         ~Ray() = default;
 
 
-        // Please refer to 
+        // Please refer to
         Point intersectWithRay(const Ray &ray) override {
             return {};
         }
