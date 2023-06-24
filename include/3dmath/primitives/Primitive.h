@@ -18,7 +18,7 @@ namespace math3d {
         Primitive() = default;
         virtual ~Primitive() = default;
         virtual void generateGeometry() = 0;
-        virtual Point intersectWithRay(Ray const& ray) = 0;
+        virtual IntersectionResult intersectWithRay(Ray const& ray) = 0;
         [[nodiscard]]
         std::vector<Vertex> const& getVertices() {
             return vertices;
