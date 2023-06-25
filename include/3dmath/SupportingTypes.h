@@ -78,16 +78,16 @@ namespace math3d {
 
         bool contains(Vector<T, 3> const& point) const {
             bool withinXExtent = (point.x > x.min && point.x < x.max) ||
-                                 fabs(point.x - x.min) < 1e-6 ||
-                                 fabs(point.x - x.max) < 1e-6;
+                                 fabs(point.x - x.min) < Constants::tolerance ||
+                                 fabs(point.x - x.max) < Constants::tolerance;
 
             bool withinYExtent = (point.y > y.min && point.y < y.max) ||
-                                 fabs(point.y - y.min) < 1e-6 ||
-                                 fabs(point.y - y.max) < 1e-6;
+                                 fabs(point.y - y.min) < Constants::tolerance ||
+                                 fabs(point.y - y.max) < Constants::tolerance;
 
             bool withinZExtent = (point.z > z.min && point.z < z.max) ||
-                                 fabs(point.z - z.min) < 1e-6 ||
-                                 fabs(point.z - z.max) < 1e-6;
+                                 fabs(point.z - z.min) < Constants::tolerance ||
+                                 fabs(point.z - z.max) < Constants::tolerance;
 
             return withinXExtent && withinYExtent && withinZExtent;
         }
