@@ -30,6 +30,11 @@ namespace math3d {
             return isZero(std::fabs(val2-val1));
         }
 
+        template<typename T, unsigned size>
+        [[nodiscard]] static bool areParallel(Vector<T, size> const& v1, Vector<T, size> const& v2) {
+            return areEqual(v1.dot(v2), 1.f);
+        }
+
         template<unsigned size>
         [[nodiscard]]
         static Vector<float, size> getPerpendicular(Vector<float, size>& vector) {
@@ -37,7 +42,7 @@ namespace math3d {
             if (size == 2) {
                 return {-vector.y, vector.x};
             } else {
-                if (areEqual(vector.dot(Constants::zAxis), 1.f)) {
+                if (areParallel(vector, Vector<float, size>(Constants::zAxis))) {
                     return Constants::yAxis;
                 } else {
                     return {-vector.y, vector.x, 0};
