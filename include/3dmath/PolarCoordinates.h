@@ -73,7 +73,7 @@ namespace math3d {
 
 
 inline std::ostream& operator<<(std::ostream& os, SphericalCoordinates const& sphericalCoordinates) {
-    os << "Radius = " << sphericalCoordinates.radius << ", Theta = " << asDegrees(sphericalCoordinates.theta) << ", Phi = " << asDegrees(sphericalCoordinates.phi);
+    os << "Radius = " << sphericalCoordinates.radius << ", Theta = " << Utilities::asDegrees(sphericalCoordinates.theta) << ", Phi = " << Utilities::asDegrees(sphericalCoordinates.phi);
     return os;
 }
 
