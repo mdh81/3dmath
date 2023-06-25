@@ -4,15 +4,8 @@
 #include "3dmath/primitives/Sphere.h"
 #include <vector>
 
-class SphereTest : public math3d::Sphere {
-public:
-    explicit SphereTest(Point const& center, float radius, unsigned resolution = 16)
-        : Sphere(center, radius, resolution) {
-    }
-};
-
 TEST(Sphere, Getters) {
-    SphereTest sphere({10.f, 10.f, 10.f}, 10.f);
+    math3d::Sphere sphere({10.f, 10.f, 10.f}, 10.f);
     ASSERT_FLOAT_EQ(sphere.getRadius(), 10) << "Sphere radius is incorrect";
     ASSERT_FLOAT_EQ(sphere.getCenter().x, 10.f) << "Sphere center is incorrect";
     ASSERT_FLOAT_EQ(sphere.getCenter().y, 10.f) << "Sphere center is incorrect";
@@ -22,14 +15,14 @@ TEST(Sphere, Getters) {
 
 
 TEST(Sphere, GeometryGenerationVertices) {
-    SphereTest sphere({0.f, 0.f, 0.f}, 10.f);
+    math3d::Sphere sphere({0.f, 0.f, 0.f}, 10.f);
     sphere.generateGeometry();
     auto resolution = sphere.getResolution();
     ASSERT_EQ(sphere.getVertices().size(), resolution * (resolution - 1) + 2) << "Number of vertices in the sphere is wrong";
 }
 
 TEST(Sphere, GeometryGenerationConnectivity) {
-    SphereTest sphere({10.f, 10.f, 10.f}, 10.f, 3);
+    math3d::Sphere sphere({10.f, 10.f, 10.f}, 10.f, 3);
     sphere.generateGeometry();
     auto resolution = sphere.getResolution();
     auto numCircles = resolution - 1;
