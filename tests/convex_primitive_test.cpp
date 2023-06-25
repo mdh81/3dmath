@@ -14,7 +14,7 @@ class ConvexPrimitiveTest : public math3d::ConvexPrimitive {
             vertices = testVertices;
         }
         MOCK_METHOD(void, generateGeometry, ());
-        MOCK_METHOD(Point, intersectWithRay, (math3d::Ray const&));
+        MOCK_METHOD(math3d::IntersectionResult, intersectWithRay, (math3d::Ray const&));
 };
 
 TEST(ConvexPrimitive, OrientNormalsOutside) {

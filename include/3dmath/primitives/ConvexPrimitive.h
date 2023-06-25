@@ -8,8 +8,8 @@
 #include <fstream>
 
 namespace math3d {
-    // Simple convex shapes that have a well-defined center and
-    // are represented using triangular faces
+    // A convex shape specified using an origin or reference point. Instances of
+    // this class are geometrically represented using triangles
     class ConvexPrimitive : public Primitive {
 
     public:
@@ -17,12 +17,12 @@ namespace math3d {
         using Tris = std::vector<Tri>;
 
     public:
-        explicit ConvexPrimitive(Point const& center) // NOLINT
-        : center(center) {
+        explicit ConvexPrimitive(Point const& origin) // NOLINT
+        : origin(origin) {
         }
 
         Tri orientTriangleNormalOutside(Tri&& tri) {
-            auto correctNormalOrientation = vertices.at(std::get<0>(tri)) - center;
+            auto correctNormalOrientation = vertices.at(std::get<0>(tri)) - origin;
             auto AB = vertices.at(std::get<1>(tri)) - vertices.at(std::get<0>(tri));
             auto AC = vertices.at(std::get<2>(tri)) - vertices.at(std::get<0>(tri));
             auto normal = AB * AC;
@@ -35,8 +35,8 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        Point getCenter() const {
-            return center;
+        Point getOrigin() const {
+            return origin;
         }
 
         [[nodiscard]]
@@ -76,7 +76,7 @@ namespace math3d {
         }
 
     protected:
-        Point center;
+        Point origin;
         Tris tris;
     };
 
