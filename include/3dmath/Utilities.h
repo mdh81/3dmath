@@ -10,7 +10,7 @@ namespace math3d {
     public:
         [[nodiscard]]
         static float asDegrees(float radians) {
-            return radians * radiansToDegrees;
+            return radians * Constants::radiansToDegrees;
         };
 
         template<typename T>
@@ -18,7 +18,7 @@ namespace math3d {
         static bool isZero(T const val) {
             static_assert(std::is_floating_point<T>(),
                           "Only floating point types can be compared to zero using this function");
-            return std::fabs(val) < tolerance;
+            return std::fabs(val) < Constants::tolerance;
         }
 
         template<typename T1, typename T2>
@@ -37,8 +37,8 @@ namespace math3d {
             if (size == 2) {
                 return {-vector.y, vector.x};
             } else {
-                if (areEqual(vector.dot(zAxis), 1.f)) {
-                    return yAxis;
+                if (areEqual(vector.dot(Constants::zAxis), 1.f)) {
+                    return Constants::yAxis;
                 } else {
                     return {-vector.y, vector.x, 0};
                 }
