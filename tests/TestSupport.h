@@ -103,9 +103,9 @@ namespace math3d::test {
 
             // Compare triangles
             auto areXYZsEqual = [](float* data1, float* data2) {
-                return fabs(data1[0] - data2[0]) < math3d::Constants::tolerance &&
-                       fabs(data1[1] - data2[1]) < math3d::Constants::tolerance &&
-                       fabs(data1[2] - data2[2]) < math3d::Constants::tolerance;
+                return fabs(data1[0] - data2[0]) < math3d::constants::tolerance &&
+                       fabs(data1[1] - data2[1]) < math3d::constants::tolerance &&
+                       fabs(data1[2] - data2[2]) < math3d::constants::tolerance;
             };
             for (auto triNum = 1; triNum <= numTris1; ++triNum) {
                 float *tri1Normal, *tri2Normal;

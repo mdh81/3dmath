@@ -64,11 +64,11 @@ TEST_F(SphericalCoordinatesFixture, ToCartesian) {
     // When phi is 90, we should be in the xy plane
     auto cartesianCoordinates1 =
             math3d::SphericalCoordinates({1, getRandomAngle(), std::numbers::pi/2}).getCartesianCoordinates();
-    ASSERT_NEAR(cartesianCoordinates1.dot({0, 0, 1}), 0, math3d::Constants::tolerance);
+    ASSERT_NEAR(cartesianCoordinates1.dot({0, 0, 1}), 0, math3d::constants::tolerance);
 
     // When phi is 180 and theta is 0, we should be at pole 2, which is at a distance of radius from the origin
     // along -z direction
     auto cartesianCoordinates2 =
             math3d::SphericalCoordinates({5, 0, std::numbers::pi}).getCartesianCoordinates();
-    ASSERT_NEAR(cartesianCoordinates2.dot({0, 0, -1}), 5, math3d::Constants::tolerance);
+    ASSERT_NEAR(cartesianCoordinates2.dot({0, 0, -1}), 5, math3d::constants::tolerance);
 }
