@@ -30,7 +30,7 @@ namespace math3d {
 
             // Construct a vector that is perpendicular to the normal and call
             // it the horizontal axis of the plane
-            Vector horizontalAxis = Utilities::getPerpendicular(normal);
+            Vector horizontalAxis = Utilities::getPerpendicular(normal).normalize();
 
             // Construct the vertical axis as the perpendicular of the horizontal
             // axis
@@ -62,7 +62,9 @@ namespace math3d {
             tris.emplace_back(2, 3, 0);
         }
 
+        // TODO: Sketch this
         IntersectionResult intersectWithRay(const Ray &ray) override {
+            // Check if point is on the plane
             return IntersectionResult();
         }
 
