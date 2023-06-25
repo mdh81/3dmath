@@ -6,14 +6,8 @@ TEST(Plane, Construction) {
 }
 
 TEST(Plane, Getters) {
-    math3d::Primitive::Point origin;
-    origin.x = math3d::RandomNumber();
-    origin.y = math3d::RandomNumber();
-    origin.z = math3d::RandomNumber();
-    math3d::Primitive::Vector normal;
-    normal.x = math3d::RandomNumber();
-    normal.y = math3d::RandomNumber();
-    normal.z = math3d::RandomNumber();
+    math3d::Primitive::Point origin  = math3d::Utilities::RandomPoint();
+    math3d::Primitive::Vector normal = math3d::Utilities::RandomVector();
     math3d::Plane p{origin, normal};
     ASSERT_FLOAT_EQ(p.getOrigin().x, origin.x);
     ASSERT_FLOAT_EQ(p.getOrigin().y, origin.y);

@@ -9,9 +9,9 @@ namespace math3d {
     // assumed to extend to infinity from the origin
     class Ray : public Primitive {
     public:
-        Ray(Point const& origin, Vector3D<float> const& direction) {
-            vertices.push_back(origin);
-            this->direction = direction;
+        Ray(Point const& origin, Vector const& direction)
+        : origin(origin)
+        , direction(direction) {
             this->direction.normalize();
         }
 
@@ -20,7 +20,7 @@ namespace math3d {
         // See https://github.com/mdh81/3dmath/blob/master/derivations/PointDistanceToRay.jpg
         [[nodiscard]]
         float distanceToPoint(Point const& point) const {
-            auto v = point - getOrigin();
+            auto v = point - origin;
             auto lengthOfV = v.length();
             float angle = acos(v.dot(direction) / lengthOfV);
             return lengthOfV * sin(angle) ;
@@ -33,16 +33,16 @@ namespace math3d {
 
             // Check if rays are parallel
             auto d1xd2 = this->direction * ray.direction;
-            if (isZero(d1xd2.length())) {
+            if (Utilities::isZero(d1xd2.length())) {
                 result.status = IntersectionStatus::NoIntersection;
             }
 
             // Parametric distance along ray to the intersection point
             auto d1xd2Length = d1xd2.length();
-            float t = ((ray.getOrigin() - this->getOrigin()).dot(d1xd2)) / (d1xd2Length * d1xd2Length);
+            float t = ((ray.getOrigin() - origin).dot(d1xd2)) / (d1xd2Length * d1xd2Length);
 
             // Intersection point
-            result.intersectionPoint = getOrigin() + (t * direction);
+            result.intersectionPoint = origin + (t * direction);
 
             // Check if the intersection point is on the line by computing the perpendicular distance between this ray
             // and the point
@@ -51,19 +51,20 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        Vector3D<float> const &getDirection() const {
+        Vector getDirection() const {
             return direction;
         }
 
         [[nodiscard]]
-        Vector3D<float> const &getOrigin() const {
-            return vertices.at(0);
+        Vector3D<float> getOrigin() const {
+            return origin;
         }
 
         void generateGeometry() override {
         }
 
     private:
-        Vector3D<float> direction;
+        Point origin;
+        Vector direction;
     };
 }

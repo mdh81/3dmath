@@ -30,7 +30,7 @@ namespace math3d {
 
             // Construct a vector that is perpendicular to the normal and call
             // it the horizontal axis of the plane
-            Vector horizontalAxis = getPerpendicular(normal);
+            Vector horizontalAxis = Utilities::getPerpendicular(normal);
 
             // Construct the vertical axis as the perpendicular of the horizontal
             // axis

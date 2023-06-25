@@ -102,7 +102,7 @@ namespace math3d {
 
     template<typename T>
     bool isZero(Extent<T> const extent) {
-        return isZero(std::fabs(extent.max - extent.min));
+        return Utilities::isZero(std::fabs(extent.max - extent.min));
     }
 
     enum class IntersectionStatus {
