@@ -13,6 +13,7 @@ namespace math3d {
     public:
         using Vertex = Vector3D<float>;
         using Point = Vertex;
+        using Vector = Point;
         using Vertices = std::vector<Vertex>;
 
     public:
