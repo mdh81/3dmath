@@ -19,6 +19,11 @@ namespace math3d {
         }
 
         [[nodiscard]]
+        Point getCenter() const {
+            return origin;
+        }
+
+        [[nodiscard]]
         float getRadius() const {
             return radius;
         }
@@ -52,7 +57,7 @@ namespace math3d {
             // circle
 
             // Pole 1: At distance of radius from the center along +z
-            vertices.emplace_back(center +
+            vertices.emplace_back(origin +
                                   SphericalCoordinates{radius, 0.f, 0.f}.getCartesianCoordinates());
 
             // Circles between the two poles
@@ -70,7 +75,7 @@ namespace math3d {
             // to the xy plane
             for (unsigned yzCircle = 1; yzCircle <= numCircles; ++yzCircle) {
                 for (unsigned xyCircle = 1; xyCircle <= numCircleVertices; ++xyCircle) {
-                    vertices.emplace_back(center +
+                    vertices.emplace_back(origin +
                                           SphericalCoordinates{radius, theta, phi}.getCartesianCoordinates());
                     theta += thetaIncrement;
                 }
@@ -79,7 +84,7 @@ namespace math3d {
             }
 
             // Pole 2: At distance of radius from the center along -z
-            vertices.emplace_back(center +
+            vertices.emplace_back(origin +
                                   SphericalCoordinates{radius, 0.f, oneEightyDegrees}.getCartesianCoordinates());
 
             // Generate faces
@@ -135,8 +140,8 @@ namespace math3d {
             }
         }
 
-        Vector3D<float> intersectWithRay(Ray const& ray) override {
-            return {0, 0, 0};
+        IntersectionResult intersectWithRay(Ray const& ray) override {
+            return {};
         }
 
     protected:
