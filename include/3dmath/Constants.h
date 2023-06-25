@@ -5,7 +5,7 @@
 // List of constants used in this library
 // NOTE: Don't include any constant that's dependent on this library's data-structures
 // to avoid circular dependencies
-namespace math3d::Constants {
+namespace math3d::constants {
     constexpr float threeSixtyDegrees = 2 * std::numbers::pi;
     constexpr float oneEightyDegrees = std::numbers::pi;
     constexpr float radiansToDegrees = 180 / std::numbers::pi;

@@ -20,12 +20,12 @@ TEST(Plane, Getters) {
 }
 
 TEST(Plane, GeometryGeneration) {
-    math3d::Plane {math3d::Constants::origin,
-                   math3d::Constants::xAxis}.writeToSTL("Yz.stl");
-    math3d::Plane {math3d::Constants::origin,
-                   math3d::Constants::yAxis}.writeToSTL("Xz.stl");
-    math3d::Plane {math3d::Constants::origin,
-                   math3d::Constants::zAxis}.writeToSTL("Xy.stl");
+    math3d::Plane {math3d::constants::origin,
+                   math3d::constants::xAxis}.writeToSTL("Yz.stl");
+    math3d::Plane {math3d::constants::origin,
+                   math3d::constants::yAxis}.writeToSTL("Xz.stl");
+    math3d::Plane {math3d::constants::origin,
+                   math3d::constants::zAxis}.writeToSTL("Xy.stl");
     for (auto& fileName : { "Xy.stl", "Xz.stl", "Yz.stl"}) {
         ASSERT_TRUE(
                 math3d::test::TestSupport::areBinarySTLFilesEqual(

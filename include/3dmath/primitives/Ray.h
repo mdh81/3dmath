@@ -44,10 +44,15 @@ namespace math3d {
             // Intersection point
             result.intersectionPoint = origin + (t * direction);
 
-            // Check if the intersection point is on the line by computing the perpendicular distance between this ray
-            // and the point
+            // When there is an intersection, the intersection point will be on the ray, but if
+            // it is not then it indicates that the rays are on parallel planes
+            if (Utilities::isZero(this->distanceToPoint(result.intersectionPoint))) {
+                result.status = IntersectionStatus::Intersects;
+            } else {
+                result.status = IntersectionStatus::Skew;
+            }
 
-            return {};
+            return result;
         }
 
         [[nodiscard]]
