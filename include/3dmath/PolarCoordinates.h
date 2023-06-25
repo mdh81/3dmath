@@ -23,7 +23,7 @@ namespace math3d {
 
         [[nodiscard]]
         static PolarCoordinates convertCartesianCoordinates(Vector2D<float> const& point) {
-            if (point.x < 1e-6 && point.y < 1e-6) {
+            if (point.x < Constants::tolerance && point.y < Constants::tolerance) {
                 // Prevent UB in atan2 when y and x are zeroes
                 return {0.f, 0.f};
             } else {
