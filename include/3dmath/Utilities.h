@@ -35,6 +35,7 @@ namespace math3d {
             return areEqual(v1.dot(v2), 1.f);
         }
 
+        // TODO: Derive this
         template<unsigned size>
         [[nodiscard]]
         static Vector<float, size> getPerpendicular(Vector<float, size>& vector) {
@@ -52,7 +53,7 @@ namespace math3d {
 
         class RandomNumber {
         public:
-            operator float() const {
+            operator float() const { // NOLINT
                 std::random_device rd;
                 std::mt19937 gen(rd());
                 std::uniform_real_distribution<float> dist(-100,+100);
@@ -62,10 +63,10 @@ namespace math3d {
 
         class RandomVector {
         public:
-            operator Vector3D<float>() {
+            operator Vector3D<float>() { // NOLINT
                 return {RandomNumber(), RandomNumber(), RandomNumber()};
             }
-            operator Vector2D<float>() {
+            operator Vector2D<float>() { // NOLINT
                 return {RandomNumber(), RandomNumber()};
             }
         };
