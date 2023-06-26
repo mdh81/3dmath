@@ -29,27 +29,31 @@ namespace math3d {
         // Please refer to
         // https://github.com/mdh81/3dmath/raw/master/derivations/RayRayIntersection.jpg
         IntersectionResult intersectWithRay(Ray const& ray) override {
+            // Initialize result
             IntersectionResult result;
+            result.status = IntersectionStatus::NoIntersection;
 
-            // Check if rays are parallel
+            // No intersection if rays are parallel
             auto d1xd2 = this->direction * ray.direction;
-            if (Utilities::isZero(d1xd2.length())) {
-                result.status = IntersectionStatus::NoIntersection;
-            }
+            if (!Utilities::isZero(d1xd2.length())) {
 
-            // Parametric distance along ray to the intersection point
-            auto d1xd2Length = d1xd2.length();
-            float t = ((ray.getOrigin() - origin).dot(d1xd2)) / (d1xd2Length * d1xd2Length);
+                // Parametric distance along ray to the intersection point
+                auto d1xd2Length = d1xd2.length();
+                float t = ((ray.getOrigin() - origin) * ray.getDirection()).dot(d1xd2) / (d1xd2Length * d1xd2Length);
 
-            // Intersection point
-            result.intersectionPoint = origin + (t * direction);
+                // Intersection that occurs behind the ray origin is not a valid intersection
+                if (t > 0 || Utilities::isZero(t)) {
 
-            // When there is an intersection, the intersection point will be on the ray, but if
-            // it is not then it indicates that the rays are on parallel planes
-            if (Utilities::isZero(this->distanceToPoint(result.intersectionPoint))) {
-                result.status = IntersectionStatus::Intersects;
-            } else {
-                result.status = IntersectionStatus::Skew;
+                    result.intersectionPoint = origin + (t * direction);
+
+                    // For the intersection to be valid, the intersection point should be on the ray, otherwise
+                    // the two rays are on parallel planes
+                    if (Utilities::isZero(this->distanceToPoint(result.intersectionPoint))) {
+                        result.status = IntersectionStatus::Intersects;
+                    } else {
+                        result.status = IntersectionStatus::Skew;
+                    }
+                }
             }
 
             return result;
