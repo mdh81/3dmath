@@ -64,7 +64,7 @@ namespace math3d {
             // In spherical coordinate system, phi = zero is a singularity, where theta has no influence on
             // the resulting coordinate. To prevent this, we start with phi at a sensible value given our resolution
             // constraint.
-            float phiIncrement = constants::oneEightyDegrees / static_cast<float>(resolution);
+            float phiIncrement = constants::oneEightyDegreesInRadians / static_cast<float>(resolution);
             float thetaIncrement = constants::threeSixtyDegrees / static_cast<float>(resolution);
             float phi = phiIncrement, theta = 0.f;
 
@@ -85,7 +85,7 @@ namespace math3d {
 
             // Pole 2: At distance of radius from the center along -z
             vertices.emplace_back(origin +
-                                  SphericalCoordinates{radius, 0.f, constants::oneEightyDegrees}.getCartesianCoordinates());
+                                  SphericalCoordinates{radius, 0.f, constants::oneEightyDegreesInRadians}.getCartesianCoordinates());
 
             // Generate faces
             // NOTE: In the two lambdas below, indices are vertex indices

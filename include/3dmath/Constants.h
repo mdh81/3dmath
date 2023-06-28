@@ -6,8 +6,8 @@
 // NOTE: Don't include any constant that's dependent on this library's data-structures
 // to avoid circular dependencies
 namespace math3d::constants {
-    constexpr float threeSixtyDegrees = 2 * std::numbers::pi;
-    constexpr float oneEightyDegrees = std::numbers::pi;
+    constexpr float threeSixtyDegreesInRadians= 2 * std::numbers::pi;
+    constexpr float oneEightyDegreesInRadians = std::numbers::pi;
     constexpr float radiansToDegrees = 180 / std::numbers::pi;
     constexpr float tolerance = 1e-6;
     constexpr std::initializer_list<float> xAxis = {1.f, 0.f, 0.f};
