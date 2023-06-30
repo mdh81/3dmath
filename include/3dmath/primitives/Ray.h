@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <fstream>
 #include "Primitive.h"
 #include "../SupportingTypes.h"
 #include "../Utilities.h"
@@ -9,9 +11,10 @@ namespace math3d {
     // assumed to extend to infinity from the origin
     class Ray : public Primitive {
     public:
-        Ray(Point const& origin, Vector const& direction)
+        Ray(types::Point3D const& origin, types::Vector3D const& direction, unsigned geometryLength = 1)
         : origin(origin)
-        , direction(direction) {
+        , direction(direction)
+        , geometryLength(geometryLength) {
             this->direction.normalize();
         }
 
@@ -19,7 +22,7 @@ namespace math3d {
 
         // See https://github.com/mdh81/3dmath/blob/master/derivations/PointDistanceToRay.jpg
         [[nodiscard]]
-        float distanceToPoint(Point const& point) const {
+        float distanceToPoint(types::Point3D const& point) const {
             auto v = point - origin;
             auto lengthOfV = v.length();
             float angle = acos(v.dot(direction) / lengthOfV);
@@ -39,7 +42,7 @@ namespace math3d {
 
                 // Parametric distance along ray to the intersection point
                 auto d1xd2Length = d1xd2.length();
-                float t = ((ray.getOrigin() - origin) * ray.getDirection()).dot(d1xd2) / (d1xd2Length * d1xd2Length);
+                auto t = ((ray.getOrigin() - origin) * ray.getDirection()).dot(d1xd2) / (d1xd2Length * d1xd2Length);
 
                 // Intersection that occurs behind the ray origin is not a valid intersection
                 if (t > 0 || Utilities::isZero(t)) {
@@ -60,25 +63,54 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        Vector getDirection() const {
+        types::Vector3D getDirection() const {
             return direction;
         }
 
         [[nodiscard]]
-        Vector3D<float> getOrigin() const {
+        types::Point3D getOrigin() const {
             return origin;
         }
 
         void generateGeometry() override {
+            // Line
+            vertices.push_back(origin);
+            auto endPoint = origin + static_cast<float>(geometryLength) * direction;
+            vertices.push_back(endPoint);
+            // Arrow
+            auto perpendicular = Utilities::getPerpendicular(direction);
+            // leg 1 is halfway vector between the ray direction and its normal
+            auto leg1= (perpendicular + direction) * 0.5f;
+            // leg 2 is halfway vector between the ray direction and the negative of its normal
+            auto leg2 = (-perpendicular + direction) * 0.5f;
+            // To orient the arrow facing away from the ray origin, negate the halfway vectors
+            vertices.push_back(endPoint + ((0.02f * geometryLength) * -leg1));
+            vertices.push_back(endPoint + ((0.02f * geometryLength) * -leg2));
         }
 
         void writeToFile(const std::filesystem::path &outputFile) override {
+            auto extension = outputFile.extension().string().substr(1);
+            if (extension == "OBJ" || extension == "obj") {
+                if (vertices.empty()) {
+                    generateGeometry();
+                }
+                std::ofstream ofs(outputFile.string());
+                for (auto& vertex : vertices) {
+                    ofs << "v " << vertex.x << ' ' << vertex.y << ' ' << vertex.z << std::endl;
+                }
+                ofs << "f 1 2" << std::endl;
+                ofs << "f 2 3" << std::endl;
+                ofs << "f 2 4" << std::endl;
 
-
+                ofs.close();
+            } else {
+                throw std::runtime_error("Only OBJ output is supported for rays");
+            }
         }
 
     private:
-        Point origin;
-        Vector direction;
+        types::Point3D origin;
+        types::Vector3D direction;
+        unsigned const geometryLength;
     };
 }
