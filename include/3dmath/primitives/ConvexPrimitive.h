@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Primitive.h"
+#include "../TypeAliases.h"
 #include "../Vector.h"
 #include <tuple>
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 namespace math3d {
     // A convex shape specified using an origin or reference point. Instances of
@@ -13,15 +15,13 @@ namespace math3d {
     class ConvexPrimitive : public Primitive {
 
     public:
-        using Tri = std::tuple<unsigned, unsigned, unsigned>;
-        using Tris = std::vector<Tri>;
 
     public:
-        explicit ConvexPrimitive(Point const& origin) // NOLINT
+        explicit ConvexPrimitive(types::Point3D const& origin) // NOLINT
         : origin(origin) {
         }
 
-        Tri orientTriangleNormalOutside(Tri&& tri) {
+        types::Tri orientTriangleNormalOutside(types::Tri&& tri) {
             auto correctNormalOrientation = vertices.at(std::get<0>(tri)) - origin;
             auto AB = vertices.at(std::get<1>(tri)) - vertices.at(std::get<0>(tri));
             auto AC = vertices.at(std::get<2>(tri)) - vertices.at(std::get<0>(tri));
@@ -35,12 +35,12 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        Point getOrigin() const {
+        types::Point3D getOrigin() const {
             return origin;
         }
 
         [[nodiscard]]
-        Tris const& getTris() {
+        types::Tris const& getTris() {
             return tris;
         }
 
@@ -50,14 +50,27 @@ namespace math3d {
             if (vertices.empty()) {
                 generateGeometry();
             }
-
             std::ofstream ofs(outputFile.string());
-            std::string vertexOutput;
-            std::stringstream sstream;
-            for (size_t i = 0; i < vertices.size(); i++) {
-                vertexOutput += "v";
-                vertexOutput
+            std::string buffer;
+            buffer.reserve(vertices.size() * sizeof(types::Vector3D) + tris.size() * sizeof(unsigned) * 3);
+            std::ostringstream stringStream;
+            auto clearStringStream = [&stringStream]() {
+                stringStream.str("");
+                stringStream.clear();
+            };
+            for (size_t i = 0; i < vertices.size(); ++i) {
+                stringStream << "v " << vertices.at(i).x << ' ' << vertices.at(i).y << ' ' << vertices.at(i).z << std::endl;
+                buffer += stringStream.str();
+                clearStringStream();
             }
+            for (size_t i = 0; i < tris.size(); ++i) {
+                stringStream << "f " << get<0>(tris.at(i)) + 1 << ' ' << get<1>(tris.at(i)) + 1 << ' ' << get<2>(tris.at(i)) + 1 << std::endl;
+                buffer += stringStream.str();
+                clearStringStream();
+            }
+            ofs.write(buffer.c_str(), buffer.size() * sizeof(char));
+
+            ofs.close();
         }
 
         void writeToSTL(std::filesystem::path const& outputFile) {
@@ -102,8 +115,8 @@ namespace math3d {
         }
 
     protected:
-        Point origin;
-        Tris tris;
+        types::Point3D origin;
+        types::Tris tris;
     };
 
 }
