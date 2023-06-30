@@ -72,6 +72,11 @@ namespace math3d {
         void generateGeometry() override {
         }
 
+        void writeToFile(const std::filesystem::path &outputFile) override {
+
+
+        }
+
     private:
         Point origin;
         Vector direction;

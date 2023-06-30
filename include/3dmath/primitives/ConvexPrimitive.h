@@ -44,6 +44,22 @@ namespace math3d {
             return tris;
         }
 
+
+    private:
+        void writeToOBJ(std::filesystem::path const& outputFile) {
+            if (vertices.empty()) {
+                generateGeometry();
+            }
+
+            std::ofstream ofs(outputFile.string());
+            std::string vertexOutput;
+            std::stringstream sstream;
+            for (size_t i = 0; i < vertices.size(); i++) {
+                vertexOutput += "v";
+                vertexOutput
+            }
+        }
+
         void writeToSTL(std::filesystem::path const& outputFile) {
             if (vertices.empty()) {
                 generateGeometry();
@@ -73,6 +89,16 @@ namespace math3d {
                 ofs.write(reinterpret_cast<char*>(&dummy), sizeof(unsigned short));
             }
             ofs.close();
+        }
+
+    public:
+        void writeToFile(std::filesystem::path const& outputFile) override {
+            auto extension = outputFile.extension().string().substr(1);
+            if (extension == "STL" || extension == "stl") {
+                writeToSTL(outputFile);
+            } else if (extension == "OBJ" || extension == "obj") {
+                writeToOBJ(outputFile);
+            }
         }
 
     protected:

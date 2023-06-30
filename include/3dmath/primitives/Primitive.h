@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <filesystem>
 #include "../Vector.h"
 #include "../SupportingTypes.h"
 
@@ -25,6 +26,7 @@ namespace math3d {
         std::vector<Vertex> const& getVertices() {
             return vertices;
         }
+        virtual void writeToFile(std::filesystem::path const& outputFile) = 0;
 
     protected:
        Vertices vertices;
