@@ -185,6 +185,13 @@ TEST(Vector, ScalarPreMultiplication) {
     ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }
 
+TEST(Vector, Negation) {
+    Vector3D<float> v{1,2,3};
+    ASSERT_FLOAT_EQ(-v.x, -1.f);
+    ASSERT_FLOAT_EQ(-v.y, -2.f);
+    ASSERT_FLOAT_EQ(-v.z, -3.f);
+}
+
 TEST(VectorConvenienceMembers, Construction) {
     Vector3D<float> v1;
     ASSERT_FLOAT_EQ(v1.x, 0);
