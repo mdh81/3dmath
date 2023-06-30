@@ -74,5 +74,5 @@ endforeach(test)
 # Enable test discovery for each test
 include(GoogleTest)
 foreach (test ${allTests})
-    gtest_discover_tests(${test} PROPERTIES ENVIRONMENT "outputDir=${CMAKE_BINARY_DIR}/outputFiles")
+    gtest_discover_tests(${test} PROPERTIES ENVIRONMENT "baselineDir=${CMAKE_SOURCE_DIR}/tests/baseline")
 endforeach(test)
