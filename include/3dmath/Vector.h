@@ -249,6 +249,14 @@ namespace math3d {
                 return result;
             }
 
+            Vector operator-() const {
+                Vector<T, Size> result;
+                for(auto i = 0; i < Size; ++i) {
+                    result[i] = -data[i];
+                }
+                return result;
+            }
+
             Vector& normalize() {
                 T norm = length();
                 for (size_t i = 0; i < Size; ++i) {
