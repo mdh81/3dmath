@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include "Vector.h"
 #include "Utilities.h"
+#include "TypeAliases.h"
 
 namespace math3d {
     template <typename T>
@@ -112,7 +113,7 @@ namespace math3d {
     };
     struct IntersectionResult {
         IntersectionStatus status;
-        Vector3D<float> intersectionPoint;
+        types::Vector3D intersectionPoint;
     };
 
 }

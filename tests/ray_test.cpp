@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "3dmath/primitives/Ray.h"
+#include "TestSupport.h"
 
 TEST(Ray, PerpendicularDistanceToPoint) {
     // Same direction
@@ -29,8 +30,13 @@ TEST(Ray, RayIntersectionBehindOrigin) {
 }
 
 TEST(Ray, RayIntersectionForSkewRays) {
-    math3d::Primitive::Point origin;
+    math3d::types::Point3D origin{math3d::constants::origin};
     math3d::Ray r1(origin, {0.707, 0.707, 0});
-    math3d::Ray r2(origin + math3d::Primitive::Point{10, 0, 10}, {-0.707, 0.707, 0});
+    math3d::Ray r2(origin + math3d::types::Point3D{10, 0, 10}, {-0.707, 0.707, 0});
     ASSERT_TRUE(r1.intersectWithRay(r2).status == math3d::IntersectionStatus::Skew);
+}
+
+TEST(Ray, RayGeometry) {
+    math3d::Ray r1(math3d::constants::origin, {0.707, 0.707, 0});
+    r1.writeToFile(math3d::test::TestSupport::getOutputDirectory() / "Ray.obj");
 }

@@ -10,6 +10,23 @@ namespace math3d::test {
 
     class TestSupport {
     public:
+        static std::filesystem::path getOutputDirectory() {
+           char* outputDir = getenv("outputDir");
+           if (!outputDir) {
+               return std::filesystem::temp_directory_path();
+           } else {
+               return std::filesystem::path(outputDir);
+           }
+        }
+
+        static std::filesystem::path getBaselineDirectory() {
+            char* baselineDir = getenv("baselineDir");
+            if (!baselineDir) {
+                throw std::runtime_error("No environment variable set for baseline directory!");
+            }
+            return std::filesystem::path(baselineDir);
+        }
+
         static bool areFilesEqual(std::filesystem::path const& file1,
                                   std::filesystem::path const& file2) {
 

@@ -50,11 +50,17 @@ TEST(Sphere, GeometryGenerationConnectivity) {
     }
 }
 
-TEST(Sphere, WriteToSTL) {
-    math3d::Sphere {{10, 10, 10}, 10, 16}.writeToSTL("Sphere.stl");
+TEST(Sphere, STLOutput) {
+    auto outputPath = math3d::test::TestSupport::getOutputDirectory() / "Sphere.stl";
+    auto baselinePath = math3d::test::TestSupport::getBaselineDirectory() / "Sphere.stl";
+    math3d::Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
     ASSERT_TRUE(
             math3d::test::TestSupport::areBinarySTLFilesEqual(
-                    "Sphere.stl",
-                    std::filesystem::path("baseline") / "Sphere.stl")) << "Geometry in STL file is different";
+                    outputPath, baselinePath)) << "Geometry in STL file is different";
+}
+
+TEST(Sphere, OBJOutput) {
+    auto outputPath = math3d::test::TestSupport::getOutputDirectory() / "Sphere.obj";
+    math3d::Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
 }
 

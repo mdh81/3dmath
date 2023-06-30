@@ -9,7 +9,7 @@ namespace math3d {
     class Plane : public ConvexPrimitive {
 
     public:
-        Plane(Point const& point, Vector const& normal, unsigned geometrySize = 10)
+        Plane(types::Point3D const& point, types::Vector3D const& normal, unsigned geometrySize = 1)
         : ConvexPrimitive(point)
         , normal(normal)
         , geometrySize(geometrySize) {
@@ -17,7 +17,7 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        Vector getNormal() const {
+        types::Vector3D getNormal() const {
             return normal;
         }
 
@@ -63,10 +63,10 @@ namespace math3d {
         }
 
         // Compute projection of the given point on this plane
-        Point getProjection(Point const& point) {
+        types::Point3D getProjection(types::Point3D const& point) {
             auto planeOriginToPoint = point - origin;
             auto distanceToPlane = planeOriginToPoint.dot(normal);
-            return planeOriginToPoint - distanceToPlane * normal;
+            return point + (distanceToPlane * -normal);
         }
 
         // TODO: Sketch this
@@ -92,7 +92,7 @@ namespace math3d {
         }
 
     private:
-        Vector normal;
+        types::Vector3D normal;
         unsigned const geometrySize;
 
     friend std::ostream& operator<<(std::ostream& os, Plane const& plane);

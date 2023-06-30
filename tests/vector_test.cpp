@@ -40,7 +40,7 @@ TEST(Vector, CopyConstruction) {
     ASSERT_FLOAT_EQ(10.0, data[1]);
     ASSERT_FLOAT_EQ(20.0, data[2]);
     ASSERT_FLOAT_EQ(30.0, data[3]);
-    // NOTE: Compiler protects against passing an instance of Vector whose
+    // NOTE: Compiler protects against passing an instance of Vector3D whose
     // dimensions are different to the copy constructor. Same for data type
 }
 
