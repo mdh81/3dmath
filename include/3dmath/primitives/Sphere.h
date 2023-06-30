@@ -11,7 +11,7 @@ namespace math3d {
     class Sphere : public ConvexPrimitive {
 
     public:
-        Sphere(Point const& center, float radius, unsigned resolution = 16)
+        Sphere(types::Point3D const& center, float radius, unsigned resolution = 16)
         : ConvexPrimitive(center)
         , radius(radius)
         , resolution(resolution) {
@@ -19,7 +19,7 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        Point getCenter() const {
+        types::Point3D getCenter() const {
             return origin;
         }
 
@@ -65,7 +65,7 @@ namespace math3d {
             // the resulting coordinate. To prevent this, we start with phi at a sensible value given our resolution
             // constraint.
             float phiIncrement = constants::oneEightyDegreesInRadians / static_cast<float>(resolution);
-            float thetaIncrement = constants::threeSixtyDegrees / static_cast<float>(resolution);
+            float thetaIncrement = constants::threeSixtyDegreesInRadians / static_cast<float>(resolution);
             float phi = phiIncrement, theta = 0.f;
 
             // Rotation by theta in spherical by convention rotates about the +z-axis. When theta is zero, the projection
