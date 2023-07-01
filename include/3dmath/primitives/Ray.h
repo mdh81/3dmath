@@ -112,5 +112,13 @@ namespace math3d {
         types::Point3D origin;
         types::Vector3D direction;
         unsigned const geometryLength;
+
+    friend std::ostream& operator<<(std::ostream& os, Ray const& ray);
     };
+
+
+    inline std::ostream& operator<<(std::ostream& os, Ray const& ray) {
+        os << "Origin " << ray.getOrigin() << " Direction " << ray.getDirection();
+        return os;
+    }
 }
