@@ -294,8 +294,8 @@ namespace math3d {
                 }
             }
 
-            float dot(Vector const& another) const {
-                float proj = 0.f;
+            T dot(Vector const& another) const {
+                T proj {};
                 for (size_t i = 0; i < Size; ++i)
                     proj += this->operator[](i) * another[i];
                 return proj;
