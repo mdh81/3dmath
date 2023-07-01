@@ -42,9 +42,52 @@ TEST(Plane, PointProjection) {
         auto projectedPoint = plane.getProjection(pointInSpace);
         auto planeVector = projectedPoint - planeOrigin;
         if (!math3d::Utilities::isZero(planeVector.dot(planeNormal))) {
-            std::cerr << "Plane projection failed for plane " << plane << " and point " << pointInSpace << std::endl;
+            std::cerr << "Plane " << plane << " point " << pointInSpace << std::endl;
             std::cerr << "Projected point " << projectedPoint << std::endl;
             std::cerr << "Dot product = " << planeVector.dot(planeNormal) << std::endl;
+            ASSERT_TRUE(false) << "Projection failure";
         }
     }
+}
+
+TEST(Plane, RayIntersection) {
+    for (auto sample = 1u; sample <= robustnessTestSampleCount; ++sample) {
+        math3d::Ray ray {math3d::Utilities::RandomPoint(), math3d::Utilities::RandomVector()};
+        math3d::Plane plane {math3d::Utilities::RandomPoint(), math3d::Utilities::RandomVector()};
+        auto result = plane.intersectWithRay(ray);
+        if (result.status == math3d::IntersectionStatus::Intersects) {
+            auto planeVector = result.intersectionPoint - plane.getOrigin();
+            if (!math3d::Utilities::isZero(planeVector.dot(plane.getNormal()))) {
+                std::cerr << "Plane: " << plane << " Ray: " << ray << std::endl;
+                ASSERT_TRUE(false) << "Ray plane intersection failure";
+            }
+        }
+    }
+}
+
+TEST(Plane, RayIntersectionEdgeCases) {
+    // Ray is parallel and ray origin is not on the plane
+    math3d::Plane plane1 {math3d::constants::origin, math3d::constants::yAxis};
+    math3d::Ray ray1 {math3d::types::Vector3D{math3d::constants::origin} + math3d::types::Point3D{0, 5, 0},
+                      math3d::constants::xAxis};
+    ASSERT_EQ(plane1.intersectWithRay(ray1).status, math3d::IntersectionStatus::NoIntersection);
+
+    // Ray is parallel and ray origin is on the plane
+    math3d::Ray ray2 {math3d::types::Vector3D{math3d::constants::origin},
+                      math3d::constants::xAxis};
+    auto result1 = plane1.intersectWithRay(ray2);
+    ASSERT_EQ(result1.status, math3d::IntersectionStatus::Intersects);
+    ASSERT_FLOAT_EQ(result1.intersectionPoint.x, 0);
+    ASSERT_FLOAT_EQ(result1.intersectionPoint.y, 0);
+    ASSERT_FLOAT_EQ(result1.intersectionPoint.z, 0);
+
+    // Ray is not parallel and the ray origin is on the plane
+    math3d::Plane plane2 {math3d::Utilities::RandomPoint(), math3d::Utilities::RandomVector()};
+    math3d::Ray ray3 {plane2.getOrigin(), math3d::Utilities::RandomVector()};
+
+    auto result2 = plane2.intersectWithRay(ray3);
+    ASSERT_EQ(result2.status, math3d::IntersectionStatus::Intersects);
+    ASSERT_FLOAT_EQ(result2.intersectionPoint.x, ray3.getOrigin().x);
+    ASSERT_FLOAT_EQ(result2.intersectionPoint.y, ray3.getOrigin().y);
+    ASSERT_FLOAT_EQ(result2.intersectionPoint.z, ray3.getOrigin().z);
 }

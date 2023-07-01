@@ -77,18 +77,28 @@ namespace math3d {
             IntersectionResult result;
             result.status = IntersectionStatus::Intersects;
 
+            auto isParallel = Utilities::isZero(ray.getDirection().dot(normal));
+
+            // Project the vector from ray to plane origin onto the plane normal
+            // to get the distance of the ray origin from the plane
             auto planeToRayOrigin = ray.getOrigin() - origin;
             auto distanceToRayOrigin = planeToRayOrigin.dot(normal);
-            // Check if point is on the plane
+
             if (Utilities::isZero(distanceToRayOrigin)) {
+                // If the ray origin is on the plane, then the ray origin is the intersection point
                 result.intersectionPoint = ray.getOrigin();
+            } else if (!isParallel) {
+                // If the ray origin is not on the plane, and the plane and ray are not parallel, then there is
+                // a true intersection at distance t from the ray origin
+                auto t = (origin - ray.getOrigin()).dot(normal) /
+                              ray.getDirection().dot(normal);
+                result.intersectionPoint = ray.getOrigin() + t * ray.getDirection();
             } else {
-                auto rayOriginProjectedOnPlane = ray.getOrigin() - distanceToRayOrigin * normal;
-                auto projectionOfRayOnPlaneNormal = ray.getDirection().dot(normal);
-
-
+                // If the ray origin is not on the plane, and the ray and plane are parallel, then there is
+                // no intersection
+                result.status = IntersectionStatus::NoIntersection;
             }
-            return IntersectionResult();
+            return result;
         }
 
     private:
