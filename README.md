@@ -18,8 +18,13 @@ This section lists proof for formulas used for different features implemented by
 ### Distance between a point and a ray
 ![Point ray distance](derivations/PointDistanceToRay.jpg)
 
-### Ray-Ray intersection
+### Ray-ray intersection
 ![Ray-Ray intersection](derivations/RayRayIntersection.jpg)
+
+### Ray-sphere intersection
+
+![Ray-Sphere intersection](derivations/RaySphereIntersection_1.jpg)
+![Ray-Sphere intersection](derivations/RaySphereIntersection_2.jpg)
 
 
 ### Orthographic Projection Matrix
