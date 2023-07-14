@@ -64,7 +64,7 @@ namespace math3d {
             return sqrt((x.length() * x.length()) + (y.length() * y.length()) + (z.length() * z.length()));
         }
 
-        [[nodiscard]] Vector3D<T> center() const {
+        [[nodiscard]] Vector3<T> center() const {
             return {x.center(), y.center(), z.center()};
         }
 

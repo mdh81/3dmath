@@ -2,6 +2,7 @@
 #include "3dmath/Vector.h"
 #include "TestSupport.h"
 #include "3dmath/primitives/Sphere.h"
+#include "3dmath/primitives/Ray.h"
 #include <vector>
 
 TEST(Sphere, Getters) {
@@ -62,5 +63,55 @@ TEST(Sphere, STLOutput) {
 TEST(Sphere, OBJOutput) {
     auto outputPath = math3d::test::TestSupport::getOutputDirectory() / "Sphere.obj";
     math3d::Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
+}
+
+TEST(Sphere, RayIntersection) {
+    // Ray origin inside the sphere
+    auto intersectionResult1 = math3d::Sphere {{10, 10, 10}, 10 }.intersectWithRay(
+            math3d::Ray{ {10, 10, 10}, {1, 0, 0}});
+    ASSERT_EQ(intersectionResult1.status, math3d::IntersectionStatus::Intersects);
+    ASSERT_FLOAT_EQ(intersectionResult1.intersectionPoint.x, 10);
+    ASSERT_FLOAT_EQ(intersectionResult1.intersectionPoint.y, 10);
+    ASSERT_FLOAT_EQ(intersectionResult1.intersectionPoint.z, 10);
+
+    // Ray origin outside the sphere and no intersection
+    auto intersectionResult2 = math3d::Sphere {{10, 10, 10}, 10 }.intersectWithRay(
+            math3d::Ray{ {0, 0, 0}, {1, 0, 0}});
+    ASSERT_EQ(intersectionResult2.status, math3d::IntersectionStatus::NoIntersection);
+
+    // Ray origin outside the sphere and there is an intersection
+    auto intersectionResult3 = math3d::Sphere {{10, 0, 0}, 1 }.intersectWithRay(
+            math3d::Ray{ {0, 0, 0}, {1, 0, 0}});
+    ASSERT_EQ(intersectionResult3.status, math3d::IntersectionStatus::Intersects);
+    ASSERT_FLOAT_EQ(intersectionResult3.intersectionPoint.x, 10);
+    ASSERT_FLOAT_EQ(intersectionResult3.intersectionPoint.y, 0);
+    ASSERT_FLOAT_EQ(intersectionResult3.intersectionPoint.z, 0);
+}
+
+TEST(Sphere, RayIntersectionRobustness) {
+
+    // Construct rays whose origin is within the sphere. All of those rays should intersect
+    // and the intersection point must be on the sphere
+    double sphereRadius = math3d::Utilities::RandomNumber();
+    math3d::types::Point3D sphereCenter = math3d::Utilities::RandomVector();
+    auto sphere = math3d::Sphere(sphereCenter, sphereRadius);
+    auto numSamples = 100;
+    for (auto i = 0; i < numSamples; ++i) {
+        math3d::types::Vector3D rayDirection = math3d::Utilities::RandomVector();
+        rayDirection.normalize();
+        auto ray = math3d::Ray(sphereCenter + rayDirection * math3d::Utilities::RandomNumber(0, sphereRadius), rayDirection);
+        auto result = sphere.intersectWithRay(ray);
+        ASSERT_EQ(result.status, math3d::IntersectionStatus::Intersects);
+        auto rayOriginToSphereCenter = sphereCenter - ray.getOrigin();
+        bool rayOriginBehindSphereCenter = (sphereCenter - ray.getOrigin()).dot(ray.getDirection()) < 0;
+        math3d::types::Point3D expectedIntersectionPoint;
+        if (rayOriginBehindSphereCenter) {
+            expectedIntersectionPoint = sphereCenter - (sphereRadius * rayDirection);
+        } else {
+            expectedIntersectionPoint = sphereCenter + (sphereRadius * rayDirection);
+        }
+        ASSERT_FLOAT_EQ((result.intersectionPoint - expectedIntersectionPoint).lengthSquared(), 0);
+    }
+
 }
 

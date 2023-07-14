@@ -160,7 +160,7 @@ TEST(Vector, BuildFromSTLVector) {
 
 
 TEST(Vector, WriteData) {
-    Vector3D<float> v3;
+    Vector3<float> v3;
     v3.getData()[0] = 5.f;
     v3.getData()[1] = 50.f;
     v3.getData()[2] = 500.f;
@@ -170,42 +170,42 @@ TEST(Vector, WriteData) {
 }
 
 TEST(Vector, ScalarMultiplication) {
-    Vector3D<float> v1({1, 2, 3});
-    Vector3D<float> v2 = v1 * 1.5f;
+    Vector3<float> v1({1, 2, 3});
+    Vector3<float> v2 = v1 * 1.5f;
     ASSERT_FLOAT_EQ(v2.x, 1.5f);
     ASSERT_FLOAT_EQ(v2.y, 3.0f);
     ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }
 
 TEST(Vector, ScalarPreMultiplication) {
-    Vector3D<float> v1({1, 2, 3});
-    Vector3D<float> v2 = 1.5f * v1;
+    Vector3<float> v1({1, 2, 3});
+    Vector3<float> v2 = 1.5f * v1;
     ASSERT_FLOAT_EQ(v2.x, 1.5f);
     ASSERT_FLOAT_EQ(v2.y, 3.0f);
     ASSERT_FLOAT_EQ(v2.z, 4.5f);
 }
 
 TEST(Vector, Negation) {
-    Vector3D<float> v{1,2,3};
+    Vector3<float> v{1, 2, 3};
     ASSERT_FLOAT_EQ(-v.x, -1.f);
     ASSERT_FLOAT_EQ(-v.y, -2.f);
     ASSERT_FLOAT_EQ(-v.z, -3.f);
 }
 
 TEST(VectorConvenienceMembers, Construction) {
-    Vector3D<float> v1;
+    Vector3<float> v1;
     ASSERT_FLOAT_EQ(v1.x, 0);
     ASSERT_FLOAT_EQ(v1.y, 0);
     ASSERT_FLOAT_EQ(v1.z, 0);
-    Vector3D<float> v2({10.f, 20.f, 30.f});
+    Vector3<float> v2({10.f, 20.f, 30.f});
     ASSERT_FLOAT_EQ(v2.x, 10.f);
     ASSERT_FLOAT_EQ(v2.y, 20.f);
     ASSERT_FLOAT_EQ(v2.z, 30.f);
 }
 
 TEST(VectorConvenienceMembers, CopyAssignment) {
-    Vector3D<float> v1({1, 0, 0});
-    Vector3D<float> v2({0, 1, 0});
+    Vector3<float> v1({1, 0, 0});
+    Vector3<float> v2({0, 1, 0});
     v2 = v1;
     ASSERT_FLOAT_EQ(v2.x, 1);
     ASSERT_FLOAT_EQ(v2.y, 0);
@@ -213,16 +213,16 @@ TEST(VectorConvenienceMembers, CopyAssignment) {
 }
 
 TEST(VectorConvenienceMembers, CopyConstruction) {
-    Vector3D<float> v1({1, 0, 0});
-    Vector3D<float> v2(v1);
+    Vector3<float> v1({1, 0, 0});
+    Vector3<float> v2(v1);
     ASSERT_FLOAT_EQ(v2.x, 1);
     ASSERT_FLOAT_EQ(v2.y, 0);
     ASSERT_FLOAT_EQ(v2.z, 0);
 }
 
 TEST(VectorConvenienceMembers, MoveConstruction) {
-    auto v =  Vector3D<float>{10, 20, 30};
-    Vector3D<float> v1(std::move(v));
+    auto v =  Vector3<float>{10, 20, 30};
+    Vector3<float> v1(std::move(v));
     ASSERT_FLOAT_EQ(v1.x, 10);
     ASSERT_FLOAT_EQ(v1.y, 20);
     ASSERT_FLOAT_EQ(v1.z, 30);
@@ -239,8 +239,8 @@ TEST(VectorConvenienceMembers, MoveConstruction) {
 }
 
 TEST(VectorConvenienceMembers, MoveAssignment) {
-    auto v =  Vector3D<float>{10, 20, 30};
-    Vector3D<float> v1;
+    auto v =  Vector3<float>{10, 20, 30};
+    Vector3<float> v1;
     v1 = std::move(v);
     ASSERT_FLOAT_EQ(v1.x, 10);
     ASSERT_FLOAT_EQ(v1.y, 20);
@@ -258,37 +258,37 @@ TEST(VectorConvenienceMembers, MoveAssignment) {
 }
 
 TEST(VectorConvenienceMembers, AddAssignmentOperator) {
-    auto v =  Vector3D<float>{10, 20, 30};
+    auto v =  Vector3<float>{10, 20, 30};
     v.x += 45.f;
     ASSERT_FLOAT_EQ(v.x, 55);
-    Vector3D<float> v1;
+    Vector3<float> v1;
     v1.x += v.x;
     ASSERT_FLOAT_EQ(v1.x, 55);
 }
 
 TEST(VectorConvenienceMembers, SubtractAssignmentOperator) {
-    auto v =  Vector3D<float>{10, 20, 30};
+    auto v =  Vector3<float>{10, 20, 30};
     v.x -= 45.f;
     ASSERT_FLOAT_EQ(v.x, -35);
-    Vector3D<float> v1;
+    Vector3<float> v1;
     v1.x -= v.x;
     ASSERT_FLOAT_EQ(v1.x, 35);
 }
 
 TEST(VectorConvenienceMembers, MultiplyAssignmentOperator) {
-    auto v =  Vector3D<float>{10, 20, 30};
+    auto v =  Vector3<float>{10, 20, 30};
     v.x *= 45.f;
     ASSERT_FLOAT_EQ(v.x, 450);
-    Vector3D<float> v1;
+    Vector3<float> v1;
     v.x *= v1.x;
     ASSERT_FLOAT_EQ(v1.x, 0);
 }
 
 TEST(VectorConvenienceMembers, DivideAssignmentOperator) {
-    auto v =  Vector3D<float>{10, 20, 30};
+    auto v =  Vector3<float>{10, 20, 30};
     v.x /= 45.f;
     ASSERT_FLOAT_EQ(v.x, 1/4.5);
-    Vector3D<float> v1;
+    Vector3<float> v1;
     v1.x /= v.x;
     ASSERT_FLOAT_EQ(v1.x, 0);
 }

@@ -11,18 +11,18 @@ namespace math3d {
     class PolarCoordinates {
 
     public:
-        PolarCoordinates(float radius, float theta)
+        PolarCoordinates(double radius, double theta)
         : radius(radius)
         , theta(theta) {
         }
 
         [[nodiscard]]
-        virtual Vector3D<float> getCartesianCoordinates() const {
+        virtual Vector3<double> getCartesianCoordinates() const {
             return { radius * cos(theta), radius * sin(theta), 0.f };
         }
 
         [[nodiscard]]
-        static PolarCoordinates convertCartesianCoordinates(Vector2D<float> const& point) {
+        static PolarCoordinates convertCartesianCoordinates(Vector2<float> const& point) {
             if (point.x < constants::tolerance && point.y < constants::tolerance) {
                 // Prevent UB in atan2 when y and x are zeroes
                 return {0.f, 0.f};
@@ -33,25 +33,25 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        float getRadius() const {
+        double getRadius() const {
             return radius;
         }
 
         [[nodiscard]]
-        float getTheta() const {
+        double getTheta() const {
             return theta;
         }
 
     protected:
-        float theta;
-        float radius;
+        double theta;
+        double radius;
     };
 
     // Describes a point P in space using the spherical coordinates (r, theta, phi)
     class SphericalCoordinates : public PolarCoordinates {
 
     public:
-        SphericalCoordinates(float radius, float theta, float phi)
+        SphericalCoordinates(double radius, double theta, double phi)
         : PolarCoordinates(radius, theta)
         , phi(phi) {
         }
@@ -60,14 +60,14 @@ namespace math3d {
         // See https://github.com/mdh81/3dmath#conversion-of-spherical-coordinates-to-cartesian-coordinates
         // for a derivation of this formula
         [[nodiscard]]
-        Vector3D<float> getCartesianCoordinates() const override {
+        Vector3<double> getCartesianCoordinates() const override {
             return { radius * sin(phi) * cos(theta),
                      radius * sin(phi) * sin(theta),
                      radius * cos(phi)};
         }
 
     private:
-        float phi;
+        double phi;
     friend std::ostream& operator<<(std::ostream&, SphericalCoordinates const&);
     };
 

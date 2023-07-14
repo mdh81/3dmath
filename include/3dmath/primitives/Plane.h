@@ -38,7 +38,7 @@ namespace math3d {
 
             // Create a quad
             // Upper right corner
-            auto halfSize = geometrySize * 0.5f;
+            auto halfSize = geometrySize * 0.5;
             vertices.emplace_back(origin +
                                  (halfSize * horizontalAxis) +
                                  (halfSize * verticalAxis));
