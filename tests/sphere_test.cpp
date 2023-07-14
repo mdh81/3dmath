@@ -1,12 +1,23 @@
 #include "gtest/gtest.h"
 #include "3dmath/Vector.h"
 #include "TestSupport.h"
-#include "3dmath/primitives/Sphere.h"
-#include "3dmath/primitives/Ray.h"
+#include "support/PrimitivesTestSupport.h"
 #include <vector>
 
+using namespace math3d::test;
+using namespace math3d;
+using namespace math3d::types;
+using namespace math3d::constants;
+
+// This is a hack to get the asString symbol included in the test executable
+// Making this symbol available allows lldb to call this function to help in debugging
+namespace {
+    Vector3D dummyVector;
+    auto dummyStr = dummyVector.asString();
+}
+
 TEST(Sphere, Getters) {
-    math3d::Sphere sphere({10.f, 10.f, 10.f}, 10.f);
+    Sphere sphere({10.f, 10.f, 10.f}, 10.f);
     ASSERT_FLOAT_EQ(sphere.getRadius(), 10) << "Sphere radius is incorrect";
     ASSERT_FLOAT_EQ(sphere.getCenter().x, 10.f) << "Sphere center is incorrect";
     ASSERT_FLOAT_EQ(sphere.getCenter().y, 10.f) << "Sphere center is incorrect";
@@ -16,14 +27,14 @@ TEST(Sphere, Getters) {
 
 
 TEST(Sphere, GeometryGenerationVertices) {
-    math3d::Sphere sphere({0.f, 0.f, 0.f}, 10.f);
+    Sphere sphere({0.f, 0.f, 0.f}, 10.f);
     sphere.generateGeometry();
     auto resolution = sphere.getResolution();
     ASSERT_EQ(sphere.getVertices().size(), resolution * (resolution - 1) + 2) << "Number of vertices in the sphere is wrong";
 }
 
 TEST(Sphere, GeometryGenerationConnectivity) {
-    math3d::Sphere sphere({10.f, 10.f, 10.f}, 10.f, 3);
+    Sphere sphere({10.f, 10.f, 10.f}, 10.f, 3);
     sphere.generateGeometry();
     auto resolution = sphere.getResolution();
     auto numCircles = resolution - 1;
@@ -52,66 +63,61 @@ TEST(Sphere, GeometryGenerationConnectivity) {
 }
 
 TEST(Sphere, STLOutput) {
-    auto outputPath = math3d::test::TestSupport::getOutputDirectory() / "Sphere.stl";
-    auto baselinePath = math3d::test::TestSupport::getBaselineDirectory() / "Sphere.stl";
-    math3d::Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
+    auto outputPath = test::TestSupport::getOutputDirectory() / "Sphere.stl";
+    auto baselinePath = test::TestSupport::getBaselineDirectory() / "Sphere.stl";
+    Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
     ASSERT_TRUE(
-            math3d::test::TestSupport::areBinarySTLFilesEqual(
+            test::TestSupport::areBinarySTLFilesEqual(
                     outputPath, baselinePath)) << "Geometry in STL file is different";
 }
 
 TEST(Sphere, OBJOutput) {
-    auto outputPath = math3d::test::TestSupport::getOutputDirectory() / "Sphere.obj";
-    math3d::Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
+    auto outputPath = test::TestSupport::getOutputDirectory() / "Sphere.obj";
+    Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
 }
 
-TEST(Sphere, RayIntersection) {
-    // Ray origin inside the sphere
-    auto intersectionResult1 = math3d::Sphere {{10, 10, 10}, 10 }.intersectWithRay(
-            math3d::Ray{ {10, 10, 10}, {1, 0, 0}});
-    ASSERT_EQ(intersectionResult1.status, math3d::IntersectionStatus::Intersects);
-    ASSERT_FLOAT_EQ(intersectionResult1.intersectionPoint.x, 10);
-    ASSERT_FLOAT_EQ(intersectionResult1.intersectionPoint.y, 10);
-    ASSERT_FLOAT_EQ(intersectionResult1.intersectionPoint.z, 10);
-
-    // Ray origin outside the sphere and no intersection
-    auto intersectionResult2 = math3d::Sphere {{10, 10, 10}, 10 }.intersectWithRay(
-            math3d::Ray{ {0, 0, 0}, {1, 0, 0}});
-    ASSERT_EQ(intersectionResult2.status, math3d::IntersectionStatus::NoIntersection);
-
-    // Ray origin outside the sphere and there is an intersection
-    auto intersectionResult3 = math3d::Sphere {{10, 0, 0}, 1 }.intersectWithRay(
-            math3d::Ray{ {0, 0, 0}, {1, 0, 0}});
-    ASSERT_EQ(intersectionResult3.status, math3d::IntersectionStatus::Intersects);
-    ASSERT_FLOAT_EQ(intersectionResult3.intersectionPoint.x, 10);
-    ASSERT_FLOAT_EQ(intersectionResult3.intersectionPoint.y, 0);
-    ASSERT_FLOAT_EQ(intersectionResult3.intersectionPoint.z, 0);
-}
-
-TEST(Sphere, RayIntersectionRobustness) {
-
-    // Construct rays whose origin is within the sphere. All of those rays should intersect
-    // and the intersection point must be on the sphere
-    double sphereRadius = math3d::Utilities::RandomNumber();
-    math3d::types::Point3D sphereCenter = math3d::Utilities::RandomVector();
-    auto sphere = math3d::Sphere(sphereCenter, sphereRadius);
-    auto numSamples = 100;
-    for (auto i = 0; i < numSamples; ++i) {
-        math3d::types::Vector3D rayDirection = math3d::Utilities::RandomVector();
-        rayDirection.normalize();
-        auto ray = math3d::Ray(sphereCenter + rayDirection * math3d::Utilities::RandomNumber(0, sphereRadius), rayDirection);
-        auto result = sphere.intersectWithRay(ray);
-        ASSERT_EQ(result.status, math3d::IntersectionStatus::Intersects);
-        auto rayOriginToSphereCenter = sphereCenter - ray.getOrigin();
-        bool rayOriginBehindSphereCenter = (sphereCenter - ray.getOrigin()).dot(ray.getDirection()) < 0;
-        math3d::types::Point3D expectedIntersectionPoint;
-        if (rayOriginBehindSphereCenter) {
-            expectedIntersectionPoint = sphereCenter - (sphereRadius * rayDirection);
-        } else {
-            expectedIntersectionPoint = sphereCenter + (sphereRadius * rayDirection);
-        }
-        ASSERT_FLOAT_EQ((result.intersectionPoint - expectedIntersectionPoint).lengthSquared(), 0);
+TEST(Sphere, RayIntersectionRayOriginInsideSphere) {
+    auto sphere = Sphere(Utilities::RandomPoint() , fabs(Utilities::RandomNumber()));
+    for (auto i = 0; i < test::TestSupport::numberOfSamplesForRobustnessTest; ++i) {
+        auto result = sphere.intersectWithRay(
+                {PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::Inside),
+                   Utilities::RandomVector()});
+        ASSERT_EQ(result.status, IntersectionStatus::Intersects);
+        ASSERT_FLOAT_EQ(Utilities::distanceBetween(result.intersectionPoint, sphere.getCenter()), sphere.getRadius());
     }
-
 }
 
+// TODO: Revise this. The vector from ray origin to sphere center is always parallel to the ray direction in this setup
+TEST(Sphere, RayIntersectionRayOriginOutsideSphereNoIntersection) {
+    auto sphereRadius = fabs(Utilities::RandomNumber());
+    types::Point3D sphereCenter = Utilities::RandomVector();
+    auto sphere = Sphere(sphereCenter, sphereRadius);
+    for (auto i = 0; i < test::TestSupport::numberOfSamplesForRobustnessTest; ++i) {
+        types::Vector3D rayDirection = Utilities::RandomVector();
+        rayDirection.normalize();
+        auto ray = Ray(sphereCenter +
+                rayDirection * Utilities::RandomNumber(sphereRadius + 1e-3, sphereRadius + 100), rayDirection);
+        auto result = sphere.intersectWithRay(ray);
+        ASSERT_EQ(result.status, IntersectionStatus::NoIntersection);
+    }
+}
+
+TEST(Sphere, RayIntersectionRayOriginOutsideSphereIntersection) {
+    auto sphereRadius = fabs(Utilities::RandomNumber());
+    Point3D sphereCenter = Utilities::RandomPoint();
+    auto sphere = Sphere(sphereCenter, sphereRadius);
+    auto numValidTests = 0;
+    while (numValidTests < TestSupport::numberOfSamplesForRobustnessTest) {
+        auto ray = Ray(PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::Outside), Utilities::RandomVector());
+        auto projection = ray.getDirection().dot( sphereCenter - ray.getOrigin());
+        auto shortestDistance = sqrt((sphereCenter - ray.getOrigin()).lengthSquared() - (projection*projection));
+        // If the ray origin is outside the sphere, intersection is only possible when the sphere is in front of the ray
+        // origin and the distance between the sphere center and the ray is below the sphere radius
+        if (projection > 0 && shortestDistance < sphereRadius) {
+            auto result = sphere.intersectWithRay(ray);
+            ASSERT_EQ(result.status, IntersectionStatus::Intersects);
+            ASSERT_FLOAT_EQ(Utilities::distanceBetween(result.intersectionPoint, sphereCenter), sphereRadius);
+            ++numValidTests;
+        }
+    }
+}

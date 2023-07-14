@@ -31,9 +31,23 @@ namespace math3d {
             return isZero(std::fabs(val2-val1));
         }
 
+        template<typename T1, typename T2>
+        [[nodiscard]]
+        static bool isLessThanOrEqual(T1 const val1, T2 const val2) {
+            return val1 < val2 || areEqual(val1, val2);
+        }
+
         template<typename T, unsigned size>
         [[nodiscard]] static bool areParallel(Vector<T, size> const& v1, Vector<T, size> const& v2) {
             return areEqual(v1.dot(v2), 1.0);
+        }
+
+        template<typename T, unsigned size>
+        [[nodiscard]] static T distanceBetween(Vector<T, size> const& point1, Vector<T, size> const& point2) {
+            auto dx = point1.x - point2.x;
+            auto dy = point1.y - point2.y;
+            auto dz = point1.z - point2.z;
+            return sqrt((dx*dx) + (dy*dy) + (dz*dz));
         }
 
         // TODO: Derive this
