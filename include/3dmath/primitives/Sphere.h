@@ -3,6 +3,7 @@
 #include "ConvexPrimitive.h"
 #include "../PolarCoordinates.h"
 #include "Ray.h"
+#include "../TypeAliases.h"
 #include <tuple>
 #include <numbers>
 
@@ -24,7 +25,7 @@ namespace math3d {
         }
 
         [[nodiscard]]
-        float getRadius() const {
+        double getRadius() const {
             return radius;
         }
 
@@ -58,7 +59,7 @@ namespace math3d {
 
             // Pole 1: At distance of radius from the center along +z
             vertices.emplace_back(origin +
-                                  SphericalCoordinates{radius, 0.f, 0.f}.getCartesianCoordinates());
+                                  SphericalCoordinates{radius, 0., 0.}.getCartesianCoordinates());
 
             // Circles between the two poles
             // In spherical coordinate system, phi = zero is a singularity, where theta has no influence on
@@ -140,12 +141,33 @@ namespace math3d {
             }
         }
 
+        // TODO: Sketch this
         IntersectionResult intersectWithRay(Ray const& ray) override {
-            return {};
+            IntersectionResult result;
+            result.status = IntersectionStatus::NoIntersection;
+
+            // Get the shortest distance between the sphere center and the ray
+            types::Vector3D rayOriginToCenter = getOrigin() - ray.getOrigin();
+            auto projection = rayOriginToCenter.dot(ray.getDirection());
+            auto projectionSqr = projection * projection;
+            auto perpendicularDistanceSqr = rayOriginToCenter.lengthSquared() - projectionSqr;
+            // If the distance to ray is within the radius of the sphere then we have a valid intersection
+            auto radiusSqr = radius * radius;
+            if (perpendicularDistanceSqr < radiusSqr || Utilities::areEqual(radiusSqr, perpendicularDistanceSqr)) {
+                // return the first intersection point in the direction of the ray
+                result.status = IntersectionStatus::Intersects;
+                // Projection of vector from intersection point to sphere origin
+                auto t1 = sqrt(radiusSqr - projectionSqr);
+                // Distance from ray origin to intersection point
+                auto t = projection - t1;
+                result.intersectionPoint = getOrigin() + (projection < 0 ? -t : t) * ray.getDirection();
+            }
+
+            return result;
         }
 
     protected:
-        float const radius;
+        double const radius;
         unsigned const resolution;
     };
 }

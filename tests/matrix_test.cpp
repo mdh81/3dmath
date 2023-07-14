@@ -181,9 +181,9 @@ TEST(Matrix, RowMajor) {
 }
 
 TEST(Matrix, VectorMultiplicationScaling) {
-    Vector4D<float> v {10, 10, 10, 1};
+    Vector4<float> v {10, 10, 10, 1};
     Matrix<float, 4, 4> scalingMatrix {{2, 0, 0, 0}, {0, 2, 0, 0}, {0, 0, 2, 0}, {0, 0, 0, 1}};
-    Vector4D<float> result = scalingMatrix * v;
+    Vector4<float> result = scalingMatrix * v;
     ASSERT_FLOAT_EQ(result.x, 20.f) << "Multiplication results are wrong. Incorrect x coordinate";
     ASSERT_FLOAT_EQ(result.y, 20.f) << "Multiplication results are wrong. Incorrect y coordinate";
     ASSERT_FLOAT_EQ(result.z, 20.f) << "Multiplication results are wrong. Incorrect z coordinate";
@@ -191,9 +191,9 @@ TEST(Matrix, VectorMultiplicationScaling) {
 }
 
 TEST(Matrix, VectorMultiplicationTranslation) {
-    Vector4D<float> v {10, 10, 10, 1};
+    Vector4<float> v {10, 10, 10, 1};
     Matrix<float, 4, 4> translationMatrix {{1, 0, 0, 10}, {0, 1, 0, 10}, {0, 0, 1, 10}, {0, 0, 0, 1}};
-    Vector4D<float> result = translationMatrix * v;
+    Vector4<float> result = translationMatrix * v;
     ASSERT_FLOAT_EQ(result.x, 20.f) << "Multiplication results are wrong. Incorrect x coordinate";
     ASSERT_FLOAT_EQ(result.y, 20.f) << "Multiplication results are wrong. Incorrect y coordinate";
     ASSERT_FLOAT_EQ(result.z, 20.f) << "Multiplication results are wrong. Incorrect z coordinate";
@@ -213,8 +213,8 @@ TEST(Matrix, OrthographicProjectionMatrixWithInvalidBounds) {
 
 TEST(Matrix, OrthographicProjectionMatrix) {
     OrthographicProjectionMatrix<float> testMatrix({{-10,-20,-30}, {10,20, 30}});
-    Vector4D<float> vertex { -10, -20, -30, 1 };
-    Vector4D<float> result = testMatrix * vertex;
+    Vector4<float> vertex {-10, -20, -30, 1 };
+    Vector4<float> result = testMatrix * vertex;
     ASSERT_FLOAT_EQ(-1, result.x) << "x-coordinate is incorrect after projection";
     ASSERT_FLOAT_EQ(-1, result.y) << "x-coordinate is incorrect after projection";
     ASSERT_FLOAT_EQ(+1, result.z) << "x-coordinate is incorrect after projection";

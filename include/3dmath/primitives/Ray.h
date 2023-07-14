@@ -22,10 +22,10 @@ namespace math3d {
 
         // See https://github.com/mdh81/3dmath/blob/master/derivations/PointDistanceToRay.jpg
         [[nodiscard]]
-        float distanceToPoint(types::Point3D const& point) const {
+        auto distanceToPoint(types::Point3D const& point) const {
             auto v = point - origin;
             auto lengthOfV = v.length();
-            float angle = acos(v.dot(direction) / lengthOfV);
+            auto angle = acos(v.dot(direction) / lengthOfV);
             return lengthOfV * sin(angle) ;
         }
 
@@ -50,8 +50,9 @@ namespace math3d {
                     result.intersectionPoint = origin + (t * direction);
 
                     // For the intersection to be valid, the intersection point should be on the ray, otherwise
-                    // the two rays are on parallel planes
-                    if (Utilities::isZero(this->distanceToPoint(result.intersectionPoint))) {
+                    // the two rays are on parallel planes. Use the second ray for this calculation since
+                    // the intersection point was computed using the first ray
+                    if (Utilities::isZero(ray.distanceToPoint(result.intersectionPoint))) {
                         result.status = IntersectionStatus::Intersects;
                     } else {
                         result.status = IntersectionStatus::Skew;
@@ -75,17 +76,18 @@ namespace math3d {
         void generateGeometry() override {
             // Line
             vertices.push_back(origin);
-            auto endPoint = origin + static_cast<float>(geometryLength) * direction;
+
+            auto endPoint = origin + static_cast<double>(geometryLength) * direction;
             vertices.push_back(endPoint);
             // Arrow
             auto perpendicular = Utilities::getPerpendicular(direction);
             // leg 1 is halfway vector between the ray direction and its normal
-            auto leg1= (perpendicular + direction) * 0.5f;
+            auto leg1= (perpendicular + direction) * 0.5;
             // leg 2 is halfway vector between the ray direction and the negative of its normal
-            auto leg2 = (-perpendicular + direction) * 0.5f;
+            auto leg2 = (-perpendicular + direction) * 0.5;
             // To orient the arrow facing away from the ray origin, negate the halfway vectors
-            vertices.push_back(endPoint + ((0.02f * geometryLength) * -leg1));
-            vertices.push_back(endPoint + ((0.02f * geometryLength) * -leg2));
+            vertices.push_back(endPoint + ((0.02 * geometryLength) * -leg1));
+            vertices.push_back(endPoint + ((0.02 * geometryLength) * -leg2));
         }
 
         void writeToFile(const std::filesystem::path &outputFile) override {

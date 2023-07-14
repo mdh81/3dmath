@@ -275,11 +275,15 @@ namespace math3d {
             }
 
             T length() const {
+                return static_cast<T> (sqrt(lengthSquared()));
+            }
+
+            T lengthSquared() const {
                 T result = 0;
                 for (size_t i = 0; i < Size; ++i) {
                     result += (data[i] * data[i]);
                 }
-                return static_cast<T> (sqrt(result));
+                return result;
             }
 
             void operator/=(const T scalar) {
@@ -303,6 +307,12 @@ namespace math3d {
             
             T const* getData() const { return data.data(); }
             T* getData() { return data.data(); }
+
+            std::string asString() const {
+                std::stringstream inputStringStream;
+                inputStringStream << '[' << x << ' ' << y << ' ' << z << ']';
+                return inputStringStream.str();
+            }
 
         protected:
             void print(std::ostream& os) const override {
@@ -328,12 +338,12 @@ namespace math3d {
     }
 
     template<typename T>
-    using Vector2D = Vector<T,2>;
+    using Vector2 = Vector<T,2>;
 
     template<typename T>
-    using Vector3D = Vector<T,3>;
+    using Vector3 = Vector<T,3>;
 
     template<typename T>
-    using Vector4D = Vector<T,4>;
+    using Vector4 = Vector<T,4>;
 
 }
