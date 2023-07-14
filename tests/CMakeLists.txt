@@ -7,6 +7,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+add_compile_options(-g -DLLDB)
+
 add_executable(
     matrix_test.test
     matrix_test.cpp)
@@ -64,6 +66,8 @@ foreach (test ${allTests})
         gtest_main
         gmock_main
     )
+
+
 endforeach(test)
 
 # Enable test discovery for each test

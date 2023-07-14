@@ -10,6 +10,8 @@ namespace math3d::test {
 
     class TestSupport {
     public:
+        static constexpr unsigned numberOfSamplesForRobustnessTest = 100;
+
         static std::filesystem::path getOutputDirectory() {
            char* outputDir = getenv("outputDir");
            if (!outputDir) {

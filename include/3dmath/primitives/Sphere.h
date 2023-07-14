@@ -141,26 +141,62 @@ namespace math3d {
             }
         }
 
-        // TODO: Sketch this
+        // Refer to
+        // 1. https://github.com/mdh81/3dmath/raw/master/derivations/RaySphereIntersection_1.jpg
+        // 2. https://github.com/mdh81/3dmath/raw/master/derivations/RaySphereIntersection_2.jpg
+        // to see the derivation of the formula used in this method
         IntersectionResult intersectWithRay(Ray const& ray) override {
             IntersectionResult result;
-            result.status = IntersectionStatus::NoIntersection;
 
-            // Get the shortest distance between the sphere center and the ray
+            auto radiusSqr = radius * radius;
             types::Vector3D rayOriginToCenter = getOrigin() - ray.getOrigin();
+            auto rayOriginToCenterLengthSqr = rayOriginToCenter.lengthSquared();
+
+            // Special case: If the ray origin is on the sphere, just return the ray origin as the intersection point
+            // ray direction does not matter in this case
+            if (Utilities::areEqual(rayOriginToCenterLengthSqr, radiusSqr)) {
+                result.status = IntersectionStatus::Intersects;
+                result.intersectionPoint = ray.getOrigin();
+                return result;
+            }
+
+            // Compute projection of the vector from ray origin to sphere center on the ray
             auto projection = rayOriginToCenter.dot(ray.getDirection());
             auto projectionSqr = projection * projection;
-            auto perpendicularDistanceSqr = rayOriginToCenter.lengthSquared() - projectionSqr;
-            // If the distance to ray is within the radius of the sphere then we have a valid intersection
-            auto radiusSqr = radius * radius;
-            if (perpendicularDistanceSqr < radiusSqr || Utilities::areEqual(radiusSqr, perpendicularDistanceSqr)) {
+
+            // Compute the shortest distance between sphere center and the ray
+            auto perpendicularDistanceSqr = rayOriginToCenterLengthSqr - projectionSqr;
+
+            bool intersects =
+                    (projection > 0 && Utilities::isLessThanOrEqual(perpendicularDistanceSqr, radiusSqr)) ||
+                    (projection < 0 && Utilities::isLessThanOrEqual(rayOriginToCenterLengthSqr, radiusSqr));
+
+            if (intersects) {
                 // return the first intersection point in the direction of the ray
                 result.status = IntersectionStatus::Intersects;
-                // Projection of vector from intersection point to sphere origin
-                auto t1 = sqrt(radiusSqr - projectionSqr);
-                // Distance from ray origin to intersection point
-                auto t = projection - t1;
-                result.intersectionPoint = getOrigin() + (projection < 0 ? -t : t) * ray.getDirection();
+
+                // Compute distance between intersection point and projected sphere center
+                auto beta = sqrt(radiusSqr - perpendicularDistanceSqr);
+
+                // Compute distance between ray origin and intersection point
+
+                bool sphereCenterIsBehindRayOrigin = projection < 0;
+                bool rayOriginIsInsideSphere = rayOriginToCenterLengthSqr < radiusSqr;
+                auto alpha = 1.0;
+
+                // There are three possible relationships between the ray origin and the sphere center when there is an intersection
+                if (rayOriginIsInsideSphere && sphereCenterIsBehindRayOrigin) {
+                    alpha = beta - fabs(projection);
+                } else if (rayOriginIsInsideSphere && !sphereCenterIsBehindRayOrigin) {
+                    alpha = projection + beta;
+                } else if (!rayOriginIsInsideSphere && !sphereCenterIsBehindRayOrigin) {
+                    alpha = projection - beta;
+                }
+
+                // Compute the intersection point using distance from ray origin
+                result.intersectionPoint = ray.getOrigin() + alpha * ray.getDirection();
+            } else {
+                result.status = IntersectionStatus::NoIntersection;
             }
 
             return result;
