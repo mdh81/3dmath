@@ -82,23 +82,30 @@ TEST(Sphere, RayIntersectionRayOriginInsideSphere) {
         auto result = sphere.intersectWithRay(
                 {PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::Inside),
                    Utilities::RandomVector()});
-        ASSERT_EQ(result.status, IntersectionStatus::Intersects);
-        ASSERT_FLOAT_EQ(Utilities::distanceBetween(result.intersectionPoint, sphere.getCenter()), sphere.getRadius());
+        ASSERT_EQ(result.status, IntersectionStatus::Intersects) << "All rays from within the sphere should intersect the sphere";
+        ASSERT_FLOAT_EQ(
+                Utilities::distanceBetween(result.intersectionPoint, sphere.getCenter()),
+                sphere.getRadius()) << "Intersection point must be on the sphere";
     }
 }
 
-// TODO: Revise this. The vector from ray origin to sphere center is always parallel to the ray direction in this setup
 TEST(Sphere, RayIntersectionRayOriginOutsideSphereNoIntersection) {
     auto sphereRadius = fabs(Utilities::RandomNumber());
     types::Point3D sphereCenter = Utilities::RandomVector();
     auto sphere = Sphere(sphereCenter, sphereRadius);
-    for (auto i = 0; i < test::TestSupport::numberOfSamplesForRobustnessTest; ++i) {
-        types::Vector3D rayDirection = Utilities::RandomVector();
-        rayDirection.normalize();
-        auto ray = Ray(sphereCenter +
-                rayDirection * Utilities::RandomNumber(sphereRadius + 1e-3, sphereRadius + 100), rayDirection);
-        auto result = sphere.intersectWithRay(ray);
-        ASSERT_EQ(result.status, IntersectionStatus::NoIntersection);
+    unsigned numValidTests = 0;
+    while (numValidTests < TestSupport::numberOfSamplesForRobustnessTest) {
+        types::Vector3D randomDirection = Utilities::RandomVector();
+        auto rayOrigin = PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::Outside);
+        auto rayDirection = Utilities::RandomVector();;
+        auto rayOriginToSphereCenter = (sphereCenter - rayOrigin);
+        auto proj = rayOriginToSphereCenter.dot(rayDirection);
+        auto distanceToRaySqr = rayOriginToSphereCenter.lengthSquared() - (proj * proj);
+        if (distanceToRaySqr > sphereRadius*sphereRadius) {
+            auto result = sphere.intersectWithRay({rayOrigin, rayDirection});
+            ASSERT_EQ(result.status, IntersectionStatus::NoIntersection) << "Invalid intersection";
+            ++numValidTests;
+        }
     }
 }
 
@@ -115,9 +122,30 @@ TEST(Sphere, RayIntersectionRayOriginOutsideSphereIntersection) {
         // origin and the distance between the sphere center and the ray is below the sphere radius
         if (projection > 0 && shortestDistance < sphereRadius) {
             auto result = sphere.intersectWithRay(ray);
-            ASSERT_EQ(result.status, IntersectionStatus::Intersects);
-            ASSERT_FLOAT_EQ(Utilities::distanceBetween(result.intersectionPoint, sphereCenter), sphereRadius);
+            ASSERT_EQ(result.status, IntersectionStatus::Intersects) << "Intersection expected";
+            ASSERT_FLOAT_EQ(
+                    Utilities::distanceBetween(result.intersectionPoint, sphereCenter),
+                    sphereRadius) << "Intersection point has to be on the sphere";
             ++numValidTests;
         }
+    }
+}
+
+TEST(Sphere, RayIntersectionRayOriginOnSphere) {
+    auto sphereRadius = fabs(Utilities::RandomNumber());
+    types::Point3D sphereCenter = Utilities::RandomVector();
+    auto sphere = Sphere(sphereCenter, sphereRadius);
+    for (auto i = 0; i < test::TestSupport::numberOfSamplesForRobustnessTest; ++i) {
+        types::Vector3D randomDirection = Utilities::RandomVector();
+        auto rayOrigin = PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::On);
+        auto rayDirection = Utilities::RandomVector();;
+        auto result = sphere.intersectWithRay({rayOrigin, rayDirection});
+        ASSERT_EQ(result.status, IntersectionStatus::Intersects) << "Intersection expected when ray origin is on the sphere";
+        ASSERT_FLOAT_EQ(
+                Utilities::distanceBetween(result.intersectionPoint, sphereCenter),
+                sphereRadius) << "Intersection point has to be on the sphere";
+        ASSERT_FLOAT_EQ(
+                Utilities::distanceBetween(result.intersectionPoint, rayOrigin),
+                0) << "Intersection point and ray origin have to match";
     }
 }
