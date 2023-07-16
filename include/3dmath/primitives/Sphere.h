@@ -34,6 +34,7 @@ namespace math3d {
             return resolution;
         }
 
+        // Refer to https://github.com/mdh81/3dmath/blob/master/derivations/Spherical_to_Cartesian.jpg
         void generateGeometry() override {
             if (!vertices.empty()) {
                 std::cerr << "Warning: Skipping geometry generation. Geometry was already generated" << std::endl;
@@ -179,7 +180,6 @@ namespace math3d {
                 auto beta = sqrt(radiusSqr - perpendicularDistanceSqr);
 
                 // Compute distance between ray origin and intersection point
-
                 bool sphereCenterIsBehindRayOrigin = projection < 0;
                 bool rayOriginIsInsideSphere = rayOriginToCenterLengthSqr < radiusSqr;
                 auto alpha = 1.0;
