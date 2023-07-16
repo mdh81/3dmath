@@ -23,6 +23,10 @@ Used in https://tinyurl.com/distanceToRay
 Used in https://tinyurl.com/rayRayIntersection
 ![Ray-Ray intersection](derivations/RayRayIntersection.jpg)
 
+### Ray-plane intersection
+Used in https://tinyurl.com/PlaneRayIntersection
+![Ray-Ray intersection](derivations/RayPlaneIntersection.jpg)
+
 ### Ray-sphere intersection
 Used in https://tinyurl.com/SphereRayIntersection
 ![Ray-Sphere intersection](derivations/RaySphereIntersection_1.jpg)
