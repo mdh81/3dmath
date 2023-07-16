@@ -37,7 +37,6 @@ class Matrix {
     
     public:
 
-
         // Default construction
         Matrix() : m_data(new DataType[numRows * numCols]) {
             for(size_t row = 0; row < numRows; ++row) {
