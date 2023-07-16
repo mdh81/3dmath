@@ -15,8 +15,6 @@ namespace math3d {
     class ConvexPrimitive : public Primitive {
 
     public:
-
-    public:
         explicit ConvexPrimitive(types::Point3D const& origin) // NOLINT
         : origin(origin) {
         }
