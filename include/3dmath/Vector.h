@@ -124,7 +124,7 @@ namespace math3d {
 
         // These macros prevent code duplication in vector's constructors and operators
         #define SET_CONVENIENCE_MEMBERS           \
-            switch (Size) {                    \
+            switch (Size) {                       \
             case 4:                               \
                 w.bind(data[3]);                  \
             case 3:                               \
