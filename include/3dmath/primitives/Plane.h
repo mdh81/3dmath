@@ -69,7 +69,7 @@ namespace math3d {
             return point + (distanceToPlane * -normal);
         }
 
-        // TODO: Sketch this
+        // Refer to https://github.com/mdh81/3dmath/blob/master/derivations/RayPlaneIntersection.jpg
         IntersectionResult intersectWithRay(const Ray &ray) override {
             // A ray and a plane cannot intersect when the ray is parallel to the plane
             // and the ray origin is not on the plane. Otherwise, the ray will
