@@ -184,7 +184,7 @@ namespace math3d {
                 return *this;
             }
 
-            // Conversion constructor to build from a STL vector
+            // Conversion constructor to build from an STL vector
             explicit Vector(std::vector<T> const& v) {
                 if (Size != v.size()) {
                     throw std::invalid_argument("Dimension mismatch: Vector's dimension is " +
