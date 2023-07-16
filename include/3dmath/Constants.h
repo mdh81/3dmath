@@ -3,8 +3,8 @@
 #include <numbers>
 
 // List of constants used in this library
-// NOTE: Don't include any constant that's dependent on this library's data-structures
-// to avoid circular dependencies
+// NOTE: Don't include any constant here that is dependent on this
+// library's data-structures to avoid circular dependencies
 namespace math3d::constants {
     constexpr auto threeSixtyDegreesInRadians= 2 * std::numbers::pi;
     constexpr auto oneEightyDegreesInRadians = std::numbers::pi;
