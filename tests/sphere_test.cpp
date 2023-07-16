@@ -11,6 +11,7 @@ using namespace math3d::constants;
 
 // This is a hack to get the asString symbol included in the test executable
 // Making this symbol available allows lldb to call this function to help in debugging
+// asString outputs vector in a format that can be consumed by octave
 namespace {
     Vector3D dummyVector;
     auto dummyStr = dummyVector.asString();
