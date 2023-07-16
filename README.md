@@ -12,23 +12,28 @@ This library uses the standard right-handed coordinate system
 This section lists proof for formulas used for different features implemented by this library 
 
 ### Conversion of spherical coordinates to cartesian coordinates
-Used in https://tinyurl.com/sphere-geometry 
+[Sphere::generateGeometry](https://tinyurl.com/sphere-geometry)  
+
 ![Derivation of spherical to cartesian](derivations/Spherical_to_Cartesian.jpg)
 
 ### Distance between a point and a ray
-Used in https://tinyurl.com/distanceToRay
+[Ray::distanceToPoint](https://tinyurl.com/distanceToRay)  
+
 ![Point ray distance](derivations/PointDistanceToRay.jpg)
 
 ### Ray-ray intersection
-Used in https://tinyurl.com/rayRayIntersection
+[Ray::intersectWithRay](https://tinyurl.com/rayRayIntersection)  
+
 ![Ray-Ray intersection](derivations/RayRayIntersection.jpg)
 
 ### Ray-plane intersection
-Used in https://tinyurl.com/PlaneRayIntersection
+[Plane::intersectWithRay](https://tinyurl.com/PlaneRayIntersection)  
+
 ![Ray-Ray intersection](derivations/RayPlaneIntersection.jpg)
 
 ### Ray-sphere intersection
-Used in https://tinyurl.com/SphereRayIntersection
+[Sphere::intersectWithRay](https://tinyurl.com/SphereRayIntersection)  
+
 ![Ray-Sphere intersection](derivations/RaySphereIntersection_1.jpg)
 ![Ray-Sphere intersection](derivations/RaySphereIntersection_2.jpg)
 
