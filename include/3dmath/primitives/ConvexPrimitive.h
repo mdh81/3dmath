@@ -20,7 +20,7 @@ namespace math3d {
         }
 
         types::Tri orientTriangleNormalOutside(types::Tri&& tri) {
-            auto correctNormalOrientation = vertices.at(std::get<0>(tri)) - origin;
+            auto correctNormalOrientation = vertices.at(std::get<0>(tri)) - Utilities::asFloat(origin);
             auto AB = vertices.at(std::get<1>(tri)) - vertices.at(std::get<0>(tri));
             auto AC = vertices.at(std::get<2>(tri)) - vertices.at(std::get<0>(tri));
             auto normal = AB * AC;

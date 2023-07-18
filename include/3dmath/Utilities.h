@@ -66,6 +66,14 @@ namespace math3d {
             }
         }
 
+        static float asFloat(double value) {
+            return std::round(value / constants::tolerance) * constants::tolerance;
+        }
+
+        static Vector3<float> asFloat(Vector3<double> const& doubleVector) {
+            return {asFloat(doubleVector.x), asFloat(doubleVector.y), asFloat(doubleVector.z)};
+        }
+
         static constexpr double defaultRandomNumberRangeMin = -100;
         static constexpr double defaultRandomNumberRangeMax = +100;
 
