@@ -192,6 +192,11 @@ TEST(Vector, Negation) {
     ASSERT_FLOAT_EQ(-v.z, -3.f);
 }
 
+TEST(Vector, AsString) {
+    Vector3<int> v{1, 2, 3};
+    ASSERT_STREQ(v.asString().c_str(), "[1 2 3]");
+}
+
 TEST(VectorConvenienceMembers, Construction) {
     Vector3<float> v1;
     ASSERT_FLOAT_EQ(v1.x, 0);

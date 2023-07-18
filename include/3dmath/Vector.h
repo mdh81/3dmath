@@ -309,9 +309,9 @@ namespace math3d {
             T* getData() { return data.data(); }
 
             std::string asString() const {
-                std::stringstream inputStringStream;
-                inputStringStream << '[' << x << ' ' << y << ' ' << z << ']';
-                return inputStringStream.str();
+                return '[' + std::to_string(x) + ' ' +
+                             std::to_string(y) + ' ' +
+                             std::to_string(z) + ']';
             }
 
         protected:
