@@ -6,6 +6,8 @@
 #include <memory>
 #include "3dmath/Constants.h"
 
+// TODO: Move to support directory
+
 namespace math3d::test {
 
     class TestSupport {
