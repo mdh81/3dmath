@@ -39,23 +39,23 @@ namespace math3d {
             // Create a quad
             // Upper right corner
             auto halfSize = geometrySize * 0.5;
-            vertices.emplace_back(origin +
+            vertices.emplace_back(Utilities::asFloat(origin +
                                  (halfSize * horizontalAxis) +
-                                 (halfSize * verticalAxis));
+                                 (halfSize * verticalAxis)));
             // Upper left corner
-            vertices.emplace_back(origin -
+            vertices.emplace_back(Utilities::asFloat(origin -
                                  (halfSize * horizontalAxis) +
-                                 (halfSize * verticalAxis));
+                                 (halfSize * verticalAxis)));
 
             // Lower left corner
-            vertices.emplace_back(origin -
+            vertices.emplace_back(Utilities::asFloat(origin -
                                   (halfSize * horizontalAxis) -
-                                  (halfSize * verticalAxis));
+                                  (halfSize * verticalAxis)));
 
             // Lower right corner
-            vertices.emplace_back(origin +
+            vertices.emplace_back(Utilities::asFloat(origin +
                                   (halfSize * horizontalAxis) -
-                                  (halfSize * verticalAxis));
+                                  (halfSize * verticalAxis)));
 
             // Split the quad into two tris
             tris.emplace_back(0, 1, 2);

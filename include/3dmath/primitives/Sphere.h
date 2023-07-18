@@ -59,8 +59,8 @@ namespace math3d {
             // circle
 
             // Pole 1: At distance of radius from the center along +z
-            vertices.emplace_back(origin +
-                                  SphericalCoordinates{radius, 0., 0.}.getCartesianCoordinates());
+            vertices.emplace_back(Utilities::asFloat(origin +
+                                  SphericalCoordinates{radius, 0., 0.}.getCartesianCoordinates()));
 
             // Circles between the two poles
             // In spherical coordinate system, phi = zero is a singularity, where theta has no influence on
@@ -77,8 +77,8 @@ namespace math3d {
             // to the xy plane
             for (unsigned yzCircle = 1; yzCircle <= numCircles; ++yzCircle) {
                 for (unsigned xyCircle = 1; xyCircle <= numCircleVertices; ++xyCircle) {
-                    vertices.emplace_back(origin +
-                                          SphericalCoordinates{radius, theta, phi}.getCartesianCoordinates());
+                    vertices.emplace_back(Utilities::asFloat(origin +
+                                          SphericalCoordinates{radius, theta, phi}.getCartesianCoordinates()));
                     theta += thetaIncrement;
                 }
                 theta = 0.f;
@@ -86,8 +86,8 @@ namespace math3d {
             }
 
             // Pole 2: At distance of radius from the center along -z
-            vertices.emplace_back(origin +
-                                  SphericalCoordinates{radius, 0.f, constants::oneEightyDegreesInRadians}.getCartesianCoordinates());
+            vertices.emplace_back(Utilities::asFloat(origin +
+                                  SphericalCoordinates{radius, 0.f, constants::oneEightyDegreesInRadians}.getCartesianCoordinates()));
 
             // Generate faces
             // NOTE: In the two lambdas below, indices are vertex indices
@@ -205,5 +205,12 @@ namespace math3d {
     protected:
         double const radius;
         unsigned const resolution;
+
+    friend std::ostream& operator<<(std::ostream& os, Sphere const&);
     };
+
+    std::ostream& operator<<(std::ostream& os, Sphere const& sphere) {
+        os << "Radius " << sphere.getRadius() << " Center " << sphere.getCenter();
+        return os;
+    }
 }
