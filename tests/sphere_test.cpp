@@ -97,13 +97,13 @@ TEST(Sphere, RayIntersectionRayOriginOutsideSphereNoIntersection) {
     unsigned numValidTests = 0;
     while (numValidTests < TestSupport::numberOfSamplesForRobustnessTest) {
         types::Vector3D randomDirection = Utilities::RandomVector();
-        auto rayOrigin = PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::Outside);
-        auto rayDirection = Utilities::RandomVector();;
-        auto rayOriginToSphereCenter = (sphereCenter - rayOrigin);
-        auto proj = rayOriginToSphereCenter.dot(rayDirection);
+        auto ray = Ray{PrimitivesTestSupport::getPointRelativeToSphere(sphere, PrimitivesTestSupport::Containment::Outside),
+                       Utilities::RandomVector()};
+        auto rayOriginToSphereCenter = (sphereCenter - ray.getOrigin());
+        auto proj = rayOriginToSphereCenter.dot(ray.getDirection());
         auto distanceToRaySqr = rayOriginToSphereCenter.lengthSquared() - (proj * proj);
         if (distanceToRaySqr > sphereRadius*sphereRadius) {
-            auto result = sphere.intersectWithRay({rayOrigin, rayDirection});
+            auto result = sphere.intersectWithRay(ray);
             ASSERT_EQ(result.status, IntersectionStatus::NoIntersection) << "Invalid intersection";
             ++numValidTests;
         }
