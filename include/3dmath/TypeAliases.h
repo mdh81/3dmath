@@ -8,6 +8,11 @@ namespace math3d::types {
     using Vector3D = Vector3<double>;
     using Vertex = Vector3<float>;
     using Vertices = std::vector<Vertex>;
-    using Tri = std::tuple<unsigned, unsigned, unsigned>;
+    struct Tri : public std::array<unsigned, 3> {
+        // Emplace support constructor
+        Tri(unsigned a, unsigned b, unsigned c)
+        : std::array<unsigned, 3>{a, b, c} {
+        }
+    };
     using Tris = std::vector<Tri>;
 }
