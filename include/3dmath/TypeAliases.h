@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <tuple>
+#include <array>
 #include "Vector.h"
 
 namespace math3d::types {
