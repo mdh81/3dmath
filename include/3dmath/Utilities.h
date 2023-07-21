@@ -16,6 +16,12 @@ namespace math3d {
 
         template<typename T>
         [[nodiscard]]
+        static T asRadians(T degrees) {
+            return degrees / constants::radiansToDegrees;
+        };
+
+        template<typename T>
+        [[nodiscard]]
         static bool isZero(T const val) {
             static_assert(std::is_floating_point<T>(),
                           "Only floating point types can be compared to zero using this function");
