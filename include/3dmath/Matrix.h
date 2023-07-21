@@ -38,10 +38,10 @@ class Matrix {
     public:
 
         // Default construction
-        Matrix() : m_data(new DataType[numRows * numCols]) {
+        Matrix() : data(new DataType[numRows * numCols]) {
             for(size_t row = 0; row < numRows; ++row) {
                 for (size_t col = 0; col < numCols; ++col) {
-                    m_data[row * numCols + col] = DataType{0};
+                    data[row * numCols + col] = DataType{0};
                 }
             }
         }
@@ -55,9 +55,9 @@ class Matrix {
         Matrix(const std::initializer_list<std::initializer_list<DataType>>& initList, const Order& order = Order::RowMajor) {
             
             // allocate memory
-            m_data.reset(new DataType[numRows*numCols]);
+            data.reset(new DataType[numRows * numCols]);
             
-            // read and store data in m_data as per the format of the input data 
+            // read and store data in data as per the format of the input data
             order == Order::ColumnMajor ? readColumnMajor(initList) : readRowMajor(initList);
         }
         
@@ -74,19 +74,19 @@ class Matrix {
 
         // Move construction
         Matrix(Matrix&& other)  noexcept {
-            m_data = std::move(other.m_data);
+            data = std::move(other.data);
         }
         
         // Move assignment
         Matrix& operator=(Matrix&& other)  noexcept {
-            m_data = std::move(other.m_data);
+            data = std::move(other.data);
         }
         
         // Destructor 
         ~Matrix()  = default;
 
         operator DataType const*() { // NOLINT: Implicit conversion is the point of defining this operator
-            return m_data.get();
+            return data.get();
         }
 
         // Vector multiplication
@@ -94,7 +94,7 @@ class Matrix {
             Vector<DataType, numRows> outputVector;
             for (auto row = 0u; row < numRows; ++row) {
                 for (auto col = 0u; col < numCols; ++col) {
-                    outputVector[row] += m_data[col * numRows + row] * inputVector[col];
+                    outputVector[row] += data[col * numRows + row] * inputVector[col];
                 }
             }
             return outputVector;
@@ -112,35 +112,57 @@ class Matrix {
 
         [[nodiscard]]
         const DataType* getData() const {
-            return m_data.get();
+            return data.get();
         }
 
         [[nodiscard]]
-        Vector<float, numCols> operator[](unsigned columnIndex) {
+        Vector<float, numCols> getColumn(unsigned columnIndex) const {
             Vector<float, numCols> columnVector;
             for (size_t row = 0; row < numRows; ++row) {
-                columnVector[row] = m_data[columnIndex * numRows + row];
+                columnVector[row] = data[columnIndex * numRows + row];
             }
             return columnVector;
         }
 
         [[nodiscard]]
-        Vector<float, numCols> operator()(unsigned rowIndex) {
+        Vector<float, numCols> getRow(unsigned rowIndex) const {
             Vector<float, numRows> rowVector;
             auto offset = rowIndex;
             for (size_t col = 0; col < numCols; ++col) {
-                rowVector[col] = m_data[offset];
+                rowVector[col] = data[offset];
                 offset += numCols;
             }
             return rowVector;
         }
 
+        // These two overloads allow expressions of the form matrix[0] = vector
+        Matrix& operator[](unsigned columnIndex) {
+            if(assignedColumn != -1) {
+                throw std::runtime_error("Invalid assignment. Matrix::operator[] should be used to assign columns. "
+                                         "An assignment must be completed before operator[] can be invoked again");
+            }
+            if (columnIndex >= numCols) {
+                throw std::runtime_error("Invalid access. " + std::to_string(columnIndex) + " is not a valid column "
+                                         "index for a matrix with " + std::to_string(numCols) + " columns");
+            }
+            assignedColumn = columnIndex;
+            return *this;
+        }
+
+        void operator=(Vector<DataType, numCols> const& vector) {
+            if(assignedColumn == -1) {
+                throw std::runtime_error("Invalid assignment. Check assignment expressions");
+            }
+            memcpy(data.get() + assignedColumn * numCols, vector.getData(), numCols * sizeof(DataType));
+            assignedColumn = -1;
+        }
+
         Matrix transpose() {
             Matrix <DataType, numCols, numRows> transposedMatrix;
-            auto& transposedData = transposedMatrix.m_data;
+            auto& transposedData = transposedMatrix.data;
             for (auto row = 0u; row < numRows; ++row) {
                 for (auto col = 0u; col < numCols; ++col) {
-                    transposedData[row * numCols + col] = m_data[col * numRows + row];
+                    transposedData[row * numCols + col] = data[col * numRows + row];
                 }
             }
             return transposedMatrix;
@@ -151,7 +173,7 @@ class Matrix {
             void print(std::ostream& os) const {
                 for (size_t row = 0; row < numRows; ++row) {
                     for (size_t col = 0; col < numCols; ++col) {
-                        os << std::setw(10) << std::setprecision(6) << m_data[col * numRows + row];
+                        os << std::setw(10) << std::setprecision(6) << data[col * numRows + row];
                         if (col != numCols - 1) os << ' '; 
                     }
                     os << std::endl;
@@ -159,15 +181,16 @@ class Matrix {
             }
 
     protected:
-        std::unique_ptr<DataType[]> m_data;
+        std::unique_ptr<DataType[]> data;
+        int assignedColumn {-1};
 
     private:
         void assign(const Matrix& other) {
-            m_data.reset(new DataType[numRows * numCols]);
+            data.reset(new DataType[numRows * numCols]);
             for(size_t col = 0; col < numCols; ++col) {
                 for (size_t row = 0; row < numRows; ++row) {
                     auto index = col * numRows + row;
-                    m_data[index] = other.m_data[index];
+                    data[index] = other.data[index];
                 }
             }
         }
@@ -184,19 +207,19 @@ class Matrix {
             
             // Number of rows for each column of the input data should match numRows 
             for (size_t col = 0; col < numCols; ++col) {
-                if (data(initList)[col].size() != numRows) {
+                if (std::data(initList)[col].size() != numRows) {
                     throw std::invalid_argument(
                         std::string("Incompatible dimensions: Matrix dimensions are [" + 
                                     std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
                                     "Number of rows in column " + std::to_string(col+1) + 
-                                    " is " + std::to_string(data(initList)[col].size())));
+                                    " is " + std::to_string(std::data(initList)[col].size())));
                 }
             }
             
             // Read and store data in column major format 
             for (size_t col = 0; col < numCols; ++col) {
                 for (size_t row = 0; row < numRows; ++row) {
-                    m_data[col * numRows + row] = data(data(initList)[col])[row];
+                    data[col * numRows + row] = std::data(std::data(initList)[col])[row];
                 }
             }
         }
@@ -213,19 +236,19 @@ class Matrix {
             
             // Number of columns in each row of the input data should match numCols 
             for (size_t row = 0; row < numRows; ++row) {
-                if (data(initList)[row].size() != numCols) {
+                if (std::data(initList)[row].size() != numCols) {
                     throw std::invalid_argument(
                         std::string("Incompatible dimensions: Matrix dimensions are [" + 
                                     std::to_string(numRows) + ',' + std::to_string(numCols) + "] " +
                                     "Number of columns in row " + std::to_string(row+1) + 
-                                    " is " + std::to_string(data(initList)[row].size())));
+                                    " is " + std::to_string(std::data(initList)[row].size())));
                 }
             }
 
             // Read row major data and store in column major format 
             for (size_t col = 0; col < numCols; ++col) {
                 for (size_t row = 0; row < numRows; ++row) {
-                    m_data[col * numRows + row] = data(data(initList)[row])[col];
+                    data[col * numRows + row] = std::data(std::data(initList)[row])[col];
                 }
             }
         }
