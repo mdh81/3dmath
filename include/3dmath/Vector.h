@@ -166,8 +166,10 @@ namespace math3d {
             }
 
             Vector& operator=(Vector const& rhs) {
-                for (unsigned i = 0; i < Size; ++i) {
-                    data[i] = rhs.data[i];
+                if (&rhs != this) {
+                    for (unsigned i = 0; i < Size; ++i) {
+                        data[i] = rhs.data[i];
+                    }
                 }
                 return *this;
             }
@@ -179,8 +181,10 @@ namespace math3d {
             }
 
             Vector& operator=(Vector&& other) noexcept {
-                data = std::move(other.data);
-                RESET_CONVENIENCE_MEMBERS(other);
+                if (&other != this) {
+                    data = std::move(other.data);
+                    RESET_CONVENIENCE_MEMBERS(other);
+                }
                 return *this;
             }
 

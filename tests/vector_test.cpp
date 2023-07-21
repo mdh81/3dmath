@@ -197,6 +197,18 @@ TEST(Vector, AsString) {
     ASSERT_STREQ(v.asString().c_str(), "[1 2 3]");
 }
 
+TEST(Vector, SelfAssignment) {
+    Vector3<float> v{1,2,3};
+    v = v;
+    ASSERT_FLOAT_EQ(v.x, 1);
+    ASSERT_FLOAT_EQ(v.y, 2);
+    ASSERT_FLOAT_EQ(v.z, 3);
+    v = std::move(v);
+    ASSERT_FLOAT_EQ(v.x, 1);
+    ASSERT_FLOAT_EQ(v.y, 2);
+    ASSERT_FLOAT_EQ(v.z, 3);
+}
+
 TEST(VectorConvenienceMembers, Construction) {
     Vector3<float> v1;
     ASSERT_FLOAT_EQ(v1.x, 0);
