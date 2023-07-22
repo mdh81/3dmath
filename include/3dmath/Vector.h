@@ -290,6 +290,14 @@ namespace math3d {
                 return result;
             }
 
+            Vector operator/(const T scalar) const {
+                Vector result;
+                for (size_t i = 0; i < Size; ++i) {
+                    result.data[i] = data[i]/scalar;
+                }
+                return result;
+            }
+
             void operator/=(const T scalar) {
                 for (size_t i = 0; i < Size; ++i) {
                     data[i] /= scalar;
@@ -308,7 +316,21 @@ namespace math3d {
                     proj += this->operator[](i) * another[i];
                 return proj;
             }
-            
+
+            struct VectorProjection {
+                Vector<T, Size> parallel;
+                Vector<T, Size> perpendicular;
+            };
+
+            [[nodiscard]]
+            VectorProjection getVectorProjection(Vector const& u) {
+                VectorProjection result;
+                auto uNormalized = u / u.length();
+                result.parallel = uNormalized * this->dot(uNormalized);
+                result.perpendicular = *this - result.parallel;
+                return result;
+            }
+
             T const* getData() const { return data.data(); }
             T* getData() { return data.data(); }
 
