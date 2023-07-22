@@ -208,3 +208,12 @@ TEST(Vector, SelfAssignment) {
     ASSERT_FLOAT_EQ(v.y, 2);
     ASSERT_FLOAT_EQ(v.z, 3);
 }
+
+TEST(Vector, VectorProjection) {
+    Vector3<float> v{5, 5, 0};
+    Vector3<float> u{1, 0, 0};
+    auto result = v.getVectorProjection(u);
+    ASSERT_FLOAT_EQ((u * result.parallel).lengthSquared(), 0.f);
+    ASSERT_FLOAT_EQ(u.dot(result.perpendicular), 0.f);
+
+}
