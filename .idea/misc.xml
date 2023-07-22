@@ -12,6 +12,7 @@
       <file path="$PROJECT_DIR$/bin" />
       <file path="$PROJECT_DIR$/build" />
       <file path="$PROJECT_DIR$/lib" />
+      <file path="$PROJECT_DIR$/tests/testBin" />
     </excludeRoots>
   </component>
 </project>
