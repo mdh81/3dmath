@@ -7,6 +7,9 @@ This library uses the standard right-handed coordinate system
 
 <img alt="Right-handed system" src="https://github.com/mdh81/3dmath/blob/master/Right_handed_system.jpg?raw=true" width="25%" height="25%" class="center">
 
+Matrices are column major. Columns of transform matrices are the basis vectors of the new frame 
+[Matrix format](derivations/Matrix_Format.jpg)
+
 ## Derivations
 
 This section lists proof for formulas used for different features implemented by this library 
