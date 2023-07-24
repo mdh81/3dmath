@@ -90,7 +90,7 @@ class Matrix {
         }
 
         // Vector multiplication
-        auto operator*(Vector<DataType, numRows> const& inputVector) {
+        auto operator*(Vector<DataType, numRows> const& inputVector) const {
             Vector<DataType, numRows> outputVector;
             for (auto row = 0u; row < numRows; ++row) {
                 for (auto col = 0u; col < numCols; ++col) {

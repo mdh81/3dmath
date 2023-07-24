@@ -38,6 +38,17 @@ This section lists proof for formulas used for different features implemented by
 ![Ray-Sphere intersection](derivations/RaySphereIntersection_2.jpg)
 
 
+### Rotation Matrices
+
+### Rotation About Z
+![Rotate about z](derivations/Rotation_About_Z.jpg)
+
+### Rotation About Y
+![Rotate about y](derivations/Rotation_About_Y.jpg)
+
+### Rotation About X
+![Rotate about x](derivations/Rotation_About_X.jpg)
+
 ### Orthographic Projection Matrix
 
 Here is a derivation for the orthographic projection matrix built by <insert link to class here>

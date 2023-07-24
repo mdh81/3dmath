@@ -322,6 +322,7 @@ namespace math3d {
                 Vector<T, Size> perpendicular;
             };
 
+            // TODO: Add derivation for this
             [[nodiscard]]
             VectorProjection getVectorProjection(Vector const& u) {
                 VectorProjection result;
@@ -334,6 +335,7 @@ namespace math3d {
             T const* getData() const { return data.data(); }
             T* getData() { return data.data(); }
 
+            [[nodiscard]]
             std::string asString() const {
                 return '[' + std::to_string(x) + ' ' +
                              std::to_string(y) + ' ' +
