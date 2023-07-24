@@ -41,12 +41,15 @@ This section lists proof for formulas used for different features implemented by
 ### Rotation Matrices
 
 ### Rotation About Z
+[RotationMatrix::rotateAboutZ](https://tinyurl.com/rotateAboutZAxis)
 ![Rotate about z](derivations/Rotation_About_Z.jpg)
 
 ### Rotation About Y
+[RotationMatrix::rotateAboutY](https://tinyurl.com/2dkvawxx)
 ![Rotate about y](derivations/Rotation_About_Y.jpg)
 
 ### Rotation About X
+[RotationMatrix::rotateAboutX](https://tinyurl.com/23kf8w2q)
 ![Rotate about x](derivations/Rotation_About_X.jpg)
 
 ### Orthographic Projection Matrix
