@@ -1,0 +1,126 @@
+%! Author = mdh81
+%! Date = 7/27/23
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\newcommand{\xaxis}{
+    \begin{bmatrix}
+        1 \\
+        0 \\
+        0 \\
+    \end{bmatrix}
+}
+
+\newcommand{\yaxis}{
+    \begin{bmatrix}
+        0 \\
+        1 \\
+        0 \\
+    \end{bmatrix}
+}
+
+\newcommand{\zaxis}{
+    \begin{bmatrix}
+        0 \\
+        0 \\
+        1 \\
+    \end{bmatrix}
+}
+
+\newcommand{\rotAxis}{
+    \begin{bmatrix}
+        R_x \\
+        R_y \\
+        R_z \\
+    \end{bmatrix}
+}
+
+\begin{document}
+
+    \begin{center}
+        \section*{Rotation About Arbitrary Axis}
+    \end{center}
+
+    \subsection*{Derivation for the rotation equation}
+
+    \begin{align}
+        \intertext{In terms of vector projection of $V$on $R$, $V$ can be described as}
+        V &= V_{\parallel} + V_{\perp} \\
+        \intertext{$V_{\parallel}$ is parallel to $R$ and $V_{\perp}$ is perpendicular to $R$}
+        V_{\parallel} &= (V.R) R \\
+        V_{\perp} &= V - (V.R) R \\
+        \intertext{Similarly, $V'$ can be described as}
+        V' &= V'_{\parallel} + V'_{\perp} \\
+        \intertext{Because $V'_{\parallel} = V_{\parallel}$}
+        V' &= V_{\parallel} + V'_{\perp} \\
+        \intertext{Substituting $V_{\parallel}$ from (2)}
+        V' &= V - (V.R) R + V'_{\perp} \\
+        \intertext{$V$ and $R$ are known quantities. $V'{\perp}$ can be calculated by observing that in the plane perpendicular to R, $V'_{\perp}$ is $V_{\perp}$ rotated by $\theta$ around R. This rotation can be described in the plane that is perpendicular to R}
+        \intertext{$V_{\perp}$ and $B$ and are two mutually perpendicular plane vectors. Along with $R$ they describe a coordinate frame, $V{\perp}BR$ that can be used to compute $V'_{\perp}$ and consequently the complete equation for rotation of $V$}
+        \intertext{Since $V{\perp}BR$ is a right-handed coordinate system, $B$ can be expressed as}
+        B &= R \times V_{\perp} \\
+        \intertext{Substituting $V_{\perp}$ from (3)}
+        B &= R \times (V - V_{\parallel}) \\
+        \intertext{Since cross product distributes over vector subtraction and since $V_{\parallel}$ and $R$ are parallel}
+        B &= R \times V - R \times V_{\parallel} \\
+        B &= R \times V - 0 \\
+        \intertext{Using $V_{\perp}$ and $B$ as basis vectors, $V'_{\perp}$ can be written as}
+        V'_{\perp} &= V_{\perp} cos\theta + (R \times V) sin\theta \\
+        \intertext{Substituting $V'{\perp}$ from (6) and $B$ from (10), the final equation for $V'$ in terms of $V$ and $R$ is}
+        V' &= (V - (V.R) R)cos\theta + (R \times V)sin\theta \label{eq:rotEq}
+    \end{align}
+
+    \subsection*{Derivation for the rotation matrix}
+
+    A column-major rotation matrix is of the form
+    \[
+        \begin{bmatrix}
+            B1 & B2 & B3 \\
+        \end{bmatrix}
+    \]
+
+    The columns $B1$,$B2$, and $B3$ are the coordinates of the basis vectors after rotation. To derive the rotation matrix for rotating $V$ and producing $V'$, we start with the basis vectors of the right-handed coordinate system
+
+    \[
+        \begin{bmatrix}
+            1 & 0 & 0 \\
+            0 & 1 & 0 \\
+            0 & 1 & 1 \\
+        \end{bmatrix}
+    \]
+
+    We first rotate these basis vectors using the rotation equation (12), and to form the rotation matrix, we add the rotated coordinates of the basis vectors to the rotation matrix
+
+    \subsubsection*{Rotation of X-axis}
+
+    Substituting x-axis in equation \ref{eq:rotEq}, we get
+
+    \begin{align}
+        V' &= \begin{vmatrix}\xaxis - \begin{vmatrix}\xaxis.\rotAxis\end{vmatrix} \rotAxis\end{vmatrix}cos\theta +
+        \begin{vmatrix}\rotAxis \times \xaxis \end{vmatrix}sin\theta \\
+        V' &= \begin{vmatrix} \xaxis - \begin{vmatrix} R_x \rotAxis \end{vmatrix} \end{vmatrix}cos\theta + +
+        \begin{vmatrix} 0R_y+0R_z\\ 1R_z-0R_x\\ 0R_x-1R_y \end{vmatrix}sin\theta \\
+        V' &= \begin{vmatrix} \xaxis - \begin{vmatrix} R_x \rotAxis \end{vmatrix} \end{vmatrix}cos\theta +
+        \begin{vmatrix} 0\\ R_z \\ -R_y \end{vmatrix}sin\theta\\
+        V' &=
+        \begin{vmatrix} \xaxis -
+        \begin{vmatrix} R_x^2 \\ -R_xR_y \\ R_xRz \end{vmatrix}\end{vmatrix}cos\theta +
+        \begin{vmatrix} 0\\ R_z \\ -R_y \end{vmatrix}sin\theta\\
+        V' &=
+        \begin{vmatrix} 1-R_x^2 \\ -R_xR_y \\ -R_xRz \end{vmatrix}cos\theta +
+        \begin{vmatrix} 0\\ R_z \\ -R_y \end{vmatrix}sin\theta\\
+        V' &=
+        \begin{vmatrix} (1-R_x^2)cos\theta \\ -R_xR_ycos\theta \\ -R_xRzcos\theta \end{vmatrix} +
+        \begin{vmatrix} 0\\ R_zsin\theta \\ -R_ysin\theta \end{vmatrix} \\
+        V' &=
+        \begin{vmatrix} (1-R_x^2)cos\theta \\ -R_xR_ycos\theta \\ -R_xRzcos\theta \end{vmatrix} +
+        \begin{vmatrix} 0\\ R_zsin\theta \\ -R_ysin\theta \end{vmatrix} \\
+        V' &=
+        \begin{vmatrix} cos\theta-R_x^2cos\theta \\ -R_xR_ycos\theta + R_zsin\theta \\ -R_xRzcos\theta -R_ysin\theta \end{vmatrix}
+    \end{align}
+
+
+\end{document}
+
