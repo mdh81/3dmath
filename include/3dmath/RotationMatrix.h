@@ -8,39 +8,47 @@ template<typename DataType>
 class RotationMatrix : public IdentityMatrix<DataType, 4, 4> {
 
 public:
+    // TODO: Add derivation
     RotationMatrix(Vector3<DataType> const& rotationAxis,
                    DataType const rotationInDegrees) {
 
+        auto cosTheta = cos(Utilities::asRadians(rotationInDegrees));
+        auto oneMinusCosTheta = 1 - cosTheta;
+        auto sinTheta = sin(Utilities::asRadians(rotationInDegrees));
+
+        // TODO: Add a specialization that allows assigning a vec3 to a vec4 with w set to 0 automatically
+        this->operator[](0) =
+            {((rotationAxis.x * rotationAxis.x) * oneMinusCosTheta) + cosTheta,
+             ((rotationAxis.x * rotationAxis.y) * oneMinusCosTheta) + (rotationAxis.z * sinTheta),
+             ((rotationAxis.x * rotationAxis.z) * oneMinusCosTheta) - (rotationAxis.y * sinTheta),
+             0};
+
+        this->operator[](1) =
+             {((rotationAxis.x * rotationAxis.y) * oneMinusCosTheta) - (rotationAxis.z * sinTheta),
+              ((rotationAxis.y * rotationAxis.y) * oneMinusCosTheta) + cosTheta,
+              ((rotationAxis.z * rotationAxis.y) * oneMinusCosTheta) + (rotationAxis.x * sinTheta),
+              0};
+
+        this->operator[](2) =
+            {((rotationAxis.x * rotationAxis.z) * oneMinusCosTheta) + (rotationAxis.y * sinTheta),
+             ((rotationAxis.y * rotationAxis.z) * oneMinusCosTheta) - (rotationAxis.x * sinTheta),
+             ((rotationAxis.z * rotationAxis.z) * oneMinusCosTheta) + cosTheta,
+             0};
     }
 
     // See https://github.com/mdh81/3dmath/blob/master/derivations/Rotation_About_X.jpg
     static RotationMatrix rotateAboutX(DataType const rotationInDegrees) {
-        auto cosTheta = cos(Utilities::asRadians(rotationInDegrees));
-        auto sinTheta = sin(Utilities::asRadians(rotationInDegrees));
-        auto result = RotationMatrix();
-        result[1] = {0,  cosTheta, sinTheta, 0};
-        result[2] = {0, -sinTheta, cosTheta, 0};
-        return result;
+        return RotationMatrix({1, 0, 0}, rotationInDegrees);
     }
 
     // See https://github.com/mdh81/3dmath/blob/master/derivations/Rotation_About_Y.jpg
     static RotationMatrix rotateAboutY(DataType const rotationInDegrees) {
-        auto cosTheta = cos(Utilities::asRadians(rotationInDegrees));
-        auto sinTheta = sin(Utilities::asRadians(rotationInDegrees));
-        auto result = RotationMatrix();
-        result[0] = {cosTheta, 0, -sinTheta, 0};
-        result[2] = {sinTheta, 0,  cosTheta, 0};
-        return result;
+        return RotationMatrix({0, 1, 0}, rotationInDegrees);
     }
 
     // See https://github.com/mdh81/3dmath/blob/master/derivations/Rotation_About_Z.jpg
     static RotationMatrix rotateAboutZ(DataType const rotationInDegrees) {
-        auto cosTheta = cos(Utilities::asRadians(rotationInDegrees));
-        auto sinTheta = sin(Utilities::asRadians(rotationInDegrees));
-        auto result = RotationMatrix();
-        result[0] = { cosTheta, sinTheta, 0, 0};
-        result[1] = {-sinTheta, cosTheta, 0, 0};
-        return result;
+       return RotationMatrix({0, 0, 1}, rotationInDegrees);
     }
 
 private:

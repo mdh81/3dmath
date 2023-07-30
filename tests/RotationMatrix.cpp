@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "3dmath/RotationMatrix.h"
+#include "3dmath/Utilities.h"
 #include <iostream>
 using namespace std;
 using namespace math3d;
@@ -45,4 +46,19 @@ TEST(RotationMatrix, RotateAboutZ) {
 
     auto zAxisAfterRotation = rotateAboutZBy90 * Vector<float, 4>{0, 0, 1, 0};
     ASSERT_TRUE(Utilities::areEqual(zAxisAfterRotation.dot({0, 0, 1, 0}), 1.f));
+}
+
+TEST(RotationMatrix, RotateAboutArbitraryAxis) {
+
+    Vector<double, 3>arbitraryAxis = Utilities::RandomVector();
+    arbitraryAxis.normalize();
+
+    // TODO: Allow a Vector4 to be created from Vector3
+    Vector<double, 4> axis = {arbitraryAxis.x, arbitraryAxis.y, arbitraryAxis.z, 0};
+
+    RotationMatrix<double> rotateAboutArbitraryVector(arbitraryAxis, Utilities::RandomNumber());
+
+    auto axisAfterRotation = rotateAboutArbitraryVector * axis;
+    ASSERT_TRUE(Utilities::areEqual(axisAfterRotation.dot(axis), 1.0));
+
 }

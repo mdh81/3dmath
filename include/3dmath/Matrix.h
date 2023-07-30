@@ -8,6 +8,7 @@
 #include <memory>
 #include <iomanip>
 #include "Vector.h"
+#include "Constants.h"
 
 namespace math3d {
 
@@ -173,7 +174,11 @@ class Matrix {
             void print(std::ostream& os) const {
                 for (size_t row = 0; row < numRows; ++row) {
                     for (size_t col = 0; col < numCols; ++col) {
-                        os << std::setw(10) << std::setprecision(6) << data[col * numRows + row];
+                        auto val = data[col * numRows + row];
+                        if (fabs(val) < math3d::constants::tolerance) {
+                            val = 0;
+                        }
+                        os << std::setw(10) << std::setprecision(6) << val;
                         if (col != numCols - 1) os << ' '; 
                     }
                     os << std::endl;
