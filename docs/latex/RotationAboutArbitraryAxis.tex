@@ -74,7 +74,7 @@
         V_{\perp} &= V - (V.R) R \label{eq:vperp}
     \end{align}
 
-    We can describe the rotation of $V$ in the plane perpendicular to $R$
+    \noindent We can describe the rotation of $V$ in the plane perpendicular to $R$
 
     \includegraphics[width=0.75\textwidth]{../images/Rotation_About_ArbitraryAxis.jpg}
 
@@ -88,9 +88,9 @@
         V' &= (V.R) R + V'_{\perp} \label{eq:vdash}
     \end{align}
 
-    \noindent{$V$ and $R$ are known quantities. $V'{\perp}$ can be calculated by observing that {$V_{\perp}$ and $B$ and are two 
-            mutually perpendicular plane vectors. Along with $R$ they describe a coordinate frame, $V{\perp}BR$ that can be used
-            to compute $V'_{\perp}$}. Since $B$ is mutally perpendicular to $V'{\perp}$ and $R$, it can be expressed as}
+    \noindent{$V$ and $R$ are known quantities. $V'_{\perp}$ can be calculated by observing that $V'_{\perp}$ and $B$ and are two 
+    mutually perpendicular plane vectors. Along with $R$ they describe a coordinate frame $V'_{\perp}BR$. $B$ can be calculated as 
+    the mutally perpendicular vector} 
     
         \begin{align}
         B &= R \times V_{\perp} \\
@@ -102,7 +102,7 @@
         B &= R \times V \label{eq:b} \\
         \intertext{Using $V_{\perp}$ and $B$ as basis vectors, $V'_{\perp}$ can be written as}
         V'_{\perp} &= V_{\perp} cos\theta + (R \times V) sin\theta \\
-        \intertext{Substituting $V'{\perp}$ into the equation \ref{eq:vdash}, we get the final equation for $V'$ in terms of $V$ and $R$}
+        \intertext{Substituting $V'_{\perp}$ into the equation \ref{eq:vdash}, we get the final equation for $V'$ in terms of $V$ and $R$}
         V' &= (V.R) R + V_{\perp} cos\theta + (R \times V) sin\theta \\ 
         V' &= (V.R) R + (V - (V.R) R) cos\theta + (R \times V) sin\theta \label{eq:rotEq}
     \end{align}
@@ -298,7 +298,8 @@
     \end{align}
 
 
-    \noindent Finally, assembling the three transformed basis vectors into the rotation matrix we get the matrix that transforms any arbitrary vector about a different arbitrary vector $R$
+    \noindent Finally, assembling the three transformed basis vectors into the rotation matrix we get the matrix that transforms any vector about
+    the arbitrary axis $R$
     
     \begin{align}
         \begin{bmatrix}

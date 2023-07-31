@@ -228,7 +228,7 @@ on vector <Math mode="inline" tex="R" text="R" xml:id="Sx1.SSx1.p1.m4">
         </equation>
       </equationgroup>
     </para>
-    <para xml:id="Sx1.SSx1.p5">
+    <para class="ltx_noindent" xml:id="Sx1.SSx1.p5">
       <p>We can describe the rotation of <Math mode="inline" tex="V" text="V" xml:id="Sx1.SSx1.p5.m1">
           <XMath>
             <XMTok font="italic" role="UNKNOWN">V</XMTok>
@@ -544,23 +544,27 @@ on vector <Math mode="inline" tex="R" text="R" xml:id="Sx1.SSx1.p1.m4">
           <XMath>
             <XMTok font="italic" role="UNKNOWN">R</XMTok>
           </XMath>
-        </Math> are known quantities. <Math mode="inline" tex="V^{\prime}{\perp}" text="V ^ prime perpendicular-to absent" xml:id="Sx1.SSx1.p9.m3">
+        </Math> are known quantities. <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perpendicular-to" xml:id="Sx1.SSx1.p9.m3">
           <XMath>
             <XMApp>
-              <XMTok meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
+              <XMTok role="SUBSCRIPTOP" scriptpos="post1"/>
               <XMApp>
                 <XMTok role="SUPERSCRIPTOP" scriptpos="post1"/>
                 <XMTok font="italic" role="UNKNOWN">V</XMTok>
                 <XMTok fontsize="70%" name="prime" role="SUPOP">′</XMTok>
               </XMApp>
-              <XMTok meaning="absent"/>
+              <XMTok fontsize="70%" meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
             </XMApp>
           </XMath>
-        </Math> can be calculated by observing that <Math mode="inline" tex="V_{\perp}" text="V _ perpendicular-to" xml:id="Sx1.SSx1.p9.m4">
+        </Math> can be calculated by observing that <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perpendicular-to" xml:id="Sx1.SSx1.p9.m4">
           <XMath>
             <XMApp>
               <XMTok role="SUBSCRIPTOP" scriptpos="post1"/>
-              <XMTok font="italic" role="UNKNOWN">V</XMTok>
+              <XMApp>
+                <XMTok role="SUPERSCRIPTOP" scriptpos="post1"/>
+                <XMTok font="italic" role="UNKNOWN">V</XMTok>
+                <XMTok fontsize="70%" name="prime" role="SUPOP">′</XMTok>
+              </XMApp>
               <XMTok fontsize="70%" meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
             </XMApp>
           </XMath>
@@ -573,52 +577,29 @@ mutually perpendicular plane vectors. Along with <Math mode="inline" tex="R" tex
           <XMath>
             <XMTok font="italic" role="UNKNOWN">R</XMTok>
           </XMath>
-        </Math> they describe a coordinate frame, <Math mode="inline" tex="V{\perp}BR" text="V perpendicular-to B * R" xml:id="Sx1.SSx1.p9.m7">
+        </Math> they describe a coordinate frame <Math mode="inline" tex="V^{\prime}_{\perp}BR" text="(V ^ prime) _ perpendicular-to * B * R" xml:id="Sx1.SSx1.p9.m7">
           <XMath>
             <XMApp>
-              <XMTok meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
-              <XMTok font="italic" role="UNKNOWN">V</XMTok>
+              <XMTok meaning="times" role="MULOP">⁢</XMTok>
               <XMApp>
-                <XMTok meaning="times" role="MULOP">⁢</XMTok>
-                <XMTok font="italic" role="UNKNOWN">B</XMTok>
-                <XMTok font="italic" role="UNKNOWN">R</XMTok>
+                <XMTok role="SUBSCRIPTOP" scriptpos="post1"/>
+                <XMApp>
+                  <XMTok role="SUPERSCRIPTOP" scriptpos="post1"/>
+                  <XMTok font="italic" role="UNKNOWN">V</XMTok>
+                  <XMTok fontsize="70%" name="prime" role="SUPOP">′</XMTok>
+                </XMApp>
+                <XMTok fontsize="70%" meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
               </XMApp>
+              <XMTok font="italic" role="UNKNOWN">B</XMTok>
+              <XMTok font="italic" role="UNKNOWN">R</XMTok>
             </XMApp>
           </XMath>
-        </Math> that can be used
-to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perpendicular-to" xml:id="Sx1.SSx1.p9.m8">
-          <XMath>
-            <XMApp>
-              <XMTok role="SUBSCRIPTOP" scriptpos="post1"/>
-              <XMApp>
-                <XMTok role="SUPERSCRIPTOP" scriptpos="post1"/>
-                <XMTok font="italic" role="UNKNOWN">V</XMTok>
-                <XMTok fontsize="70%" name="prime" role="SUPOP">′</XMTok>
-              </XMApp>
-              <XMTok fontsize="70%" meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
-            </XMApp>
-          </XMath>
-        </Math>. Since <Math mode="inline" tex="B" text="B" xml:id="Sx1.SSx1.p9.m9">
+        </Math>. <Math mode="inline" tex="B" text="B" xml:id="Sx1.SSx1.p9.m8">
           <XMath>
             <XMTok font="italic" role="UNKNOWN">B</XMTok>
           </XMath>
-        </Math> is mutally perpendicular to <Math mode="inline" tex="V^{\prime}{\perp}" text="V ^ prime perpendicular-to absent" xml:id="Sx1.SSx1.p9.m10">
-          <XMath>
-            <XMApp>
-              <XMTok meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
-              <XMApp>
-                <XMTok role="SUPERSCRIPTOP" scriptpos="post1"/>
-                <XMTok font="italic" role="UNKNOWN">V</XMTok>
-                <XMTok fontsize="70%" name="prime" role="SUPOP">′</XMTok>
-              </XMApp>
-              <XMTok meaning="absent"/>
-            </XMApp>
-          </XMath>
-        </Math> and <Math mode="inline" tex="R" text="R" xml:id="Sx1.SSx1.p9.m11">
-          <XMath>
-            <XMTok font="italic" role="UNKNOWN">R</XMTok>
-          </XMath>
-        </Math>, it can be expressed as</p>
+        </Math> can be calculated as
+the mutally perpendicular vector</p>
     </para>
     <para xml:id="Sx1.SSx1.p10">
       <equationgroup class="ltx_eqn_align" xml:id="Sx1.EGx3">
@@ -1059,16 +1040,16 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
             </MathBranch>
           </MathFork>
         </equation>
-        <p class="ltx_intertext">Substituting <Math mode="inline" tex="V^{\prime}{\perp}" text="V ^ prime perpendicular-to absent" xml:id="Sx1.EGx3.m7">
+        <p class="ltx_intertext">Substituting <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perpendicular-to" xml:id="Sx1.EGx3.m7">
             <XMath>
               <XMApp>
-                <XMTok meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
+                <XMTok role="SUBSCRIPTOP" scriptpos="post1"/>
                 <XMApp>
                   <XMTok role="SUPERSCRIPTOP" scriptpos="post1"/>
                   <XMTok font="italic" role="UNKNOWN">V</XMTok>
                   <XMTok fontsize="70%" name="prime" role="SUPOP">′</XMTok>
                 </XMApp>
-                <XMTok meaning="absent"/>
+                <XMTok fontsize="70%" meaning="perpendicular-to" name="perp" role="RELOP">⟂</XMTok>
               </XMApp>
             </XMath>
           </Math> into the equation <ref labelref="LABEL:eq:vdash"/>, we get the final equation for <Math mode="inline" tex="V^{\prime}" text="V ^ prime" xml:id="Sx1.EGx3.m8">
@@ -13398,7 +13379,8 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
         </equationgroup>
       </para>
 <!--  %**** RotationAboutArbitraryAxis.tex Line 300 **** -->      <para class="ltx_noindent" xml:id="Sx1.SSx2.SSSx3.p8">
-        <p>Finally, assembling the three transformed basis vectors into the rotation matrix we get the matrix that transforms any arbitrary vector about a different arbitrary vector <Math mode="inline" tex="R" text="R" xml:id="Sx1.SSx2.SSSx3.p8.m1">
+        <p>Finally, assembling the three transformed basis vectors into the rotation matrix we get the matrix that transforms any vector about
+the arbitrary axis <Math mode="inline" tex="R" text="R" xml:id="Sx1.SSx2.SSSx3.p8.m1">
             <XMath>
               <XMTok font="italic" role="UNKNOWN">R</XMTok>
             </XMath>
@@ -14376,6 +14358,6 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
           </equation>
         </equationgroup>
       </para>
-    </subsubsection>
+<!--  %**** RotationAboutArbitraryAxis.tex Line 325 **** -->    </subsubsection>
   </subsection>
 </document>
