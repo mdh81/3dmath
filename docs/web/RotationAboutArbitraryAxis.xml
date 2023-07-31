@@ -1582,7 +1582,7 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
         </Math>
       </equation>
     </para>
-    <para xml:id="Sx1.SSx2.p2">
+    <para class="ltx_noindent" xml:id="Sx1.SSx2.p2">
       <p>The columns <Math mode="inline" tex="B1" text="B * 1" xml:id="Sx1.SSx2.p2.m1">
           <XMath>
             <XMApp>
@@ -1623,7 +1623,7 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
     </para>
     <para xml:id="Sx1.SSx2.p3">
       <equation xml:id="Sx1.Ex2">
-        <Math mode="display" tex="\begin{bmatrix}1&amp;0&amp;0\\&#10;0&amp;1&amp;0\\&#10;0&amp;1&amp;1\end{bmatrix}" text="matrix@(Array[[1, 0, 0], [0, 1, 0], [0, 1, 1]])" xml:id="Sx1.Ex2.m1">
+        <Math mode="display" tex="\begin{bmatrix}1&amp;0&amp;0\\&#10;0&amp;1&amp;0\\&#10;0&amp;0&amp;1\end{bmatrix}" text="matrix@(Array[[1, 0, 0], [0, 1, 0], [0, 0, 1]])" xml:id="Sx1.Ex2.m1">
           <XMath>
             <XMDual>
               <XMApp>
@@ -1660,7 +1660,7 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
                       <XMTok meaning="0" role="NUMBER">0</XMTok>
                     </XMCell>
                     <XMCell align="center">
-                      <XMTok meaning="1" role="NUMBER">1</XMTok>
+                      <XMTok meaning="0" role="NUMBER">0</XMTok>
                     </XMCell>
                     <XMCell align="center">
                       <XMTok meaning="1" role="NUMBER">1</XMTok>
@@ -1674,7 +1674,7 @@ to compute <Math mode="inline" tex="V^{\prime}_{\perp}" text="(V ^ prime) _ perp
         </Math>
       </equation>
     </para>
-    <para xml:id="Sx1.SSx2.p4">
+    <para class="ltx_noindent" xml:id="Sx1.SSx2.p4">
       <p>We first rotate these basis vectors using the rotation equation (12), and to form the rotation matrix, we add the rotated coordinates of the basis vectors to the rotation matrix</p>
     </para>
     <subsubsection xml:id="Sx1.SSx2.SSSx1">
