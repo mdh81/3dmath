@@ -30,7 +30,7 @@ parent: Rotation
 on vector <math id="Sx1.SSx1.p1.m4" class="ltx_Math" alttext="R" display="inline"><mi>R</mi></math> is</p>
 </div>
 <div id="Sx1.SSx1.p2" class="ltx_para">
-<img src="x1.jpg" id="Sx1.SSx1.p2.g1" class="ltx_graphics ltx_img_square" width="449" height="383" alt="[Uncaptioned image]">
+<img src="../web/x1.jpg" id="Sx1.SSx1.p2.g1" class="ltx_graphics ltx_img_square" width="449" height="383" alt="[Uncaptioned image]">
 </div>
 <div id="Sx1.SSx1.p3" class="ltx_para ltx_noindent">
 <p class="ltx_p">We split <math id="Sx1.SSx1.p3.m1" class="ltx_Math" alttext="V" display="inline"><mi>V</mi></math> into two vector components <math id="Sx1.SSx1.p3.m2" class="ltx_Math" alttext="V_{\parallel}" display="inline"><msub><mi>V</mi><mo>∥</mo></msub></math> and <math id="Sx1.SSx1.p3.m3" class="ltx_Math" alttext="V_{\perp}" display="inline"><msub><mi>V</mi><mo>⟂</mo></msub></math> that are parallel and perpendicular to <math id="Sx1.SSx1.p3.m4" class="ltx_Math" alttext="R" display="inline"><mi>R</mi></math>, respectively.</p>
@@ -65,7 +65,7 @@ on vector <math id="Sx1.SSx1.p1.m4" class="ltx_Math" alttext="R" display="inline
 <p class="ltx_p">We can describe the rotation of <math id="Sx1.SSx1.p5.m1" class="ltx_Math" alttext="V" display="inline"><mi>V</mi></math> in the plane perpendicular to <math id="Sx1.SSx1.p5.m2" class="ltx_Math" alttext="R" display="inline"><mi>R</mi></math></p>
 </div>
 <div id="Sx1.SSx1.p6" class="ltx_para">
-<img src="x3.jpg" id="Sx1.SSx1.p6.g1" class="ltx_graphics ltx_img_landscape" width="449" height="341" alt="[Uncaptioned image]">
+<img src="../web/x3.jpg" id="Sx1.SSx1.p6.g1" class="ltx_graphics ltx_img_landscape" width="449" height="341" alt="[Uncaptioned image]">
 </div>
 <div id="Sx1.SSx1.p7" class="ltx_para ltx_noindent">
 <p class="ltx_p">We can see when <math id="Sx1.SSx1.p7.m1" class="ltx_Math" alttext="V" display="inline"><mi>V</mi></math> is rotated about <math id="Sx1.SSx1.p7.m2" class="ltx_Math" alttext="R" display="inline"><mi>R</mi></math> by <math id="Sx1.SSx1.p7.m3" class="ltx_Math" alttext="\theta" display="inline"><mi>θ</mi></math>, the resulting vector is <math id="Sx1.SSx1.p7.m4" class="ltx_Math" alttext="V^{\prime}" display="inline"><msup><mi>V</mi><mo>′</mo></msup></math>. Considering the vector projection of <math id="Sx1.SSx1.p7.m5" class="ltx_Math" alttext="V^{\prime}" display="inline"><msup><mi>V</mi><mo>′</mo></msup></math> on <math id="Sx1.SSx1.p7.m6" class="ltx_Math" alttext="R" display="inline"><mi>R</mi></math></p>
