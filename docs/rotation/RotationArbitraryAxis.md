@@ -10,8 +10,8 @@ parent: Rotation
 <title>Rotation About Arbitrary Axis</title>
 <!--Generated on Sun Jul 30 22:59:36 2023 by LaTeXML (version 0.8.7) http://dlmf.nist.gov/LaTeXML/.-->
 
-<link rel="stylesheet" href="LaTeXML.css" type="text/css">
-<link rel="stylesheet" href="ltx-article.css" type="text/css">
+<link rel="stylesheet" href="../web/LaTeXML.css" type="text/css">
+<link rel="stylesheet" href="../web/ltx-article.css" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
