@@ -2370,7 +2370,7 @@ This matrix is for a right handed coordinate system and it follows OpenGL conven
             <tag role="refnum">58</tag>
           </tags>
           <MathFork>
-            <Math tex="\displaystyle\begin{bmatrix}x_{clip}\\&#10;\\&#10;y_{clip}\\&#10;\\&#10;z_{clip}\\&#10;\\&#10;1\end{bmatrix}=\begin{bmatrix}\dfrac{2x_{eye}}{R-L}-\dfrac{R+L}{R-L}\\&#10;\\&#10;\dfrac{2y_{eye}}{B-T}-\dfrac{T+B}{T-B}\\&#10;\\&#10;\dfrac{2z_{eye}}{N-F}-\dfrac{F+N}{N-F}\\&#10;\\&#10;1\end{bmatrix}" text="matrix@(Array[[x _ (c * l * i * p)], [], [y _ (c * l * i * p)], [], [z _ (c * l * i * p)], [], [1]]) = matrix@(Array[[(2 * x _ (e * y * e)) / (R - L) - (R + L) / (R - L)], [], [(2 * y _ (e * y * e)) / (B - T) - (T + B) / (T - B)], [], [(2 * z _ (e * y * e)) / (N - F) - (F + N) / (N - F)], [], [1]])" xml:id="Sx1.E58.m2">
+            <Math tex="\displaystyle\begin{bmatrix}x_{clip}\\&#10;\\&#10;y_{clip}\\&#10;\\&#10;z_{clip}\\&#10;\\&#10;1\end{bmatrix}=\begin{bmatrix}\dfrac{2x_{eye}}{R-L}-\dfrac{R+L}{R-L}\\&#10;\\&#10;\dfrac{2y_{eye}}{T-B}-\dfrac{T+B}{T-B}\\&#10;\\&#10;\dfrac{2z_{eye}}{N-F}-\dfrac{F+N}{N-F}\\&#10;\\&#10;1\end{bmatrix}" text="matrix@(Array[[x _ (c * l * i * p)], [], [y _ (c * l * i * p)], [], [z _ (c * l * i * p)], [], [1]]) = matrix@(Array[[(2 * x _ (e * y * e)) / (R - L) - (R + L) / (R - L)], [], [(2 * y _ (e * y * e)) / (T - B) - (T + B) / (T - B)], [], [(2 * z _ (e * y * e)) / (N - F) - (F + N) / (N - F)], [], [1]])" xml:id="Sx1.E58.m2">
               <XMath>
                 <XMApp>
                   <XMTok meaning="equals" role="RELOP">=</XMTok>
@@ -2520,8 +2520,8 @@ This matrix is for a right handed coordinate system and it follows OpenGL conven
                                 </XMApp>
                                 <XMApp>
                                   <XMTok meaning="minus" role="ADDOP">-</XMTok>
-                                  <XMTok font="italic" role="UNKNOWN">B</XMTok>
                                   <XMTok font="italic" role="UNKNOWN">T</XMTok>
+                                  <XMTok font="italic" role="UNKNOWN">B</XMTok>
                                 </XMApp>
                               </XMApp>
                               <XMApp>
@@ -2601,7 +2601,7 @@ This matrix is for a right handed coordinate system and it follows OpenGL conven
               </XMath>
             </Math>
             <MathBranch>
-              <td align="right"><Math mode="inline" tex="\displaystyle\begin{bmatrix}x_{clip}\\&#10;\\&#10;y_{clip}\\&#10;\\&#10;z_{clip}\\&#10;\\&#10;1\end{bmatrix}=\begin{bmatrix}\dfrac{2x_{eye}}{R-L}-\dfrac{R+L}{R-L}\\&#10;\\&#10;\dfrac{2y_{eye}}{B-T}-\dfrac{T+B}{T-B}\\&#10;\\&#10;\dfrac{2z_{eye}}{N-F}-\dfrac{F+N}{N-F}\\&#10;\\&#10;1\end{bmatrix}" text="matrix@(Array[[x _ (c * l * i * p)], [], [y _ (c * l * i * p)], [], [z _ (c * l * i * p)], [], [1]]) = matrix@(Array[[(2 * x _ (e * y * e)) / (R - L) - (R + L) / (R - L)], [], [(2 * y _ (e * y * e)) / (B - T) - (T + B) / (T - B)], [], [(2 * z _ (e * y * e)) / (N - F) - (F + N) / (N - F)], [], [1]])" xml:id="Sx1.E58.m1">
+              <td align="right"><Math mode="inline" tex="\displaystyle\begin{bmatrix}x_{clip}\\&#10;\\&#10;y_{clip}\\&#10;\\&#10;z_{clip}\\&#10;\\&#10;1\end{bmatrix}=\begin{bmatrix}\dfrac{2x_{eye}}{R-L}-\dfrac{R+L}{R-L}\\&#10;\\&#10;\dfrac{2y_{eye}}{T-B}-\dfrac{T+B}{T-B}\\&#10;\\&#10;\dfrac{2z_{eye}}{N-F}-\dfrac{F+N}{N-F}\\&#10;\\&#10;1\end{bmatrix}" text="matrix@(Array[[x _ (c * l * i * p)], [], [y _ (c * l * i * p)], [], [z _ (c * l * i * p)], [], [1]]) = matrix@(Array[[(2 * x _ (e * y * e)) / (R - L) - (R + L) / (R - L)], [], [(2 * y _ (e * y * e)) / (T - B) - (T + B) / (T - B)], [], [(2 * z _ (e * y * e)) / (N - F) - (F + N) / (N - F)], [], [1]])" xml:id="Sx1.E58.m1">
                   <XMath>
                     <XMApp>
                       <XMTok meaning="equals" role="RELOP">=</XMTok>
@@ -2751,8 +2751,8 @@ This matrix is for a right handed coordinate system and it follows OpenGL conven
                                     </XMApp>
                                     <XMApp>
                                       <XMTok meaning="minus" role="ADDOP">-</XMTok>
-                                      <XMTok font="italic" role="UNKNOWN">B</XMTok>
                                       <XMTok font="italic" role="UNKNOWN">T</XMTok>
+                                      <XMTok font="italic" role="UNKNOWN">B</XMTok>
                                     </XMApp>
                                   </XMApp>
                                   <XMApp>
