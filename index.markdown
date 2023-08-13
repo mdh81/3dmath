@@ -12,7 +12,7 @@ The source for this library is on [GitHub](https://github.com/mdh81/3dmath)
 
 #### License
 
-The library released under the [CC-BY-ND]("https://creativecommons.org/licenses/by-nd/4.0/") license. This documentation is released under the [BY-NC-ND](https://creativecommons.org/licenses/by-nc-nd/4.0/) license 
+The library released under the [CC-BY-ND](https://creativecommons.org/licenses/by-nd/4.0/) license. This documentation is released under the [BY-NC-ND](https://creativecommons.org/licenses/by-nc-nd/4.0/) license 
 
 #### Coordinate System
 
