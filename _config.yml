@@ -6,6 +6,6 @@ url: "mdh81.github.io/3dmath/" # the base hostname & protocol for your site, e.g
 github_username: mdh81
 
 # Build settings
-remote_theme: "pmarsceill/just-the-docs" 
+theme: "minima" 
 plugins:
   - jekyll-feed
