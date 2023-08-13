@@ -6,11 +6,11 @@ parent: Projection
 nav_order: 1
 ---
 
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Orthographic Projection Matrix</title>
-<!--Generated on Mon Aug  7 23:30:06 2023 by LaTeXML (version 0.8.7) http://dlmf.nist.gov/LaTeXML/.-->
+<!--Generated on Wed Aug  9 12:34:04 2023 by LaTeXML (version 0.8.7) http://dlmf.nist.gov/LaTeXML/.-->
 
 <link rel="stylesheet" href="../web/LaTeXML.css" type="text/css">
 <link rel="stylesheet" href="../web/ltx-article.css" type="text/css">
@@ -57,8 +57,8 @@ This matrix is for a right handed coordinate system and it follows OpenGL conven
 <p class="ltx_p">The key difference between the eye and clip space is the orientation of z-axis. In clip space, the positive z-axis is into the screen, in the eye space it is out of the screen.
 <span id="footnote1" class="ltx_note ltx_role_footnote"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup>
                 <span class="ltx_tag ltx_tag_note">1</span>
-
-
+                
+                
               I suspect the reason for <math id="footnote1.m1" class="ltx_Math" alttext="+z" display="inline"><mrow><mo>+</mo><mi>z</mi></mrow></math> in clip space pointing into the screen is for ease of depth buffer comparison–if an incoming fragment’s <math id="footnote1.m2" class="ltx_Math" alttext="z" display="inline"><mi>z</mi></math> value is less than the previous depth value, it is accepted as it is nearer. If it was the other way around, larger z values would be considered closer to the camera and it sounds unnatural.</span></span></span></p>
 </div>
 </section>
@@ -285,9 +285,9 @@ z_{eye}\\
 <div id="Sx1.SSx2.p17" class="ltx_para ltx_noindent">
 <p class="ltx_p">produces the clip space coordinates <span id="footnote2" class="ltx_note ltx_role_footnote"><sup class="ltx_note_mark">2</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">2</sup>
             <span class="ltx_tag ltx_tag_note">2</span>
-
-
-          Note that the <math id="footnote2.m1" class="ltx_Math" alttext="w" display="inline"><mi>w</mi></math> coordinate is <math id="footnote2.m2" class="ltx_Math" alttext="1" display="inline"><mn>1</mn></math>. Therefore, when this 4D coordinate is converted to 3D by dividing by <math id="footnote2.m3" class="ltx_Math" alttext="w" display="inline"><mi>w</mi></math>, the z-coordinate remains unchanged. This is why there is no perspective foreshortening in orthographic projection</span></span></span></p>
+            
+            
+          Note that the <math id="footnote2.m1" class="ltx_Math" alttext="w" display="inline"><mi>w</mi></math> coordinate is <math id="footnote2.m2" class="ltx_Math" alttext="1" display="inline"><mn>1</mn></math>. Therefore, when this 4D coordinate is converted to 3D by dividing by <math id="footnote2.m3" class="ltx_Math" alttext="w" display="inline"><mi>w</mi></math>, the x and y coordinates remain unchanged. This is why there is no perspective foreshortening in orthographic projection</span></span></span></p>
 </div>
 <div id="Sx1.SSx2.p18" class="ltx_para">
 <table id="Sx1.EGx9" class="ltx_equationgroup ltx_eqn_align ltx_eqn_table">
@@ -315,6 +315,9 @@ z_{clip}\\
 </section>
 </article>
 </div>
+<footer class="ltx_page_footer">
+<div class="ltx_page_logo">Generated  on Wed Aug  9 12:34:04 2023 by <a href="http://dlmf.nist.gov/LaTeXML/" class="ltx_LaTeXML_logo"><span style="letter-spacing:-0.2em; margin-right:0.1em;">L<span style="font-size:70%;position:relative; bottom:2.2pt;">A</span>T<span style="position:relative; bottom:-0.4ex;">E</span></span><span class="ltx_font_smallcaps">xml</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="[LOGO]"></a>
+</div></footer>
 </div>
 </body>
 </html>

@@ -2360,7 +2360,7 @@ This matrix is for a right handed coordinate system and it follows OpenGL conven
             <XMath>
               <XMTok font="italic" role="UNKNOWN">w</XMTok>
             </XMath>
-          </Math>, the z-coordinate remains unchanged. This is why there is no perspective foreshortening in orthographic projection</note></p>
+          </Math>, the x and y coordinates remain unchanged. This is why there is no perspective foreshortening in orthographic projection</note></p>
     </para>
     <para xml:id="Sx1.SSx2.p18">
       <equationgroup class="ltx_eqn_align" xml:id="Sx1.EGx9">

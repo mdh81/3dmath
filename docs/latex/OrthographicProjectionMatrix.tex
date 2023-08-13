@@ -28,9 +28,9 @@
     \includegraphics[width=0.75\textwidth]{../images/OrthoOpenGLEye.jpg}
 
     \noindent In the eye coordinate space, the eye or the camera is at the origin $[0,0,0]$ and it looks down the negative z-axis
-    \subsubsection*{Clip coordinate space}
+    \subsubsection*{Normalized device coordinate space}
     \includegraphics[width=0.75\textwidth]{../images/OrthoOpenGLClip.jpg}
-    \paragraph \noindent In the clip coordinate space, the clipping volume is a cube of length 2. Coordinates of all points inside the clipping volume are in the range $[-1,1]$.\linebreak
+    \paragraph \noindent In the normalized device coordinates space, the view volume is a cube of length 2. Coordinates of all points inside the view volume are in the range $[-1,1]$.\linebreak
 
     The key difference between the eye and clip space is the orientation of z-axis. In clip space, the positive z-axis is into the screen, in the eye space it is out of the screen.
     \footnote{I suspect the reason for $+z$ in clip space pointing into the screen is for ease of depth buffer comparison--if an incoming fragment's $z$ value is less than the previous depth value, it is accepted as it is nearer. If it was the other way around, larger z values would be considered closer to the camera and it sounds unnatural.} 
@@ -106,7 +106,7 @@
         \orthoMatrix \times \begin{bmatrix} x_{eye} \\ \\ y_{eye} \\ \\ z_{eye} \\ \\ 1 \end{bmatrix}
     \end{align}
 
-    \noindent produces the clip space coordinates \footnote{Note that the $w$ coordinate is $1$. Therefore, when this 4D coordinate is converted to 3D by dividing by $w$, the z-coordinate remains unchanged. This is why there is no perspective foreshortening in orthographic projection} 
+    \noindent produces the clip space coordinates \footnote{Note that the $w$ coordinate is $1$. Therefore, when this 4D coordinate is converted to 3D by dividing by $w$, the x and y coordinates remain unchanged. This is why there is no perspective foreshortening in orthographic projection}
 
 
     \begin{align}
