@@ -6,7 +6,6 @@ parent: Projection
 nav_order: 1
 ---
 
-<!DOCTYPE html><html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Orthographic Projection Matrix</title>
@@ -320,4 +319,3 @@ z_{clip}\\
 </div></footer>
 </div>
 </body>
-</html>
