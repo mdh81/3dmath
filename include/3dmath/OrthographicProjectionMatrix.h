@@ -13,15 +13,16 @@ private:
 public:
     // OpenGL uses a left-handed system for normalized device coordinates, so z has to be inverted
     OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D, bool invertZ = true) {
+        update(bounds3D, invertZ);
+    }
+
+    void update(Bounds3D<DataType> const& bounds3D, bool invertZ = true) {
         // Bounding box has to have valid extents
         if (isZero(bounds3D.x) || isZero(bounds3D.y) || isZero(bounds3D.z)) {
             throw std::runtime_error("Unable to compute orthographic projection: Invalid bounds!");
         }
 
-        // Refer to
-        // https://github.com/mdh81/3dmath/blob/master/README.md#orthographic-projection-matrix
-        // for a derivation of this matrix
-
+        // See https://mdh81.github.io/3dmath/orthographicProjection/ for a derivation for this matrix
         data[0]  = 2 / bounds3D.x.length();
         data[5]  = 2 / bounds3D.y.length();
         data[10] = (2 / bounds3D.z.length()) * (invertZ ? -1 : 1);
