@@ -11,6 +11,9 @@ class OrthographicProjectionMatrix : public IdentityMatrix<DataType, 4u, 4u> {
 private:
     using Matrix<DataType, 4u, 4u>::data;
 public:
+    // Allow users to create an empty matrix and then call update when the projection needs to be recomputed
+    OrthographicProjectionMatrix() = default;
+
     // OpenGL uses a left-handed system for normalized device coordinates, so z has to be inverted
     OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D, bool invertZ = true) {
         update(bounds3D, invertZ);
