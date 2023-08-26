@@ -12,9 +12,9 @@ public:
     RotationMatrix(Vector3<DataType> const& rotationAxis,
                    DataType const rotationInDegrees) {
 
-        auto cosTheta = cos(Utilities::asRadians(rotationInDegrees));
+        auto cosTheta = static_cast<DataType>(cos(Utilities::asRadians(rotationInDegrees)));
         auto oneMinusCosTheta = 1 - cosTheta;
-        auto sinTheta = sin(Utilities::asRadians(rotationInDegrees));
+        auto sinTheta = static_cast<DataType>(sin(Utilities::asRadians(rotationInDegrees)));
 
         // TODO: Add a specialization that allows assigning a vec3 to a vec4 with w set to 0 automatically
         this->operator[](0) =
