@@ -209,7 +209,7 @@ namespace math3d {
     friend std::ostream& operator<<(std::ostream& os, Sphere const&);
     };
 
-    std::ostream& operator<<(std::ostream& os, Sphere const& sphere) {
+    inline std::ostream& operator<<(std::ostream& os, Sphere const& sphere) {
         os << "Radius " << sphere.getRadius() << " Center " << sphere.getCenter();
         return os;
     }
