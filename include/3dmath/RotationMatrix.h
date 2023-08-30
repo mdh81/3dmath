@@ -8,6 +8,9 @@ template<typename DataType>
 class RotationMatrix : public IdentityMatrix<DataType, 4, 4> {
 
 public:
+    // Allow creation of an identity rotation matrix
+    RotationMatrix() = default;
+
     // TODO: Add derivation
     RotationMatrix(Vector3<DataType> const& rotationAxis,
                    DataType const rotationInDegrees) {
@@ -50,11 +53,6 @@ public:
     static RotationMatrix rotateAboutZ(DataType const rotationInDegrees) {
        return RotationMatrix({0, 0, 1}, rotationInDegrees);
     }
-
-private:
-    // To allow static member functions to create an empty matrix and to set
-    // the data explicitly
-    RotationMatrix() = default;
 
 };
 
