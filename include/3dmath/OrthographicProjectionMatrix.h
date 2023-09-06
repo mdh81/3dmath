@@ -1,25 +1,25 @@
 #pragma once
 
-#include "IdentityMatrix.h"
-#include "SupportingTypes.h"
+#include "ProjectionMatrix.h"
 namespace math3d {
 
 template<typename DataType>
-class OrthographicProjectionMatrix : public IdentityMatrix<DataType, 4u, 4u> {
-    static_assert(std::is_same<float, DataType>() ||
-                  std::is_same<double, DataType>(), "Float and double are the only allowed types");
-private:
-    using Matrix<DataType, 4u, 4u>::data;
+class OrthographicProjectionMatrix : public ProjectionMatrix<DataType> {
+
 public:
     // Allow users to create an empty matrix and then call update when the projection needs to be recomputed
     OrthographicProjectionMatrix() = default;
 
     // OpenGL uses a left-handed system for normalized device coordinates, so z has to be inverted
-    OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D, bool invertZ = true) {
+    OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D, bool invertZ = true)
+    : ProjectionMatrix<DataType>() {
         update(bounds3D, invertZ);
     }
 
-    void update(Bounds3D<DataType> const& bounds3D, bool invertZ = true) {
+    void update(Bounds3D<DataType> const& bounds3D, bool invertZ = true) override {
+
+        using Matrix<DataType, 4u, 4u>::data;
+
         // Bounding box has to have valid extents
         if (isZero(bounds3D.x) || isZero(bounds3D.y) || isZero(bounds3D.z)) {
             throw std::runtime_error("Unable to compute orthographic projection: Invalid bounds!");
