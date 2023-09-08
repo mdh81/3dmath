@@ -18,7 +18,7 @@ public:
 
     void update(Bounds3D<DataType> const& bounds3D, bool invertZ = true) override {
 
-        using Matrix<DataType, 4u, 4u>::data;
+        auto& data = Matrix<DataType, 4u, 4u>::data;
 
         // Bounding box has to have valid extents
         if (isZero(bounds3D.x) || isZero(bounds3D.y) || isZero(bounds3D.z)) {
