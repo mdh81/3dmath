@@ -1,11 +1,10 @@
-#ifndef MATH3D_MATRIX_H
-#define MATH3D_MATRIX_H
-
+#pragma once
 #include <ostream>
 #include <string>
 #include <initializer_list>
 #include <exception>
 #include <memory>
+#include <sstream>
 #include <iomanip>
 #include "Vector.h"
 #include "Constants.h"
@@ -32,6 +31,8 @@ enum class Order {
     ColumnMajor,
     RowMajor
 };
+
+// TODO: Convert size_t to unsigned to match Vector
 
 template<typename DataType, size_t numRows, size_t numCols>
 class Matrix {
@@ -158,6 +159,43 @@ class Matrix {
             assignedColumn = -1;
         }
 
+        // Element access operators to allow assignment of individual elements in the form of expression
+        // matrix(a, b) = c
+        Matrix& operator()(size_t rowIndex, size_t columnIndex) {
+            validateElementAccess(rowIndex, columnIndex);
+            assignedColumn = columnIndex;
+            assignedRow = rowIndex;
+            return *this;
+        }
+
+        void operator=(DataType value) {
+            if (assignedColumn != -1 && assignedRow != -1) {
+                data[assignedColumn * numCols + assignedRow] = value;
+                assignedColumn = -1;
+                assignedRow = -1;
+            } else {
+                throw std::runtime_error("Invalid assignment. Check assignment expressions");
+            }
+        }
+
+        // Conversion operator that allows extraction of the current element
+        operator DataType() const {
+            DataType scalar;
+            if (assignedColumn != -1 && assignedRow != -1) {
+                scalar = data[assignedColumn * numCols + assignedRow];
+                assignedColumn = -1;
+                assignedRow = -1;
+            } else {
+                throw std::runtime_error("Invalid conversion. Check element access expressions");
+            }
+            return scalar;
+        }
+
+        DataType operator()(size_t rowIndex, size_t columnIndex) const {
+            validateElementAccess(rowIndex, columnIndex);
+            return data[columnIndex * numCols + rowIndex];
+        }
+
         Matrix transpose() {
             Matrix <DataType, numCols, numRows> transposedMatrix;
             auto& transposedData = transposedMatrix.data;
@@ -169,27 +207,75 @@ class Matrix {
             return transposedMatrix;
         }
 
-        public:
-            // Print column major matrix data in row order format
-            void print(std::ostream& os) const {
-                for (size_t row = 0; row < numRows; ++row) {
-                    for (size_t col = 0; col < numCols; ++col) {
-                        auto val = data[col * numRows + row];
-                        if (fabs(val) < math3d::constants::tolerance) {
-                            val = 0;
-                        }
-                        os << std::setw(10) << std::setprecision(6) << val;
-                        if (col != numCols - 1) os << ' '; 
+        // Print column major matrix data in row order format
+        void print(std::ostream& os) const {
+            for (size_t row = 0; row < numRows; ++row) {
+                for (size_t col = 0; col < numCols; ++col) {
+                    auto val = data[col * numRows + row];
+                    if (fabs(val) < math3d::constants::tolerance) {
+                        val = 0;
                     }
-                    os << std::endl;
+                    os << std::setw(10) << std::setprecision(6) << val;
+                    if (col != numCols - 1) os << ' ';
                 }
+                os << std::endl;
             }
+        }
+
+        DataType determinant() {
+            return {};
+        }
+
+        Matrix inverse() {
+            return {};
+        }
 
     protected:
         std::unique_ptr<DataType[]> data;
-        int assignedColumn {-1};
+        mutable int assignedColumn {-1};
+        mutable int assignedRow {-1};
 
     private:
+        Matrix<DataType, numRows-1, numCols-1> getMinor(unsigned row, unsigned column) {
+            static_assert(numRows >=3 && numCols >=2, "Minor can only be calculated for 3x3 matrices");
+            Matrix<DataType, numRows-1, numCols-1> result;
+            for (size_t rowIndex = 0; rowIndex < numRows; ++rowIndex) {
+                for (size_t colIndex = 0; colIndex < numCols; ++colIndex) {
+                    if (rowIndex != row && colIndex != column) {
+                        result[rowIndex][colIndex] = getData()[colIndex + rowIndex * numRows];
+                    }
+                }
+            }
+            return result;
+        }
+
+        Matrix<DataType, numRows-1, numCols-1> getCofactor(unsigned row, unsigned column) {
+            static_assert(numRows >=3 && numCols >=2, "Minor can only be calculated for 3x3 matrices");
+            return pow(-1, row+column) * getMinor(row, column);
+        }
+
+        Matrix adjoint() {
+            return {};
+        }
+
+        void validateElementAccess(size_t rowIndex, size_t columnIndex) const {
+            auto badRowIndex = rowIndex >= numRows;
+            auto badColumnIndex = columnIndex >= numCols;
+            if (badRowIndex || badColumnIndex) {
+                std::stringstream errorMessage;
+                errorMessage << "Invalid access: ";
+                if (badRowIndex) {
+                    errorMessage << rowIndex << " is not a valid row index";
+                    errorMessage << " for a " << numRows << 'x' << numCols << " matrix" << std::endl;
+                }
+                if (badColumnIndex) {
+                    errorMessage << columnIndex << " is not a valid column index";
+                    errorMessage << " for a " << numRows << 'x' << numCols << " matrix" << std::endl;
+                }
+                throw std::runtime_error(errorMessage.str());
+            }
+        }
+
         void assign(const Matrix& other) {
             data.reset(new DataType[numRows * numCols]);
             for(size_t col = 0; col < numCols; ++col) {
@@ -257,6 +343,9 @@ class Matrix {
                 }
             }
         }
+
+        template<size_t, size_t>
+        friend class MatrixTestWrapper;
 };
 
 template<typename DataType, size_t numRows, size_t numCols>
@@ -266,5 +355,3 @@ std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCo
 }
 
 }
-
-#endif

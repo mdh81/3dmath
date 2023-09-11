@@ -18,3 +18,14 @@ TEST(ProjectionMatrix, OrthographicProjectionMatrix) {
         ASSERT_FLOAT_EQ(data[index], 0.f);
     }
 }
+
+TEST(ProjectionMatrix, OrthographicProjectionMatrixWithInvalidBounds) {
+    EXPECT_THROW({
+         try {
+             [[maybe_unused]]
+             auto orthoMatrix = OrthographicProjectionMatrix<float>({{0,0}, {0,0}, {0,0}});
+         } catch (std::runtime_error &ex) {
+             throw;
+         }
+    }, std::runtime_error) << "Expected a runtime error when invalid bounds are specified";
+}

@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "3dmath/Matrix.h"
 #include "3dmath/IdentityMatrix.h"
-#include "3dmath/OrthographicProjectionMatrix.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -200,27 +199,6 @@ TEST(Matrix, VectorMultiplicationTranslation) {
     ASSERT_FLOAT_EQ(result.w, 1.f) << "Multiplication results are wrong. Incorrect w coordinate";
 }
 
-TEST(Matrix, OrthographicProjectionMatrixWithInvalidBounds) {
-    EXPECT_THROW({
-         try {
-             [[maybe_unused]]
-             auto orthoMatrix = OrthographicProjectionMatrix<float>({{0,0}, {0,0}, {0,0}});
-         } catch (std::runtime_error &ex) {
-             throw;
-         }
-    }, std::runtime_error) << "Expected a runtime error when invalid bounds are specified";
-}
-
-TEST(Matrix, OrthographicProjectionMatrix) {
-    OrthographicProjectionMatrix<float> testMatrix({{-10,-20,-30}, {10,20, 30}});
-    Vector4<float> vertex {-10, -20, -30, 1 };
-    Vector4<float> result = testMatrix * vertex;
-    ASSERT_FLOAT_EQ(-1, result.x) << "x-coordinate is incorrect after projection";
-    ASSERT_FLOAT_EQ(-1, result.y) << "x-coordinate is incorrect after projection";
-    ASSERT_FLOAT_EQ(+1, result.z) << "x-coordinate is incorrect after projection";
-    ASSERT_FLOAT_EQ(+1, result.w) << "x-coordinate is incorrect after projection";
-}
-
 TEST(Matrix, ConversionToPointer) {
     IdentityMatrix<float, 3, 3> identityMatrix;
     float const* matrixData = identityMatrix;
@@ -329,4 +307,86 @@ TEST(Matrix, ColumnAssignmentSubscriptOutOfBounds) {
                                 "index for a matrix with 3 columns");
     }
     ASSERT_TRUE(exceptionThrown) << "Expected an exception to be thrown when subscript operator is abused";
+}
+
+TEST(Matrix, ElementAccess) {
+    IdentityMatrix<float, 3, 3> m;
+    m(2, 2) = 4;
+    ASSERT_FLOAT_EQ(m.getData()[8], 4);
+    m(2,2) = 40;
+    ASSERT_FLOAT_EQ(m.getData()[8], 40);
+    m[0] = {100, 100, 100};
+    m(1,0) = 200;
+    ASSERT_FLOAT_EQ(m.getColumn(0)[1], 200);
+}
+
+TEST(Matrix, ColumnRowIndexOutOfBounds) {
+    std::string errorMessage;
+    IdentityMatrix<float, 3, 3> m1;
+    ASSERT_THROW(
+    {
+        try {
+            m1(2,3) = 10.f;
+        } catch(std::exception& ex) {
+            errorMessage = ex.what();
+            throw;
+        }
+    }, std::runtime_error);
+    ASSERT_EQ(errorMessage, "Invalid access: 3 is not a valid column index for a 3x3 matrix\n");
+
+    ASSERT_THROW(
+        try {
+            m1(5, 1) = 10.f;
+        } catch(std::exception& ex) {
+            errorMessage = ex.what();
+            throw;
+        }, std::runtime_error);
+    ASSERT_EQ(errorMessage, "Invalid access: 5 is not a valid row index for a 3x3 matrix\n");
+
+    ASSERT_THROW(
+            try {
+                m1(5, 5) = 10.f;
+            } catch(std::exception& ex) {
+                errorMessage = ex.what();
+                throw;
+            }, std::runtime_error);
+    ASSERT_EQ(errorMessage, "Invalid access: 5 is not a valid row index for a 3x3 matrix\n"
+                            "5 is not a valid column index for a 3x3 matrix\n");
+}
+
+TEST(Matrix, ElementAccessWithConstObject) {
+    IdentityMatrix<float, 3, 3> const m;
+    // Call float Matrix::operator(r, c) const
+    ASSERT_TRUE(m(2,2) == m(1,1));
+}
+
+TEST(Matrix, ElementAccessWithNonConstObject) {
+    Matrix<float, 4, 6> m2;
+    // Call non-const function Matrix& operator(r, c)
+    m2(3,5) = 10.f;
+    // call function DataType operator() const with a non-const object
+    ASSERT_FLOAT_EQ(m2(3,5), 10.f);
+}
+
+TEST(Matrix, ConversionOperatorAbuse) {
+    Matrix<float, 5, 2> m;
+    std::string errorMessage;
+    ASSERT_THROW(
+        try {
+            float val = m;
+        } catch(std::exception& ex) {
+            errorMessage = ex.what();
+            throw;
+        }, std::runtime_error);
+    ASSERT_EQ(errorMessage, "Invalid conversion. Check element access expressions");
+
+    m.operator[](0);
+    ASSERT_THROW(
+            try {
+                float val = m;
+            } catch(std::exception& ex) {
+                errorMessage = ex.what();
+                throw;
+            }, std::runtime_error);
+    ASSERT_EQ(errorMessage, "Invalid conversion. Check element access expressions");
 }
