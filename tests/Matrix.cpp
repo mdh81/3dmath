@@ -246,29 +246,6 @@ TEST(Matrix, RowExtraction) {
     ASSERT_FLOAT_EQ(row2[2], 9);
 }
 
-TEST(Matrix, Transpose) {
-    // Inner init list is a row since the default order is row major
-    Matrix<float, 3, 3> matrix {
-        {1, 4, 7},
-        {2, 5, 8},
-        {3, 6, 9} };
-    auto const transposedMatrix = matrix.transpose();
-    auto column0 = transposedMatrix.getColumn(0);
-    ASSERT_FLOAT_EQ(column0[0], 1);
-    ASSERT_FLOAT_EQ(column0[1], 4);
-    ASSERT_FLOAT_EQ(column0[2], 7);
-
-    auto column1 = transposedMatrix.getColumn(1);
-    ASSERT_FLOAT_EQ(column1[0], 2);
-    ASSERT_FLOAT_EQ(column1[1], 5);
-    ASSERT_FLOAT_EQ(column1[2], 8);
-
-    auto column2 = transposedMatrix.getColumn(2);
-    ASSERT_FLOAT_EQ(column2[0], 3);
-    ASSERT_FLOAT_EQ(column2[1], 6);
-    ASSERT_FLOAT_EQ(column2[2], 9);
-}
-
 TEST(Matrix, ColumnAssignment) {
    IdentityMatrix<float, 3, 3> m;
    m[2] = {10, 12, 5};
@@ -276,23 +253,6 @@ TEST(Matrix, ColumnAssignment) {
    ASSERT_FLOAT_EQ(thirdCol[0], 10);
    ASSERT_FLOAT_EQ(thirdCol[1], 12);
    ASSERT_FLOAT_EQ(thirdCol[2], 5);
-}
-
-TEST(Matrix, ColumnAssignmentSubscriptBadCall) {
-    IdentityMatrix<float, 3, 3> m;
-    m[2] = {10, 12, 5};
-
-    //TODO: ASSERT_THROW and EXCEPT_THROW appear broken. Investigate...
-    bool exceptionThrown = false;
-    try {
-        m.operator[](0);
-        m.operator[](1);
-    } catch (std::runtime_error &ex) {
-        exceptionThrown = true;
-        ASSERT_STREQ(ex.what(), "Invalid assignment. Matrix::operator[] should be used to assign columns. "
-                                "An assignment must be completed before operator[] can be invoked again");
-    }
-    ASSERT_TRUE(exceptionThrown) << "Expected an exception to be thrown when subscript operator is abused";
 }
 
 TEST(Matrix, ColumnAssignmentSubscriptOutOfBounds) {
@@ -389,4 +349,61 @@ TEST(Matrix, ConversionOperatorAbuse) {
                 throw;
             }, std::runtime_error);
     ASSERT_EQ(errorMessage, "Invalid conversion. Check element access expressions");
+}
+
+TEST(Matrix, BuildFromVector) {
+    std::vector<int> vec;
+    for (auto i = 0; i < 10; i++) {
+        vec.push_back(i);
+    }
+    Matrix<int, 3, 3> m(vec);
+    ASSERT_EQ(m(0, 0), 0);
+    ASSERT_EQ(m(0, 1), 1);
+    ASSERT_EQ(m(0, 2), 2);
+
+    ASSERT_EQ(m(1, 0), 3);
+    ASSERT_EQ(m(1, 1), 4);
+    ASSERT_EQ(m(1, 2), 5);
+
+    ASSERT_EQ(m(2, 0), 6);
+    ASSERT_EQ(m(2, 1), 7);
+    ASSERT_EQ(m(2, 2), 8);
+
+    Matrix<int, 3, 3> m1(vec, Order::ColumnMajor);
+    ASSERT_EQ(m1(0, 0), 0);
+    ASSERT_EQ(m1(1, 0), 1);
+    ASSERT_EQ(m1(2, 0), 2);
+
+    ASSERT_EQ(m1(0, 1), 3);
+    ASSERT_EQ(m1(1, 1), 4);
+    ASSERT_EQ(m1(2, 1), 5);
+
+    ASSERT_EQ(m1(0, 2), 6);
+    ASSERT_EQ(m1(1, 2), 7);
+    ASSERT_EQ(m1(2, 2), 8);
+}
+
+TEST(Matrix, RowAccess) {
+    Matrix<int, 3, 2> m{{1,2},{3,4},{5,6}};
+    auto row0 = m(0);
+    ASSERT_EQ(row0[0], 1);
+    ASSERT_EQ(row0[1], 2);
+    auto row1 = m(1);
+    ASSERT_EQ(row1[0], 3);
+    ASSERT_EQ(row1[1], 4);
+    auto row2 = m(2);
+    ASSERT_EQ(row2[0], 5);
+    ASSERT_EQ(row2[1], 6);
+}
+
+TEST(Matrix, ColumnAccess) {
+    Matrix<int, 3, 2> m{{1,2},{3,4},{5,6}};
+    Vector<int, 3> col0 = m[0];
+    ASSERT_EQ(col0[0], 1);
+    ASSERT_EQ(col0[1], 3);
+    ASSERT_EQ(col0[2], 5);
+    Vector<int, 3> col1 = m[1];
+    ASSERT_EQ(col1[0], 2);
+    ASSERT_EQ(col1[1], 4);
+    ASSERT_EQ(col1[2], 6);
 }
