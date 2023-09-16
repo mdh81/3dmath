@@ -43,7 +43,7 @@ class Matrix {
         Matrix() : data(new DataType[numRows * numCols]) {
             for(size_t row = 0; row < numRows; ++row) {
                 for (size_t col = 0; col < numCols; ++col) {
-                    data[row * numCols + col] = DataType{0};
+                    data[row * numCols + col] = DataType{};
                 }
             }
         }
@@ -130,33 +130,33 @@ class Matrix {
             return data.get();
         }
 
-        [[nodiscard]]
-        Vector<float, numCols> getColumn(unsigned columnIndex) const {
-            Vector<float, numCols> columnVector;
-            for (size_t row = 0; row < numRows; ++row) {
-                columnVector[row] = data[columnIndex * numRows + row];
+        // Column access
+        Vector<DataType, numRows> operator[](unsigned index) const {
+            if (index >= numCols) {
+                throw std::runtime_error(
+                        "Matrix::operator[]() : Invalid access. " + std::to_string(index) + " is not a valid column"
+                        " index for a " + std::to_string(numRows) + 'x' + std::to_string(numCols) + " matrix");
             }
-            return columnVector;
+            Vector<DataType, numRows> result;
+            for (size_t i = 0; i < numRows; ++i) {
+                result[i] = data[index * numCols + i];
+            }
+            return result;
         }
 
-        [[nodiscard]]
-        Vector<float, numCols> getRow(unsigned rowIndex) const {
-            Vector<float, numRows> rowVector;
-            auto offset = rowIndex;
-            for (size_t col = 0; col < numCols; ++col) {
-                rowVector[col] = data[offset];
-                offset += numCols;
+        // These two operators allow assignment expression of the form
+        // matrix[i] = columnVector
+        Matrix& operator[](unsigned index) {
+            if (currentColumn != -1) {
+                throw std::runtime_error(
+                        "Matrix::operator[]() : Invalid access. Previous column access operation is still in progress");
             }
-            return rowVector;
-        }
-
-        // These two overloads allow expressions of the form matrix[0] = vector
-        Matrix& operator[](unsigned columnIndex) {
-            if (columnIndex >= numCols) {
-                throw std::runtime_error("Invalid access. " + std::to_string(columnIndex) + " is not a valid column "
-                                         "index for a matrix with " + std::to_string(numCols) + " columns");
+            if (index >= numCols) {
+                throw std::runtime_error(
+                        "Matrix::operator[]() : Invalid access. " + std::to_string(index) + " is not a valid column"
+                        " index for a " + std::to_string(numRows) + 'x' + std::to_string(numCols) + " matrix");
             }
-            currentColumn = columnIndex;
+            currentColumn = index;
             return *this;
         }
 
@@ -165,9 +165,10 @@ class Matrix {
                 throw std::runtime_error("Invalid assignment. Check assignment expressions");
             }
             memcpy(data.get() + currentColumn * numCols, vector.getData(), numCols * sizeof(DataType));
+            currentColumn = -1;
         }
 
-        // Column access
+        // Conversion to vector
         // Allows expression of the form Vector<DataType, numRows> column0 = Matrix[0]
         operator Vector<DataType, numRows>() const {
             if(currentColumn == -1) {
@@ -177,6 +178,7 @@ class Matrix {
             for (size_t i = 0, index = currentColumn * numRows; i < numRows; ++i) {
                 result[i] = data[index+i];
             }
+            currentColumn = -1;
             return result;
         }
 
@@ -195,15 +197,15 @@ class Matrix {
         Matrix& operator()(size_t rowIndex, size_t columnIndex) {
             validateElementAccess(rowIndex, columnIndex);
             currentColumn = columnIndex;
-            assignedRow = rowIndex;
+            currentRow = rowIndex;
             return *this;
         }
 
         void operator=(DataType value) {
-            if (currentColumn != -1 && assignedRow != -1) {
-                data[currentColumn * numCols + assignedRow] = value;
+            if (currentColumn != -1 && currentRow != -1) {
+                data[currentColumn * numCols + currentRow] = value;
                 currentColumn = -1;
-                assignedRow = -1;
+                currentRow = -1;
             } else {
                 throw std::runtime_error("Invalid assignment. Check assignment expressions");
             }
@@ -212,12 +214,15 @@ class Matrix {
         // Conversion operator that allows extraction of the current element
         // This allows "matrix(a, b)" to appear in non-assignment contexts
         // float xyz = matrix(a, b);
+        // or
+        // ASSERT_EQ(matrix(a,b), someScalar)
+        // NOTE: Matrix& Matrix::operator(row, column) will be resolved in assignment expressions
         operator DataType() const {
             DataType scalar;
-            if (currentColumn != -1 && assignedRow != -1) {
-                scalar = data[currentColumn * numCols + assignedRow];
+            if (currentColumn != -1 && currentRow != -1) {
+                scalar = data[currentColumn * numCols + currentRow];
                 currentColumn = -1;
-                assignedRow = -1;
+                currentRow = -1;
             } else {
                 throw std::runtime_error("Invalid conversion. Check element access expressions");
             }
@@ -256,32 +261,9 @@ class Matrix {
     protected:
         std::unique_ptr<DataType[]> data;
         mutable int currentColumn {-1};
-        mutable int assignedRow {-1};
+        mutable int currentRow {-1};
 
     private:
-        Matrix<DataType, numRows-1, numCols-1> getMinor(unsigned row, unsigned column) {
-            static_assert(numRows >= 2 && numCols >=2, "1x1 matrices don't have a minor");
-            std::vector<DataType> newMatrixData;
-            newMatrixData.reserve((numRows - 1) * (numCols - 1));
-            for (size_t rowIndex = 0; rowIndex < numRows; ++rowIndex) {
-                for (size_t colIndex = 0; colIndex < numCols; ++colIndex) {
-                    if (rowIndex != row && colIndex != column) {
-                        newMatrixData.push_back(data[colIndex * numCols + rowIndex]);
-                    }
-                }
-            }
-            return Matrix<DataType, numRows-1, numCols-1>(newMatrixData);
-        }
-
-        Matrix<DataType, numRows-1, numCols-1> getCofactor(unsigned row, unsigned column) {
-            static_assert(numRows >=3 && numCols >=2, "Minor can only be calculated for 3x3 matrices");
-            return pow(-1, row+column) * getMinor(row, column);
-        }
-
-        Matrix adjoint() {
-            return {};
-        }
-
         void validateElementAccess(size_t rowIndex, size_t columnIndex) const {
             auto badRowIndex = rowIndex >= numRows;
             auto badColumnIndex = columnIndex >= numCols;

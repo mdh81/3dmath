@@ -19,6 +19,9 @@ set(testBinDirectory ${CMAKE_CURRENT_SOURCE_DIR}/testBin)
 file(MAKE_DIRECTORY ${testBinDirectory})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${testBinDirectory})
 
+# Convenience target to build all tests
+add_custom_target(allTests)
+
 # Build all tests. Create a separate build target for each test and enable google test discovery
 foreach(test ${allTestSources})
     get_filename_component(testTarget ${test} NAME_WE)
@@ -26,4 +29,5 @@ foreach(test ${allTestSources})
     target_include_directories(${testTarget} PRIVATE ../include)
     target_link_libraries(${testTarget} gtest_main gmock_main)
     gtest_discover_tests(${testTarget} PROPERTIES ENVIRONMENT "baselineDir=${CMAKE_SOURCE_DIR}/tests/baseline")
+    add_dependencies(allTests ${testTarget})
 endforeach()

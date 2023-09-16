@@ -212,17 +212,17 @@ TEST(Matrix, ConversionToPointer) {
 
 TEST(Matrix, ColumnExtraction) {
     Matrix<float, 3, 3> matrix { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
-    auto column0 = matrix.getColumn(0);
+    Vector<float, 3> column0 = matrix[0];
     ASSERT_FLOAT_EQ(column0[0], 1);
     ASSERT_FLOAT_EQ(column0[1], 4);
     ASSERT_FLOAT_EQ(column0[2], 7);
 
-    auto column1 = matrix.getColumn(1);
+    Vector<float, 3> column1 = matrix[1];
     ASSERT_FLOAT_EQ(column1[0], 2);
     ASSERT_FLOAT_EQ(column1[1], 5);
     ASSERT_FLOAT_EQ(column1[2], 8);
 
-    auto column2 = matrix.getColumn(2);
+    Vector<float, 3> column2 = matrix[2];
     ASSERT_FLOAT_EQ(column2[0], 3);
     ASSERT_FLOAT_EQ(column2[1], 6);
     ASSERT_FLOAT_EQ(column2[2], 9);
@@ -230,17 +230,17 @@ TEST(Matrix, ColumnExtraction) {
 
 TEST(Matrix, RowExtraction) {
     Matrix<float, 3, 3> matrix { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
-    auto row0 = matrix.getRow(0);
+    Vector<float, 3> row0 = matrix(0);
     ASSERT_FLOAT_EQ(row0[0], 1);
     ASSERT_FLOAT_EQ(row0[1], 2);
     ASSERT_FLOAT_EQ(row0[2], 3);
 
-    auto row1 = matrix.getRow(1);
+    Vector<float, 3> row1 = matrix(1);
     ASSERT_FLOAT_EQ(row1[0], 4);
     ASSERT_FLOAT_EQ(row1[1], 5);
     ASSERT_FLOAT_EQ(row1[2], 6);
 
-    auto row2 = matrix.getRow(2);
+    Vector<float, 3> row2 = matrix(2);
     ASSERT_FLOAT_EQ(row2[0], 7);
     ASSERT_FLOAT_EQ(row2[1], 8);
     ASSERT_FLOAT_EQ(row2[2], 9);
@@ -249,10 +249,26 @@ TEST(Matrix, RowExtraction) {
 TEST(Matrix, ColumnAssignment) {
    IdentityMatrix<float, 3, 3> m;
    m[2] = {10, 12, 5};
-   auto thirdCol = m.getColumn(2);
+   Vector<float, 3> thirdCol = m[2];
    ASSERT_FLOAT_EQ(thirdCol[0], 10);
    ASSERT_FLOAT_EQ(thirdCol[1], 12);
    ASSERT_FLOAT_EQ(thirdCol[2], 5);
+}
+
+TEST(Matrix, ColumnAccessBadCall) {
+    IdentityMatrix<float, 3, 3> m;
+    m[2] = {10, 12, 5};
+
+    //TODO: ASSERT_THROW and EXCEPT_THROW appear broken. Investigate...
+    bool exceptionThrown = false;
+    try {
+        m.operator[](0);
+        m.operator[](1);
+    } catch (std::runtime_error &ex) {
+        exceptionThrown = true;
+        ASSERT_STREQ(ex.what(), "Matrix::operator[]() : Invalid access. Previous column access operation is still in progress");
+    }
+    ASSERT_TRUE(exceptionThrown) << "Expected an exception to be thrown when subscript operator is abused";
 }
 
 TEST(Matrix, ColumnAssignmentSubscriptOutOfBounds) {
@@ -263,8 +279,7 @@ TEST(Matrix, ColumnAssignmentSubscriptOutOfBounds) {
         m[10] = {10, 10, 10};
     } catch (std::runtime_error &ex) {
         exceptionThrown = true;
-        ASSERT_STREQ(ex.what(), "Invalid access. 10 is not a valid column "
-                                "index for a matrix with 3 columns");
+        ASSERT_STREQ(ex.what(), "Matrix::operator[]() : Invalid access. 10 is not a valid column index for a 3x3 matrix");
     }
     ASSERT_TRUE(exceptionThrown) << "Expected an exception to be thrown when subscript operator is abused";
 }
@@ -277,7 +292,8 @@ TEST(Matrix, ElementAccess) {
     ASSERT_FLOAT_EQ(m.getData()[8], 40);
     m[0] = {100, 100, 100};
     m(1,0) = 200;
-    ASSERT_FLOAT_EQ(m.getColumn(0)[1], 200);
+    Vector<float, 3> col0 = m[0];
+    ASSERT_FLOAT_EQ(col0[1], 200);
 }
 
 TEST(Matrix, ColumnRowIndexOutOfBounds) {
