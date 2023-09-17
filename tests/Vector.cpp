@@ -223,3 +223,12 @@ TEST(Vector, PrintingToStandardOutput) {
     v.print();
     ASSERT_STREQ("[5,5,0]", testing::internal::GetCapturedStdout().c_str());
 }
+
+TEST(Vector, BuildAsCopyWithAnAdditionalElement) {
+    Vector3<float> v{5, 5, 0};
+    Vector4<float> v1(v, 45);
+    ASSERT_FLOAT_EQ(v1.w, 45);
+    ASSERT_FLOAT_EQ(v1.x, 5);
+    ASSERT_FLOAT_EQ(v1.y, 5);
+    ASSERT_FLOAT_EQ(v1.z, 0);
+}

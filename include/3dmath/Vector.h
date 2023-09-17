@@ -146,6 +146,15 @@ namespace math3d {
                 SET_CONVENIENCE_MEMBERS;
             }
 
+            // Convenience constructor to build a vector with a different last component
+            Vector(Vector<T, Size-1> const& another, T const val) {
+                for (auto i = 0u; i < Size-1; ++i) {
+                    data[i] = another[i];
+                }
+                data[Size-1] = val;
+                SET_CONVENIENCE_MEMBERS;
+            }
+
             Vector(Vector const& other) {
                this->operator=(other);
                SET_CONVENIENCE_MEMBERS;
