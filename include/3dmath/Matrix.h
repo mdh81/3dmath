@@ -130,6 +130,12 @@ class Matrix {
             return data.get();
         }
 
+        // TODO: This looks like a duplicate of the earlier conversion operator
+        [[nodiscard]]
+        operator const DataType*() const {
+            return data.get();
+        }
+
         // Column access
         Vector<DataType, numRows> operator[](unsigned index) const {
             if (index >= numCols) {
@@ -140,6 +146,15 @@ class Matrix {
             Vector<DataType, numRows> result;
             for (size_t i = 0; i < numRows; ++i) {
                 result[i] = data[index * numCols + i];
+            }
+            return result;
+        }
+
+        // Row access
+        Vector<DataType, numCols> operator()(size_t rowIndex) const {
+            Vector<DataType, numCols> result;
+            for (size_t i = 0, index = rowIndex; i < numCols; ++i, index += numRows) {
+                result[i] = data[index];
             }
             return result;
         }
@@ -182,16 +197,6 @@ class Matrix {
             return result;
         }
 
-        // Row access
-        Vector<DataType, numCols> operator()(size_t rowIndex) const {
-            Vector<DataType, numCols> result;
-            for (size_t i = 0, index = rowIndex; i < numCols; ++i, index += numRows) {
-                result[i] = data[index];
-            }
-            return result;
-        }
-
-        // TODO: Check these with non-square matrices. They look suspect
         // Element access operators to allow assignment of individual elements in the form of expression
         // matrix(a, b) = c
         Matrix& operator()(size_t rowIndex, size_t columnIndex) {
@@ -203,7 +208,7 @@ class Matrix {
 
         void operator=(DataType value) {
             if (currentColumn != -1 && currentRow != -1) {
-                data[currentColumn * numCols + currentRow] = value;
+                data[currentColumn * numRows + currentRow] = value;
                 currentColumn = -1;
                 currentRow = -1;
             } else {
@@ -220,7 +225,7 @@ class Matrix {
         operator DataType() const {
             DataType scalar;
             if (currentColumn != -1 && currentRow != -1) {
-                scalar = data[currentColumn * numCols + currentRow];
+                scalar = data[currentColumn * numRows + currentRow];
                 currentColumn = -1;
                 currentRow = -1;
             } else {
@@ -232,7 +237,26 @@ class Matrix {
         // Element access for const objects
         DataType operator()(size_t rowIndex, size_t columnIndex) const {
             validateElementAccess(rowIndex, columnIndex);
-            return data[rowIndex * numCols + columnIndex];
+            return data[columnIndex * numRows + rowIndex];
+        }
+
+        // Extract a range of elements into a new matrix
+        template<size_t newNumRows, size_t newNumCols>
+        Matrix<DataType, newNumRows, newNumCols> extract(size_t startingRow = 0, size_t startingColumn = 0) {
+           if (startingRow >= numRows || startingColumn >= numCols) {
+               throw std::runtime_error(
+                   "Matrix::extract() [" + std::to_string(startingRow) + ',' + std::to_string(startingColumn) + ']' +
+                   "is not a valid range for a " + std::to_string(numRows) + 'x' + std::to_string(numCols) + "matrix");
+           }
+           Matrix<DataType, newNumRows, newNumCols> extractedMatrix;
+           DataType* extractedMatrixData = const_cast<DataType*>(extractedMatrix.getData());
+           size_t newMatrixElementIndex = 0;
+           for (size_t j = startingColumn; j < startingColumn + newNumCols; ++j) {
+               for (size_t i = startingRow; i < startingRow + newNumRows; ++i) {
+                   extractedMatrixData[newMatrixElementIndex++] = data[j * numRows + i];
+               }
+           }
+           return extractedMatrix;
         }
 
         // Print column major matrix data in row order format
@@ -250,18 +274,27 @@ class Matrix {
             }
         }
 
+        [[nodiscard]]
+        std::string asString() const {
+            std::stringstream stringStream;
+            print(stringStream);
+            return stringStream.str();
+        }
+
         // Defined in MatrixOperations.h
         Matrix transpose();
         DataType determinant();
         Matrix inverse();
-    private:
+        unsigned convertToUpperTriangular(Matrix& upperTriangular) const;
         void swapRows(size_t rowA, size_t rowB);
         void addRow(size_t rowIndex, Vector<DataType, numCols> const& anotherRow);
+        void subtractRow(size_t rowIndex, Vector<DataType, numCols> const& anotherRow);
 
-    protected:
+protected:
         std::unique_ptr<DataType[]> data;
         mutable int currentColumn {-1};
         mutable int currentRow {-1};
+
 
     private:
         void validateElementAccess(size_t rowIndex, size_t columnIndex) const {
@@ -352,6 +385,45 @@ class Matrix {
 
         template<size_t, size_t>
         friend class MatrixTestWrapper;
+
+        friend class Matrix<DataType, numRows, numCols/2>;
+        friend class Matrix<DataType, numRows, numCols-1>;
+};
+
+// TODO: Can we deduce the third non-template parameter?
+// YES: Add template arguments to the constructor or assume the primary matrix has numCols/2 columns
+template<typename DataType, size_t numRows, size_t numCols, size_t numPrimaryColumns>
+class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
+    using BaseClass = Matrix<DataType, numRows, numCols>;
+
+    public:
+        // Create an augmented matrix by concatenating the primary matrix and secondary matrices
+        AugmentedMatrix(Matrix<DataType, numRows, numPrimaryColumns> const& primaryMatrix,
+                        Matrix<DataType, numRows, numCols-numPrimaryColumns> const& secondaryMatrix) {
+            DataType const* primaryMatrixData = primaryMatrix;
+            memcpy(BaseClass::data.get(), primaryMatrixData, sizeof(DataType) * (numRows * numPrimaryColumns));
+            DataType const* secondaryMatrixData = secondaryMatrix;
+            for (size_t col = numPrimaryColumns; col < numCols; ++col) {
+                for (size_t row = 0; row < numRows; ++row) {
+                    BaseClass::data[col * numRows + row] = secondaryMatrixData[(col - numPrimaryColumns) * numRows + row];
+                }
+            }
+        }
+
+        // Create an augmented matrix by concatenating the primary matrix and a vector
+        AugmentedMatrix(Matrix<DataType, numRows, numPrimaryColumns> const& primaryMatrix,
+                        Vector<DataType, numRows> const& secondaryVector) {
+            DataType const* primaryMatrixData = primaryMatrix;
+            memcpy(BaseClass::data.get(), primaryMatrixData, sizeof(DataType) * (numRows * numPrimaryColumns));
+            for (size_t row = 0; row < numRows; ++row) {
+                BaseClass::data[numPrimaryColumns * numRows + row] = secondaryVector[row];
+            }
+        }
+
+    // Allow augmented matrices to have their data manipulated by the primary matrix without
+    // using the element access API, which are slower because of the bounds checking they are required to do
+    friend class Matrix<DataType, numRows, numPrimaryColumns>;
+    friend class Matrix<DataType, numRows, numCols - 1>;
 };
 
 template<typename DataType, size_t numRows, size_t numCols>

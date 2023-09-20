@@ -4,6 +4,7 @@ namespace math3d {
 
 template<typename DataType, size_t numRows, size_t numCols> requires (numRows == numCols)
 class IdentityMatrix : public Matrix<DataType, numRows, numCols> {
+    static_assert(numRows == numCols, "Identity matrices must be square matrices");
 protected:
     using Matrix<DataType, numRows, numCols>::data;
 public:

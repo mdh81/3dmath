@@ -423,3 +423,58 @@ TEST(Matrix, ColumnAccess) {
     ASSERT_EQ(col1[1], 4);
     ASSERT_EQ(col1[2], 6);
 }
+
+TEST(Matrix, AugmentedMatrixFromMatrix) {
+    Matrix<int, 3, 2> m{
+        {1, 2},
+        {4, 5},
+        {7, 8}
+    };
+
+    Matrix<int, 3, 4> m1{
+        {10, 11, 12, 13},
+        {14, 15, 16, 17},
+        {18, 19, 20, 21}
+    };
+
+    AugmentedMatrix<int, 3, 6, 2> augmentedMatrix(m, m1);
+    ASSERT_EQ(augmentedMatrix(2, 5), 21);
+    ASSERT_EQ(augmentedMatrix(1, 5), 17);
+    ASSERT_EQ(augmentedMatrix(0, 5), 13);
+
+    ASSERT_EQ(augmentedMatrix(0, 3), 11);
+    ASSERT_EQ(augmentedMatrix(1, 3), 15);
+    ASSERT_EQ(augmentedMatrix(2, 3), 19);
+}
+
+TEST(Matrix, AugmentedMatrixFromVector) {
+    Matrix<int, 3, 2> m{
+            {1, 2},
+            {4, 5},
+            {7, 8}
+    };
+
+    Vector3<int> v{9, 10, 11};
+
+    AugmentedMatrix<int, 3, 3, 2> augmentedMatrix(m, v);
+    ASSERT_EQ(augmentedMatrix(2, 2), 11);
+    ASSERT_EQ(augmentedMatrix(1, 2), 10);
+    ASSERT_EQ(augmentedMatrix(0, 2), 9);
+
+    ASSERT_EQ(augmentedMatrix(0, 0), 1);
+    ASSERT_EQ(augmentedMatrix(1, 0), 4);
+    ASSERT_EQ(augmentedMatrix(2, 0), 7);
+}
+
+TEST(Matrix, asString) {
+    Matrix<int, 3, 2> m{
+            {1, 2},
+            {4, 5},
+            {7, 8}
+    };
+
+    ASSERT_EQ(m.asString(),
+              "         1          2\n"
+              "         4          5\n"
+              "         7          8\n");
+}
