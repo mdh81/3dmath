@@ -31,7 +31,7 @@ namespace math3d {
             // This is the element with the largest absolute value in the current column
             // below the current row (which is also the current column since we are dealing with square matrices)
             Vector<DataType, numRows> column = upperTriangular[columnIndex];
-            size_t pivotIndex {};
+            size_t pivotIndex {columnIndex};
             DataType pivotValue = column[columnIndex];
             for (size_t rowIndex = 1; rowIndex < numRows; ++rowIndex) {
                 if (abs(column[rowIndex]) > abs(pivotValue)) {
@@ -50,6 +50,7 @@ namespace math3d {
                 pivotIndex = columnIndex;
                 ++numRowSwaps;
             }
+            std::cout << "After row swap\n" << upperTriangular << std::endl;
 
             // Step 3: Eliminate sub-diagonal elements by
             // a) multiplying the pivot row by matrix(rowIndex, columnIndex) / pivotValue
@@ -59,6 +60,7 @@ namespace math3d {
                 factor = upperTriangular(rowIndex, columnIndex) / pivotValue;
                 upperTriangular.subtractRow(rowIndex, upperTriangular(pivotIndex) * factor);
             }
+            std::cout << upperTriangular << std::endl;
         }
 
         return numRowSwaps;
@@ -76,11 +78,11 @@ namespace math3d {
         // Multiply elements on the main diagonal  of the upper triangular matrix to compute the determinant.
         // Set the sign based on the number of row swaps
         DataType result {1.f};
-        for (int i = 0; i < numRows; ++i) {
-            for (int j = 0; j < numCols; ++j) {
-                if (i == j) result *= upperTriangular(i, j);
-            }
+        DataType const* upperTriangularData = upperTriangular;
+        for (size_t i = 0; i < numRows; ++i) {
+            result *= upperTriangularData[i * numRows + i];
         }
+
         return result * pow(-1, numRowSwaps);
     }
 
@@ -95,7 +97,7 @@ namespace math3d {
         // Step 1: Create augmented matrix
         // The augmented part of the matrix is an identity matrix, which gets converted to the actual inverse
         // in subsequent steps
-        AugmentedMatrix<DataType, numRows, 2 * numCols, numCols> augmentedMatrix(*this, IdentityMatrix<DataType, numRows, numCols>{});
+        AugmentedMatrix<DataType, numRows, 2 * numCols> augmentedMatrix(*this, IdentityMatrix<DataType, numRows, numCols>{});
 
         // Step 2: Convert augmented matrix to upper triangular matrix
         Matrix<DataType, numRows, 2 * numCols> upperTriangular;
@@ -105,8 +107,7 @@ namespace math3d {
         for (size_t rowIndex = 0; rowIndex < numRows; ++rowIndex) {
             DataType pivotValue = upperTriangular.data[rowIndex * numRows + rowIndex];
             if (Utilities::isZero(pivotValue)) {
-                throw std::runtime_error("\nMatrix is not invertible. Zero found in a pivot location in the upper triangular form\n"
-                                         + upperTriangular.asString());
+                throw std::runtime_error("Matrix is not invertible");
             }
         }
 

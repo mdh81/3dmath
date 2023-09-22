@@ -100,9 +100,14 @@ class Matrix {
         // Destructor 
         ~Matrix()  = default;
 
+        // Access data
         operator DataType const*() { // NOLINT: Implicit conversion is the point of defining this operator
             return data.get();
         }
+
+        /*operator DataType*() {      // NOLINT
+            return data.get();
+        }*/
 
         // Vector multiplication
         auto operator*(Vector<DataType, numRows> const& inputVector) const {
@@ -383,21 +388,21 @@ protected:
             }
         }
 
-        template<size_t, size_t>
+        template<typename T, size_t, size_t>
         friend class MatrixTestWrapper;
 
+        // Allow primary matrices to access private data of augmented matrices
         friend class Matrix<DataType, numRows, numCols/2>;
         friend class Matrix<DataType, numRows, numCols-1>;
 };
 
-// TODO: Can we deduce the third non-template parameter?
-// YES: Add template arguments to the constructor or assume the primary matrix has numCols/2 columns
-template<typename DataType, size_t numRows, size_t numCols, size_t numPrimaryColumns>
+template<typename DataType, size_t numRows, size_t numCols>
 class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
     using BaseClass = Matrix<DataType, numRows, numCols>;
 
     public:
         // Create an augmented matrix by concatenating the primary matrix and secondary matrices
+        template<size_t numPrimaryColumns>
         AugmentedMatrix(Matrix<DataType, numRows, numPrimaryColumns> const& primaryMatrix,
                         Matrix<DataType, numRows, numCols-numPrimaryColumns> const& secondaryMatrix) {
             DataType const* primaryMatrixData = primaryMatrix;
@@ -411,6 +416,7 @@ class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
         }
 
         // Create an augmented matrix by concatenating the primary matrix and a vector
+        template<size_t numPrimaryColumns>
         AugmentedMatrix(Matrix<DataType, numRows, numPrimaryColumns> const& primaryMatrix,
                         Vector<DataType, numRows> const& secondaryVector) {
             DataType const* primaryMatrixData = primaryMatrix;
@@ -419,11 +425,6 @@ class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
                 BaseClass::data[numPrimaryColumns * numRows + row] = secondaryVector[row];
             }
         }
-
-    // Allow augmented matrices to have their data manipulated by the primary matrix without
-    // using the element access API, which are slower because of the bounds checking they are required to do
-    friend class Matrix<DataType, numRows, numPrimaryColumns>;
-    friend class Matrix<DataType, numRows, numCols - 1>;
 };
 
 template<typename DataType, size_t numRows, size_t numCols>
