@@ -265,11 +265,11 @@ class Matrix {
         }
 
         // Print column major matrix data in row order format
-        void print(std::ostream& os) const {
+        void print(std::ostream& os, float zero = 1e-3) const {
             for (size_t row = 0; row < numRows; ++row) {
                 for (size_t col = 0; col < numCols; ++col) {
                     auto val = data[col * numRows + row];
-                    if (fabs(val) < math3d::constants::tolerance) {
+                    if (fabs(val) < zero) {
                         val = 0;
                     }
                     os << std::setw(10) << std::setprecision(6) << val;

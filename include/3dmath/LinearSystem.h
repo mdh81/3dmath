@@ -20,8 +20,6 @@ namespace math3d {
             Matrix<DataType, N, N+1> upperTriangular;
             augmentedMatrix.convertToUpperTriangular(upperTriangular);
 
-            std::cout << augmentedMatrix << std::endl;
-            std::cout << upperTriangular << std::endl;
             // Back substitute to solve for unknowns
             Vector<DataType, N> result;
             DataType const* upperTriangularData = upperTriangular;

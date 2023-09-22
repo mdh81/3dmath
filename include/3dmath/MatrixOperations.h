@@ -33,7 +33,7 @@ namespace math3d {
             Vector<DataType, numRows> column = upperTriangular[columnIndex];
             size_t pivotIndex {columnIndex};
             DataType pivotValue = column[columnIndex];
-            for (size_t rowIndex = 1; rowIndex < numRows; ++rowIndex) {
+            for (size_t rowIndex = columnIndex + 1; rowIndex < numRows; ++rowIndex) {
                 if (abs(column[rowIndex]) > abs(pivotValue)) {
                     pivotIndex = rowIndex;
                     pivotValue = column[pivotIndex];
@@ -50,7 +50,6 @@ namespace math3d {
                 pivotIndex = columnIndex;
                 ++numRowSwaps;
             }
-            std::cout << "After row swap\n" << upperTriangular << std::endl;
 
             // Step 3: Eliminate sub-diagonal elements by
             // a) multiplying the pivot row by matrix(rowIndex, columnIndex) / pivotValue
@@ -60,7 +59,6 @@ namespace math3d {
                 factor = upperTriangular(rowIndex, columnIndex) / pivotValue;
                 upperTriangular.subtractRow(rowIndex, upperTriangular(pivotIndex) * factor);
             }
-            std::cout << upperTriangular << std::endl;
         }
 
         return numRowSwaps;

@@ -437,7 +437,7 @@ TEST(Matrix, AugmentedMatrixFromMatrix) {
         {18, 19, 20, 21}
     };
 
-    AugmentedMatrix<int, 3, 6, 2> augmentedMatrix(m, m1);
+    AugmentedMatrix<int, 3, 6> augmentedMatrix(m, m1);
     ASSERT_EQ(augmentedMatrix(2, 5), 21);
     ASSERT_EQ(augmentedMatrix(1, 5), 17);
     ASSERT_EQ(augmentedMatrix(0, 5), 13);
@@ -456,7 +456,7 @@ TEST(Matrix, AugmentedMatrixFromVector) {
 
     Vector3<int> v{9, 10, 11};
 
-    AugmentedMatrix<int, 3, 3, 2> augmentedMatrix(m, v);
+    AugmentedMatrix<int, 3, 3> augmentedMatrix(m, v);
     ASSERT_EQ(augmentedMatrix(2, 2), 11);
     ASSERT_EQ(augmentedMatrix(1, 2), 10);
     ASSERT_EQ(augmentedMatrix(0, 2), 9);

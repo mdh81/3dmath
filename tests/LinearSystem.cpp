@@ -4,6 +4,22 @@
 using namespace std;
 using namespace math3d;
 
+TEST(LinearSystem, Identity) {
+    Matrix<float, 3, 3> A {
+        {1.f, 0.f, 0.f},
+        {0.f, 1.f, 0.f},
+        {0.f, 0.f, 1.f}
+    };
+
+    Vector<float, 3> b {21.f, 67.f, 16.f};
+
+    Vector<float, 3> x = LinearSystem::solveLinearSystem<float, 3>(A, b);
+
+    ASSERT_FLOAT_EQ(x[0], 21.f);
+    ASSERT_FLOAT_EQ(x[1], 67.f);
+    ASSERT_FLOAT_EQ(x[2], 16.f);
+}
+
 TEST(LinearSystem, UpperTriangular) {
     Matrix<float, 3, 3> A {
        {4.f, 5.f, 2.f},
@@ -40,26 +56,6 @@ TEST(LinearSystem, ThreeByThree) {
     ASSERT_NEAR(x[2], -0.0394141, 1e-4);
 }
 
-TEST(LinearSystem, FourByFour) {
-    Matrix<float, 4, 4> A = {
-            {16.2191,   60.4311,   65.2877,   18.2224},
-            {75.3216,   14.8446,   19.1990,   46.6563},
-            {95.7739,   59.0851,   91.2929,   87.9284},
-            {1.9452,    40.3703,   19.5219,   61.9099},
-    };
-
-    Vector<float, 4> b = {
-        84.826,
-        87.539,
-        80.557,
-        98.884
-    };
-
-    Vector<float, 4> x = LinearSystem::solveLinearSystem<float, 4>(A, b);
-
-    std::cout << x << std::endl;
-}
-
 TEST(LinearSystem, TenByTen) {
     Matrix<float, 10, 10> A {
         {83.9175, 2.1504, 44.7749, 97.7076, 38.5932, 54.4315, 34.3065, 14.5406, 40.2962, 14.1848},
@@ -73,25 +69,16 @@ TEST(LinearSystem, TenByTen) {
         {83.4886, 29.0333, 77.2853, 39.1374, 32.8153, 67.5385, 11.4714, 58.2570, 27.6533, 62.1352},
         {57.3050, 94.9192, 13.2074, 19.5097, 25.4907, 5.3738, 32.9132, 49.3600, 79.1654, 32.0221}
     };
-
     Vector<float, 10> b {
-       65.6284,
-       12.8682,
-       76.4991,
-       66.2634,
-       58.2422,
-       40.7078,
-       74.4473,
-       44.3651,
-       2.7081,
-       93.1322
+       65.6284, 12.8682, 76.4991, 66.2634, 58.2422, 40.7078, 74.4473, 44.3651, 2.7081, 93.1322
     };
 
     Vector<float, 10> x = LinearSystem::solveLinearSystem<float, 10>(A, b);
 
-    cout << x << endl;
-
-    ASSERT_NEAR(x[0], +1.01808, 1e-4);
-    ASSERT_NEAR(x[1], -0.278914, 1e-4);
-    ASSERT_NEAR(x[2], -0.0394141, 1e-4);
+    std::array<float, 10> expectedResult = {
+        0.5709, 0.1570, -1.8675, -0.5550, -0.5475, 0.9204, 3.2058, -2.9134, 0.3467, 3.1498
+    };
+    for (int i = 0; i < 10; ++i) {
+        ASSERT_NEAR(x[i], expectedResult[i], 1e-4);
+    }
 }
