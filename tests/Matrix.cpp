@@ -492,3 +492,36 @@ TEST(Matrix, PrintingToStandardOutput) {
                  "         7          8\n",
                  testing::internal::GetCapturedStdout().c_str());
 }
+
+TEST(Matrix, MultiplicationWithMatrix) {
+    Matrix<int, 4, 2> m1{
+        {1, 2},
+        {3, 4},
+        {5, 6},
+        {7, 8}
+    };
+
+    Matrix<int, 2, 4> m2{
+        {1, 2, 3, 4},
+        {7, 8, 9, 10}
+    };
+
+    Matrix <int, 4, 4> expectedResult {
+        {15,    18,    21,    24},
+        {31,    38,    45,    52},
+        {47,    58,    69,    80},
+        {63,    78,    93,   108}
+    };
+
+    auto result = m1 * m2;
+
+    std::cout << result << std::endl;
+
+    int const* actualData = result;
+    int const* expectedData = expectedResult;
+
+    for (auto i = 0u; i < 16; ++i) {
+        ASSERT_EQ(actualData[i], expectedData[i]);
+    }
+
+}

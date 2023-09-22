@@ -106,6 +106,7 @@ class Matrix {
         }
 
         // Vector multiplication
+        [[nodiscard]]
         auto operator*(Vector<DataType, numRows> const& inputVector) const {
             Vector<DataType, numRows> outputVector;
             for (auto row = 0u; row < numRows; ++row) {
@@ -114,6 +115,24 @@ class Matrix {
                 }
             }
             return outputVector;
+        }
+
+        // Matrix multiplication
+        template<typename T, unsigned multiplierNumRows, unsigned multiplierNumCols>
+        [[nodiscard]]
+        auto operator*(Matrix<T, multiplierNumRows, multiplierNumCols> const& another) {
+            static_assert(std::is_same<DataType, T>::value, "Matrix data types should be compatible");
+            static_assert(numCols == multiplierNumRows, "Matrix dimensions are not compatible");
+            Matrix<T, numRows, multiplierNumCols> result;
+            T* resultData = const_cast<T*>(result.operator const DataType *());
+            for (auto row = 0u; row < numRows; ++row) {
+                auto rowVector = this->operator()(row);
+                for (auto col = 0u; col < multiplierNumCols; ++col) {
+                    Vector<DataType, multiplierNumRows> columnVector = another[col];
+                    resultData[col * multiplierNumCols + row] = rowVector.dot(columnVector);
+                }
+            }
+            return result;
         }
 
         [[nodiscard]]
@@ -146,7 +165,7 @@ class Matrix {
             }
             Vector<DataType, numRows> result;
             for (unsigned i = 0; i < numRows; ++i) {
-                result[i] = data[index * numCols + i];
+                result[i] = data[index * numRows + i];
             }
             return result;
         }
