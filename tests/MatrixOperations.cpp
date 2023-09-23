@@ -6,16 +6,12 @@ using namespace math3d;
 
 namespace math3d {
     // Friend class of matrix to get results of private methods
-    template<typename T, size_t M, size_t N>
+    template<typename T, unsigned M, unsigned N>
     class MatrixTestWrapper {
     public:
         explicit MatrixTestWrapper(Matrix<T,M,N> const& testMatrix) : testMatrix(testMatrix) {}
 
-        auto getMinor(size_t i , size_t j) {
-            return testMatrix.getMinor(i, j);
-        }
-
-        auto swapRows(size_t i, size_t j) {
+        auto swapRows(unsigned i, unsigned j) {
             testMatrix.swapRows(i, j);
             return decltype(testMatrix)(testMatrix);
         }

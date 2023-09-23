@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "3dmath/LinearSystem.h"
 #include "3dmath/Vector.h"
+#include <chrono>
+#include "3dmath/MatrixUtil.h"
 using namespace std;
 using namespace math3d;
 
@@ -81,4 +83,35 @@ TEST(LinearSystem, TenByTen) {
     for (int i = 0; i < 10; ++i) {
         ASSERT_NEAR(x[i], expectedResult[i], 1e-4);
     }
+}
+
+TEST(LinearSystem, PerformanceTest) {
+    Matrix<double, 1000, 1000> A;
+    {
+        Utilities::Timer t("Read 1000 x 1000 matrix", std::cout);
+        Matrix<double, 1000, 1000>::readFromFile("/Users/deye/Desktop/coefficients.mat", A );
+    }
+
+    Vector<double, 1000> b;
+    Matrix<double, 1000, 1> solutionMatrix;
+    {
+        Utilities::Timer t("Read 1000 x 1 matrix", std::cout);
+        Matrix<double, 1000, 1>::readFromFile("/Users/deye/Desktop/solution.mat", solutionMatrix);
+    }
+    b = solutionMatrix[0];
+
+    Vector<double, 1000> result;
+    {
+        Utilities::Timer t("Solved 1000 x 1000 matrix", std::cout);
+        result = LinearSystem::solveLinearSystem(A, b);
+    }
+
+    Matrix<double, 1000, 1> expectedResultMat;
+    Matrix<double, 1000, 1>::readFromFile("/Users/deye/Desktop/unknowns.mat", expectedResultMat);
+    Vector<double, 1000> expectedResult = expectedResultMat[0];
+
+    for (int i = 0; i < 1000; ++i) {
+        ASSERT_NEAR(result[i], expectedResult[i], 1e-4);
+    }
+
 }

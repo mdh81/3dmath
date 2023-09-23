@@ -6,6 +6,7 @@
 #include <memory>
 #include <sstream>
 #include <iomanip>
+#include <filesystem>
 #include "Vector.h"
 #include "Constants.h"
 
@@ -32,17 +33,15 @@ enum class Order {
     RowMajor
 };
 
-// TODO: Convert size_t to unsigned to match Vector
-
-template<typename DataType, size_t numRows, size_t numCols>
+template<typename DataType, unsigned numRows, unsigned numCols>
 class Matrix {
     
     public:
 
         // Default construction
         Matrix() : data(new DataType[numRows * numCols]) {
-            for(size_t row = 0; row < numRows; ++row) {
-                for (size_t col = 0; col < numCols; ++col) {
+            for(unsigned row = 0; row < numRows; ++row) {
+                for (unsigned col = 0; col < numCols; ++col) {
                     data[row * numCols + col] = DataType{};
                 }
             }
@@ -105,10 +104,6 @@ class Matrix {
             return data.get();
         }
 
-        /*operator DataType*() {      // NOLINT
-            return data.get();
-        }*/
-
         // Vector multiplication
         auto operator*(Vector<DataType, numRows> const& inputVector) const {
             Vector<DataType, numRows> outputVector;
@@ -121,12 +116,12 @@ class Matrix {
         }
 
         [[nodiscard]]
-        size_t getNumberOfRows() const {
+        unsigned getNumberOfRows() const {
             return numRows;
         }
 
         [[nodiscard]]
-        size_t getNumberOfColumns() const {
+        unsigned getNumberOfColumns() const {
             return numCols;
         }
 
@@ -149,16 +144,16 @@ class Matrix {
                         " index for a " + std::to_string(numRows) + 'x' + std::to_string(numCols) + " matrix");
             }
             Vector<DataType, numRows> result;
-            for (size_t i = 0; i < numRows; ++i) {
+            for (unsigned i = 0; i < numRows; ++i) {
                 result[i] = data[index * numCols + i];
             }
             return result;
         }
 
         // Row access
-        Vector<DataType, numCols> operator()(size_t rowIndex) const {
+        Vector<DataType, numCols> operator()(unsigned rowIndex) const {
             Vector<DataType, numCols> result;
-            for (size_t i = 0, index = rowIndex; i < numCols; ++i, index += numRows) {
+            for (unsigned i = 0, index = rowIndex; i < numCols; ++i, index += numRows) {
                 result[i] = data[index];
             }
             return result;
@@ -195,7 +190,7 @@ class Matrix {
                 throw std::runtime_error("Invalid conversion to vector. Check assignment expressions");
             }
             Vector<DataType, numRows> result;
-            for (size_t i = 0, index = currentColumn * numRows; i < numRows; ++i) {
+            for (unsigned i = 0, index = currentColumn * numRows; i < numRows; ++i) {
                 result[i] = data[index+i];
             }
             currentColumn = -1;
@@ -204,7 +199,7 @@ class Matrix {
 
         // Element access operators to allow assignment of individual elements in the form of expression
         // matrix(a, b) = c
-        Matrix& operator()(size_t rowIndex, size_t columnIndex) {
+        Matrix& operator()(unsigned rowIndex, unsigned columnIndex) {
             validateElementAccess(rowIndex, columnIndex);
             currentColumn = columnIndex;
             currentRow = rowIndex;
@@ -240,14 +235,14 @@ class Matrix {
         }
 
         // Element access for const objects
-        DataType operator()(size_t rowIndex, size_t columnIndex) const {
+        DataType operator()(unsigned rowIndex, unsigned columnIndex) const {
             validateElementAccess(rowIndex, columnIndex);
             return data[columnIndex * numRows + rowIndex];
         }
 
         // Extract a range of elements into a new matrix
-        template<size_t newNumRows, size_t newNumCols>
-        Matrix<DataType, newNumRows, newNumCols> extract(size_t startingRow = 0, size_t startingColumn = 0) {
+        template<unsigned newNumRows, unsigned newNumCols>
+        Matrix<DataType, newNumRows, newNumCols> extract(unsigned startingRow = 0, unsigned startingColumn = 0) {
            if (startingRow >= numRows || startingColumn >= numCols) {
                throw std::runtime_error(
                    "Matrix::extract() [" + std::to_string(startingRow) + ',' + std::to_string(startingColumn) + ']' +
@@ -255,9 +250,9 @@ class Matrix {
            }
            Matrix<DataType, newNumRows, newNumCols> extractedMatrix;
            DataType* extractedMatrixData = const_cast<DataType*>(extractedMatrix.getData());
-           size_t newMatrixElementIndex = 0;
-           for (size_t j = startingColumn; j < startingColumn + newNumCols; ++j) {
-               for (size_t i = startingRow; i < startingRow + newNumRows; ++i) {
+           unsigned newMatrixElementIndex = 0;
+           for (unsigned j = startingColumn; j < startingColumn + newNumCols; ++j) {
+               for (unsigned i = startingRow; i < startingRow + newNumRows; ++i) {
                    extractedMatrixData[newMatrixElementIndex++] = data[j * numRows + i];
                }
            }
@@ -266,8 +261,8 @@ class Matrix {
 
         // Print column major matrix data in row order format
         void print(std::ostream& os, float zero = 1e-3) const {
-            for (size_t row = 0; row < numRows; ++row) {
-                for (size_t col = 0; col < numCols; ++col) {
+            for (unsigned row = 0; row < numRows; ++row) {
+                for (unsigned col = 0; col < numCols; ++col) {
                     auto val = data[col * numRows + row];
                     if (fabs(val) < zero) {
                         val = 0;
@@ -291,9 +286,13 @@ class Matrix {
         DataType determinant();
         Matrix inverse();
         unsigned convertToUpperTriangular(Matrix& upperTriangular) const;
-        void swapRows(size_t rowA, size_t rowB);
-        void addRow(size_t rowIndex, Vector<DataType, numCols> const& anotherRow);
-        void subtractRow(size_t rowIndex, Vector<DataType, numCols> const& anotherRow);
+        void swapRows(unsigned rowA, unsigned rowB);
+        void addRow(unsigned rowIndex, Vector<DataType, numCols> const& anotherRow);
+        void subtractRow(unsigned rowIndex, Vector<DataType, numCols> const& anotherRow);
+
+        // Defined in MatrixUtil.h
+        static void readFromFile(std::filesystem::path const& matrixFile, Matrix<DataType, numRows, numCols>& delimiterPosition,
+                                 char const delimiter = ',');
 
 protected:
         std::unique_ptr<DataType[]> data;
@@ -302,7 +301,7 @@ protected:
 
 
     private:
-        void validateElementAccess(size_t rowIndex, size_t columnIndex) const {
+        void validateElementAccess(unsigned rowIndex, unsigned columnIndex) const {
             auto badRowIndex = rowIndex >= numRows;
             auto badColumnIndex = columnIndex >= numCols;
             if (badRowIndex || badColumnIndex) {
@@ -322,8 +321,8 @@ protected:
 
         void assign(Matrix const& other) {
             data.reset(new DataType[numRows * numCols]);
-            for(size_t col = 0; col < numCols; ++col) {
-                for (size_t row = 0; row < numRows; ++row) {
+            for(unsigned col = 0; col < numCols; ++col) {
+                for (unsigned row = 0; row < numRows; ++row) {
                     auto index = col * numRows + row;
                     data[index] = other.data[index];
                 }
@@ -341,7 +340,7 @@ protected:
             }
             
             // Number of rows for each column of the input data should match numRows 
-            for (size_t col = 0; col < numCols; ++col) {
+            for (unsigned col = 0; col < numCols; ++col) {
                 if (std::data(initList)[col].size() != numRows) {
                     throw std::invalid_argument(
                         std::string("Incompatible dimensions: Matrix dimensions are [" + 
@@ -352,8 +351,8 @@ protected:
             }
             
             // Read and store data in column major format 
-            for (size_t col = 0; col < numCols; ++col) {
-                for (size_t row = 0; row < numRows; ++row) {
+            for (unsigned col = 0; col < numCols; ++col) {
+                for (unsigned row = 0; row < numRows; ++row) {
                     data[col * numRows + row] = std::data(std::data(initList)[col])[row];
                 }
             }
@@ -370,7 +369,7 @@ protected:
             }
             
             // Number of columns in each row of the input data should match numCols 
-            for (size_t row = 0; row < numRows; ++row) {
+            for (unsigned row = 0; row < numRows; ++row) {
                 if (std::data(initList)[row].size() != numCols) {
                     throw std::invalid_argument(
                         std::string("Incompatible dimensions: Matrix dimensions are [" + 
@@ -381,14 +380,14 @@ protected:
             }
 
             // Read row major data and store in column major format 
-            for (size_t col = 0; col < numCols; ++col) {
-                for (size_t row = 0; row < numRows; ++row) {
+            for (unsigned col = 0; col < numCols; ++col) {
+                for (unsigned row = 0; row < numRows; ++row) {
                     data[col * numRows + row] = std::data(std::data(initList)[row])[col];
                 }
             }
         }
 
-        template<typename T, size_t, size_t>
+        template<typename T, unsigned, unsigned>
         friend class MatrixTestWrapper;
 
         // Allow primary matrices to access private data of augmented matrices
@@ -396,38 +395,38 @@ protected:
         friend class Matrix<DataType, numRows, numCols-1>;
 };
 
-template<typename DataType, size_t numRows, size_t numCols>
+template<typename DataType, unsigned numRows, unsigned numCols>
 class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
     using BaseClass = Matrix<DataType, numRows, numCols>;
 
     public:
         // Create an augmented matrix by concatenating the primary matrix and secondary matrices
-        template<size_t numPrimaryColumns>
+        template<unsigned numPrimaryColumns>
         AugmentedMatrix(Matrix<DataType, numRows, numPrimaryColumns> const& primaryMatrix,
                         Matrix<DataType, numRows, numCols-numPrimaryColumns> const& secondaryMatrix) {
             DataType const* primaryMatrixData = primaryMatrix;
             memcpy(BaseClass::data.get(), primaryMatrixData, sizeof(DataType) * (numRows * numPrimaryColumns));
             DataType const* secondaryMatrixData = secondaryMatrix;
-            for (size_t col = numPrimaryColumns; col < numCols; ++col) {
-                for (size_t row = 0; row < numRows; ++row) {
+            for (unsigned col = numPrimaryColumns; col < numCols; ++col) {
+                for (unsigned row = 0; row < numRows; ++row) {
                     BaseClass::data[col * numRows + row] = secondaryMatrixData[(col - numPrimaryColumns) * numRows + row];
                 }
             }
         }
 
         // Create an augmented matrix by concatenating the primary matrix and a vector
-        template<size_t numPrimaryColumns>
+        template<unsigned numPrimaryColumns>
         AugmentedMatrix(Matrix<DataType, numRows, numPrimaryColumns> const& primaryMatrix,
                         Vector<DataType, numRows> const& secondaryVector) {
             DataType const* primaryMatrixData = primaryMatrix;
             memcpy(BaseClass::data.get(), primaryMatrixData, sizeof(DataType) * (numRows * numPrimaryColumns));
-            for (size_t row = 0; row < numRows; ++row) {
+            for (unsigned row = 0; row < numRows; ++row) {
                 BaseClass::data[numPrimaryColumns * numRows + row] = secondaryVector[row];
             }
         }
 };
 
-template<typename DataType, size_t numRows, size_t numCols>
+template<typename DataType, unsigned numRows, unsigned numCols>
 std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCols>& m) {
     m.print(os);
     return os;

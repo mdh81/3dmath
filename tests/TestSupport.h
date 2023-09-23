@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <memory>
 #include "3dmath/Constants.h"
+#include "3dmath/Matrix.h"
 
 // TODO: Move to support directory
 

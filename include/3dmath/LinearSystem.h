@@ -9,7 +9,7 @@ namespace math3d {
     class LinearSystem {
     public:
         // Solve a linear system with N equations with N unknowns
-        template<typename DataType, size_t N>
+        template<typename DataType, unsigned N>
         static Vector<DataType, N>
         solveLinearSystem(Matrix<DataType, N, N> const& coefficientMatrix,
                           Vector<DataType, N> const& solutionVector) {
