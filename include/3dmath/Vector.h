@@ -25,7 +25,6 @@ namespace math3d {
     // A vector whose elements are stored in contiguous memory
     template<typename T, unsigned Size>
     class Vector : public VectorBase {
-        static_assert(Size > 1, "Size of a vector should be greater than 1");
         // Proxy to an element in the vector
         struct Proxy;
     public:

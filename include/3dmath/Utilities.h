@@ -3,6 +3,8 @@
 #include "Vector.h"
 #include <cmath>
 #include <random>
+#include <chrono>
+#include <iostream>
 
 namespace math3d {
 
@@ -109,6 +111,28 @@ namespace math3d {
         };
 
         using RandomPoint = RandomVector;
+
+        class Timer {
+        public:
+            Timer(char const* op, std::ostream& os)
+            : operation(op)
+            , outputStream(os) {
+                start = std::chrono::high_resolution_clock::now();
+            }
+            ~Timer() {
+                auto end = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                outputStream << operation << " in " <<  duration.count() << " milliseconds" << std::endl;
+            }
+            Timer(Timer const&) = delete;
+            Timer& operator=(Timer const&) = delete;
+            Timer(Timer&&) = delete;
+            Timer& operator=(Timer&&) = delete;
+        private:
+            std::chrono::steady_clock::time_point start;
+            std::string operation;
+            std::ostream& outputStream;
+        };
 
     };
 }
