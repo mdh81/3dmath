@@ -9,7 +9,7 @@ namespace math3d {
     class Plane : public ConvexPrimitive {
 
     public:
-        Plane(types::Point3D const& point, types::Vector3D const& normal, unsigned geometrySize = 1)
+        Plane(types::Point3D const& point, types::Vector3D const& normal, float geometrySize = 1)
         : ConvexPrimitive(point)
         , normal(normal)
         , geometrySize(geometrySize) {
@@ -103,7 +103,7 @@ namespace math3d {
 
     private:
         types::Vector3D normal;
-        unsigned const geometrySize;
+        float const geometrySize;
 
     friend std::ostream& operator<<(std::ostream& os, Plane const& plane);
     };
