@@ -3,7 +3,7 @@
 #include "Utilities.h"
 namespace math3d {
 
-// 3x3 column-major rotation matrix
+// 4x4 column-major rotation matrix
 template<typename DataType>
 class RotationMatrix : public IdentityMatrix<DataType, 4, 4> {
 
