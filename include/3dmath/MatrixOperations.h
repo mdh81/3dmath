@@ -7,6 +7,16 @@
 #include <algorithm>
 #include <iostream>
 
+namespace {
+
+    bool const debugMatrixOp = false;
+
+#define DEBUG(message, mat) \
+    if (debugMatrixOp) {    \
+        std::cout << message << "\n" << mat << std::endl; \
+    }
+}
+
 namespace math3d {
 
     // Convert a square matrix or the square matrix portion of an augmented matrix to an upper triangular matrix
@@ -96,9 +106,13 @@ namespace math3d {
         // in subsequent steps
         AugmentedMatrix<DataType, numRows, 2 * numCols> augmentedMatrix(*this, IdentityMatrix<DataType, numRows, numCols>{});
 
+        DEBUG("Augmented Matrix", augmentedMatrix);
+
         // Step 2: Convert augmented matrix to upper triangular matrix
         Matrix<DataType, numRows, 2 * numCols> upperTriangular;
         augmentedMatrix.convertToUpperTriangular(upperTriangular);
+
+        DEBUG("Upper triangular", upperTriangular);
 
         // Step 3: Check pivot elements for zeroes
         for (unsigned rowIndex = 0; rowIndex < numRows; ++rowIndex) {
@@ -115,13 +129,26 @@ namespace math3d {
         //         with a rectangular augmented matrix whose square portion is of size numRows x numRows
         for (unsigned columnIndex = numRows-1; columnIndex > 0; --columnIndex) {
             for (unsigned rowIndex = 0; rowIndex < numRows - 1; ++rowIndex) {
-                if (rowIndex >= columnIndex) {
+                // Skip non-pivot elements and those non-pivot elements that are already zeroes
+                if (rowIndex >= columnIndex || fabs(upperTriangular.data[columnIndex * numRows + rowIndex]) < constants::tolerance) {
                     continue;
                 }
+
+                // Zero out the current row by using the pivot row. This is faster than using any other row because
+                // we don't know which of the other rows in the current column have non-zero value. The pivot element
+                // is guaranteed to be non-zero.
+                // NOTE: We need to use a row with non-zero element, otherwise the factor calculation will divide by zero
+                unsigned nonZeroElementRowIndex = columnIndex;
+
+                // Subtract the row with non-zero element with the current row using a suitable factor to zero out
+                // the current element
                 DataType factor = upperTriangular.data[columnIndex * numRows + rowIndex] /
-                                  upperTriangular.data[columnIndex * numRows + rowIndex + 1];
-                auto factorTimesNextRow = factor * upperTriangular(rowIndex + 1);
-                upperTriangular.subtractRow(rowIndex, factorTimesNextRow);
+                                  upperTriangular.data[columnIndex * numRows + nonZeroElementRowIndex];
+                auto factorTimesNonZeroRow = factor * upperTriangular(nonZeroElementRowIndex);
+                upperTriangular.subtractRow(rowIndex, factorTimesNonZeroRow);
+
+                DEBUG('R' + std::to_string(rowIndex+1) + "=R"  + std::to_string(rowIndex+1) + '-' +
+                      std::to_string(factor) + "xR" + std::to_string(nonZeroElementRowIndex+1), upperTriangular);
             }
         }
 

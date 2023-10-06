@@ -137,3 +137,29 @@ TEST(MatrixOperations, Inverse) {
         }
     }
 }
+
+TEST(MatrixOperations, InverseOfMatrixWithZeroNonPivots) {
+    Matrix<float, 4, 4> testMatrix {{
+        {5,4,3,2},
+        {0,4,2,0},
+        {0,0,8,0},
+        {0,0,0,10}
+    }};
+
+    Matrix<float, 4, 4> inverseExpectedResult = {
+        {0.2000,  -0.2000,  -0.0250,  -0.0400},
+        {0,        0.2500,  -0.0625,        0},
+        {0,        0,        0.1250,        0},
+        {0,        0,        0,         0.1000}
+    };
+
+    auto inverse = testMatrix.inverse();
+
+    for (auto i = 0u; i < 4u; ++i) {
+        for (auto j = 0u; j < 4u; ++j) {
+            float expectedVal = inverseExpectedResult(i, j);
+            float actualVal = inverse(i, j);
+            ASSERT_NEAR(expectedVal, actualVal, 1e-6);
+        }
+    }
+}
