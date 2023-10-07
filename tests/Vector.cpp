@@ -232,3 +232,13 @@ TEST(Vector, BuildAsCopyWithAnAdditionalElement) {
     ASSERT_FLOAT_EQ(v1.y, 5);
     ASSERT_FLOAT_EQ(v1.z, 0);
 }
+
+TEST(Vector, TypeConversion) {
+    Vector3<float> v{5.5, 10.5, 15.5};
+    Vector3<double> v_double = static_cast<Vector3<float>>(v);
+    Vector3<float> v_float = static_cast<Vector3<float>>(v_double);
+    for(auto i = 0u; i < 3; ++i) {
+        ASSERT_FLOAT_EQ(v_float[i], v[i]);
+        ASSERT_FLOAT_EQ(v_double[i], v[i]);
+    }
+}

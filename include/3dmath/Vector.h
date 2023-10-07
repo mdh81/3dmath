@@ -312,6 +312,16 @@ namespace math3d {
                 return proj;
             }
 
+            template<typename AnotherType>
+            operator Vector<AnotherType, Size>() const {
+                static_assert(std::is_floating_point<AnotherType>::value, "Cannot convert vector to non-floating point types");
+                Vector<AnotherType, Size> result;
+                for (unsigned i = 0; i < Size; ++i) {
+                    result[i] = data[i];
+                }
+                return result;
+            }
+
             struct VectorProjection {
                 Vector<T, Size> parallel;
                 Vector<T, Size> perpendicular;
@@ -337,7 +347,6 @@ namespace math3d {
                              std::to_string(z) + ']';
             }
 
-        public:
             void print(std::ostream& os) const {
                 os << '['; 
                 for (auto i = 0; i < Size; ++i) {
