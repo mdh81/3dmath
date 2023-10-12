@@ -106,13 +106,9 @@ namespace math3d {
         // in subsequent steps
         AugmentedMatrix<DataType, numRows, 2 * numCols> augmentedMatrix(*this, IdentityMatrix<DataType, numRows, numCols>{});
 
-        DEBUG("Augmented Matrix", augmentedMatrix);
-
         // Step 2: Convert augmented matrix to upper triangular matrix
         Matrix<DataType, numRows, 2 * numCols> upperTriangular;
         augmentedMatrix.convertToUpperTriangular(upperTriangular);
-
-        DEBUG("Upper triangular", upperTriangular);
 
         // Step 3: Check pivot elements for zeroes
         for (unsigned rowIndex = 0; rowIndex < numRows; ++rowIndex) {
@@ -146,9 +142,6 @@ namespace math3d {
                                   upperTriangular.data[columnIndex * numRows + nonZeroElementRowIndex];
                 auto factorTimesNonZeroRow = factor * upperTriangular(nonZeroElementRowIndex);
                 upperTriangular.subtractRow(rowIndex, factorTimesNonZeroRow);
-
-                DEBUG('R' + std::to_string(rowIndex+1) + "=R"  + std::to_string(rowIndex+1) + '-' +
-                      std::to_string(factor) + "xR" + std::to_string(nonZeroElementRowIndex+1), upperTriangular);
             }
         }
 
