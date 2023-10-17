@@ -7,16 +7,6 @@
 #include <algorithm>
 #include <iostream>
 
-namespace {
-
-    bool const debugMatrixOp = false;
-
-#define DEBUG(message, mat) \
-    if (debugMatrixOp) {    \
-        std::cout << message << "\n" << mat << std::endl; \
-    }
-}
-
 namespace math3d {
 
     // Convert a square matrix or the square matrix portion of an augmented matrix to an upper triangular matrix
