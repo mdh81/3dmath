@@ -94,6 +94,7 @@ class Matrix {
         // Move assignment
         Matrix& operator=(Matrix&& other)  noexcept {
             data = std::move(other.data);
+            return *this;
         }
         
         // Destructor 
