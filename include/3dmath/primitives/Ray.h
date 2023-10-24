@@ -113,7 +113,7 @@ namespace math3d {
     private:
         types::Point3D origin;
         types::Vector3D direction;
-        unsigned const geometryLength;
+        float const geometryLength;
 
     friend std::ostream& operator<<(std::ostream& os, Ray const& ray);
     };
