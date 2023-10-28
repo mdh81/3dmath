@@ -261,11 +261,11 @@ class Matrix {
         }
 
         // Print column major matrix data in row order format
-        void print(std::ostream& os, float zero = 1e-3) const {
+        void print(std::ostream& os = std::cout, float zero = 1e-3) const {
             for (unsigned row = 0; row < numRows; ++row) {
                 for (unsigned col = 0; col < numCols; ++col) {
                     auto val = data[col * numRows + row];
-                    if (fabs(val) < zero) {
+                    if (fabs(val) <= zero) {
                         val = 0;
                     }
                     os << std::setw(10) << std::setprecision(6) << val;
@@ -428,7 +428,7 @@ class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
 };
 
 template<typename DataType, unsigned numRows, unsigned numCols>
-std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCols>& m) {
+inline std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCols>& m) {
     m.print(os);
     return os;
 }

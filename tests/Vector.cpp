@@ -215,5 +215,11 @@ TEST(Vector, VectorProjection) {
     auto result = v.getVectorProjection(u);
     ASSERT_FLOAT_EQ((u * result.parallel).lengthSquared(), 0.f);
     ASSERT_FLOAT_EQ(u.dot(result.perpendicular), 0.f);
+}
 
+TEST(Vector, PrintingToStandardOutput) {
+    testing::internal::CaptureStdout();
+    Vector3<int> v{5, 5, 0};
+    v.print();
+    ASSERT_STREQ("[5,5,0]", testing::internal::GetCapturedStdout().c_str());
 }

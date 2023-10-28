@@ -478,3 +478,17 @@ TEST(Matrix, asString) {
               "         4          5\n"
               "         7          8\n");
 }
+
+TEST(Matrix, PrintingToStandardOutput) {
+    testing::internal::CaptureStdout();
+    Matrix<int, 3, 2> m{
+            {1, 2},
+            {4, 5},
+            {7, 8}
+    };
+    m.print();
+    ASSERT_STREQ("         1          2\n"
+                 "         4          5\n"
+                 "         7          8\n",
+                 testing::internal::GetCapturedStdout().c_str());
+}

@@ -9,22 +9,9 @@
 
 namespace math3d {
 
-    // A do-nothing non-template base class to enable printing a vector via
-    // stream insertion overload operator If the stream operator is defined as
-    // a friend of the template derived type, because the
-    // friend function definition is not tied to the template instantiation,
-    // the friend function remains undefined leading to linker errors. Making
-    // the friend function take a non-template parameter avoids this issue 
-    class VectorBase {
-        protected:
-            virtual void print(std::ostream& os) const = 0;
-
-        friend std::ostream& operator << (std::ostream& os, VectorBase const& v);
-    };
-    
     // A vector whose elements are stored in contiguous memory
     template<typename T, unsigned Size>
-    class Vector : public VectorBase {
+    class Vector {
         // Proxy to an element in the vector
         struct Proxy;
     public:
@@ -341,8 +328,8 @@ namespace math3d {
                              std::to_string(z) + ']';
             }
 
-        protected:
-            void print(std::ostream& os) const override {
+        public:
+            void print(std::ostream& os = std::cout) const {
                 os << '['; 
                 for (auto i = 0; i < Size; ++i) {
                     os << (*this)[i];
@@ -354,13 +341,14 @@ namespace math3d {
             std::array<T, Size> data{};
     };
 
-    inline std::ostream& operator << (std::ostream& os, VectorBase const& v) {
+    template<typename DataType, unsigned numRows>
+    inline std::ostream& operator << (std::ostream& os, Vector<DataType, numRows> const& v) {
         v.print(os);
         return os;
     }
 
     template <typename DataType, unsigned numRows>
-    Vector<DataType, numRows> operator*(DataType scalar, Vector<DataType, numRows> const& vector) {
+    inline Vector<DataType, numRows> operator*(DataType scalar, Vector<DataType, numRows> const& vector) {
         return vector * scalar;
     }
 
