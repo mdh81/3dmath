@@ -11,7 +11,7 @@ namespace math3d {
     // assumed to extend to infinity from the origin
     class Ray : public Primitive {
     public:
-        Ray(types::Point3D const& origin, types::Vector3D const& direction, unsigned geometryLength = 1)
+        Ray(types::Point3D const& origin, types::Vector3D const& direction, float geometryLength = 1)
         : origin(origin)
         , direction(direction)
         , geometryLength(geometryLength) {
