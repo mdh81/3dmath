@@ -261,7 +261,7 @@ class Matrix {
         }
 
         // Print column major matrix data in row order format
-        void print(std::ostream& os = std::cout, float zero = 1e-3) const {
+        void print(std::ostream& os, float zero = 1e-3) const {
             for (unsigned row = 0; row < numRows; ++row) {
                 for (unsigned col = 0; col < numCols; ++col) {
                     auto val = data[col * numRows + row];
@@ -273,6 +273,10 @@ class Matrix {
                 }
                 os << std::endl;
             }
+        }
+
+        void print() const {
+            print(std::cout);
         }
 
         [[nodiscard]]

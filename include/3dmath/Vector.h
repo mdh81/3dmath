@@ -329,12 +329,16 @@ namespace math3d {
             }
 
         public:
-            void print(std::ostream& os = std::cout) const {
+            void print(std::ostream& os) const {
                 os << '['; 
                 for (auto i = 0; i < Size; ++i) {
                     os << (*this)[i];
                     os << ((i == Size - 1) ? ']' : ',');
                 }
+            }
+
+            void print() const {
+                print(std::cout);
             }
 
         protected:
