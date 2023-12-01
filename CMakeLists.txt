@@ -6,6 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(INSTALL_GTEST OFF)
+# Allow root git modules to skip tests (e.g. MeshViewer disables tests
+# for emscripten builds)
+if (NOT EMSCRIPTEN)
+    set(enableTesting ON)
+endif()
 
 add_library(3dmath INTERFACE)
 target_include_directories(
@@ -13,5 +18,7 @@ target_include_directories(
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include/3dmath>")
 
-enable_testing()
-add_subdirectory(tests)
+if (enableTesting)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
