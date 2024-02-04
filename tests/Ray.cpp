@@ -37,6 +37,11 @@ TEST(Ray, RayIntersectionForSkewRays) {
 }
 
 TEST(Ray, RayGeometry) {
+    auto baselinePath = std::filesystem::path(__FILE__).parent_path() / "baseline";
     math3d::Ray r1(math3d::constants::origin, {0.707, 0.707, 0});
-    r1.writeToFile(math3d::test::TestSupport::getOutputDirectory() / "Ray.obj");
+    r1.writeToFile("Ray.obj");
+    ASSERT_TRUE(
+            math3d::test::TestSupport::areFilesEqual(
+                    "Ray.obj",
+                    baselinePath/"Ray.obj")) << "Geometry in OBJ file is different";
 }
