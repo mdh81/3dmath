@@ -29,7 +29,7 @@ TEST(Plane, GeometryGeneration) {
         ASSERT_TRUE(
                 math3d::test::TestSupport::areBinarySTLFilesEqual(
                         fileName,
-                        std::filesystem::path("baseline") / fileName)) << "Geometry in STL file is different";
+                        ".." / std::filesystem::path("baseline") / fileName)) << "Geometry in STL file is different";
     }
 }
 
