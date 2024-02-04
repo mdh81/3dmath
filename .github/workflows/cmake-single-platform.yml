@@ -1,4 +1,4 @@
-name: Run tests
+name: Quality Checks
 
 on:
   push:
