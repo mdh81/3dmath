@@ -129,7 +129,7 @@ namespace math3d {
             Timer(Timer&&) = delete;
             Timer& operator=(Timer&&) = delete;
         private:
-            std::chrono::steady_clock::time_point start;
+            decltype(std::chrono::high_resolution_clock::now()) start;
             std::string operation;
             std::ostream& outputStream;
         };
