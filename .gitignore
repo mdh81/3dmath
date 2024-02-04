@@ -21,3 +21,5 @@ _site/
 .jekyll-metadata
 .bundle/
 vendor/
+/cmake-build-debug/
+/cmake-build-release/
