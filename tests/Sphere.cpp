@@ -64,17 +64,20 @@ TEST(Sphere, GeometryGenerationConnectivity) {
 }
 
 TEST(Sphere, STLOutput) {
-    auto outputPath = test::TestSupport::getOutputDirectory() / "Sphere.stl";
-    auto baselinePath = test::TestSupport::getBaselineDirectory() / "Sphere.stl";
-    Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
+    auto baselinePath = std::filesystem::path(__FILE__).parent_path() / "baseline";
+    Sphere {{10, 10, 10}, 10, 16}.writeToFile("Sphere.stl");
     ASSERT_TRUE(
             test::TestSupport::areBinarySTLFilesEqual(
-                    outputPath, baselinePath)) << "Geometry in STL file is different";
+                    "Sphere.stl", baselinePath/"Sphere.stl")) << "Geometry in STL file is different";
 }
 
 TEST(Sphere, OBJOutput) {
-    auto outputPath = test::TestSupport::getOutputDirectory() / "Sphere.obj";
-    Sphere {{10, 10, 10}, 10, 16}.writeToFile(outputPath);
+    auto baselinePath = std::filesystem::path(__FILE__).parent_path() / "baseline";
+    Sphere {{10, 10, 10}, 10, 16}.writeToFile("Sphere.obj");
+    ASSERT_TRUE(
+            test::TestSupport::areFilesEqual(
+                    "Sphere.obj",
+                    baselinePath/"Sphere.obj")) << "Geometry in OBJ file is different";
 }
 
 TEST(Sphere, RayIntersectionRayOriginInsideSphere) {
