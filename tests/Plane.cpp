@@ -25,11 +25,11 @@ TEST(Plane, GeometryGeneration) {
                    math3d::constants::yAxis}.writeToFile("Xz.stl");
     math3d::Plane {math3d::constants::origin,
                    math3d::constants::zAxis}.writeToFile("Xy.stl");
+    auto baselinePath = std::filesystem::path(__FILE__).parent_path() / "baseline";
     for (auto& fileName : { "Xy.stl", "Xz.stl", "Yz.stl"}) {
         ASSERT_TRUE(
                 math3d::test::TestSupport::areBinarySTLFilesEqual(
-                        fileName,
-                        ".." / std::filesystem::path("baseline") / fileName)) << "Geometry in STL file is different";
+                        fileName, baselinePath / fileName)) << "Geometry in STL file is different";
     }
 }
 
