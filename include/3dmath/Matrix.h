@@ -120,7 +120,7 @@ class Matrix {
         // Matrix multiplication
         template<typename T, unsigned multiplierNumRows, unsigned multiplierNumCols>
         [[nodiscard]]
-        auto operator*(Matrix<T, multiplierNumRows, multiplierNumCols> const& another) {
+        auto operator*(Matrix<T, multiplierNumRows, multiplierNumCols> const& another) const {
             static_assert(std::is_same<DataType, T>::value, "Matrix data types should be compatible");
             static_assert(numCols == multiplierNumRows, "Matrix dimensions are not compatible");
             Matrix<T, numRows, multiplierNumCols> result;
