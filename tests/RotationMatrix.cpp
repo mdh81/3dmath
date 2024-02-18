@@ -53,8 +53,7 @@ TEST(RotationMatrix, RotateAboutArbitraryAxis) {
     Vector<double, 3>arbitraryAxis = Utilities::RandomVector();
     arbitraryAxis.normalize();
 
-    // TODO: Allow a Vector4 to be created from Vector3
-    Vector<double, 4> axis = {arbitraryAxis.x, arbitraryAxis.y, arbitraryAxis.z, 0};
+    Vector<double, 4> axis {{arbitraryAxis.x, arbitraryAxis.y, arbitraryAxis.z}, 0};
 
     RotationMatrix<double> rotateAboutArbitraryVector(arbitraryAxis, Utilities::RandomNumber());
 
