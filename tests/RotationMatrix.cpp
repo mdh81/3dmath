@@ -61,3 +61,35 @@ TEST(RotationMatrix, RotateAboutArbitraryAxis) {
     ASSERT_TRUE(Utilities::areEqual(axisAfterRotation.dot(axis), 1.0));
 
 }
+
+TEST(RotationMatrix, Multiplication) {
+
+    // The reason this test exists is that matrix multiplication is implemented in base class Matrix. The result of
+    // the multiplication is a base class instance and therefore, the result cannot be assigned
+    // to a derived instance without special logic even though idiomatically speaking, multiplying two rotation matrices
+    // and assigning their results to another rotation matrix is very natural.
+    // To satisfy such expressions, the RotationMatrix class has a converting constructor that takes a 4x4 Matrix and
+    // passes that to the copy-constructor of the Matrix class and builds a rotation matrix and then invokes
+    // RotationMatrix::operator= to complete the assignment. The sequence of steps are
+    // r1 = r1 * r2
+    // step 1: Matrix::operator*() -> Matrix
+    // step 2: RotationMatrix::RotationMatrix(Matrix const&)
+    // step 3: RotationMatrix::operator=(RotationMatrix const&)
+    RotationMatrix<float> r1, r2;
+    auto str = r1.asString();
+    r1 = r1 * r2;
+    Vector<float, 4> testVec {10, 10, 10, 1};
+    ASSERT_TRUE(Utilities::areEqual(r1 * testVec, testVec))
+    << "Rotation matrix multiplication/conversion logic is incorrect";
+
+    // Sequence of steps for expression r1 *= r2
+    // step 1: RotationMatrix::operator*=() -> RotationMatrix
+    // step 2: step 1 invokes Matrix::operator*() -> Matrix
+    // step 3: RotationMatrix::RotationMatrix(Matrix const&) is invoked
+    //         to convert result from step 2 into a rotation matrix
+    // step 4: Matrix::operator=(Matrix const&) is invoked to assign the
+    //         result of multiplication to r1
+    r1 *= r2;
+    ASSERT_TRUE(Utilities::areEqual(r1 * testVec, testVec))
+    << "Rotation matrix multiplication/conversion logic is incorrect";
+}

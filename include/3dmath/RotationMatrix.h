@@ -1,15 +1,37 @@
 #pragma once
+#include "Matrix.h"
 #include "IdentityMatrix.h"
 #include "Utilities.h"
 namespace math3d {
 
 // 4x4 column-major rotation matrix
 template<typename DataType>
-class RotationMatrix : public IdentityMatrix<DataType, 4, 4> {
+class RotationMatrix : public Matrix<DataType, 4, 4> {
 
 public:
-    // Allow creation of an identity rotation matrix
-    RotationMatrix() = default;
+
+    RotationMatrix()
+    : Matrix<DataType, 4, 4>(IdentityMatrix<DataType, 4, 4>{}) {
+
+    }
+
+    // Conversion constructor to build a RotationMatrix from Matrix to support the following expression forms
+    // RotationMatrix r1, r2;
+    // ...
+    // r1 = r1 * r2
+    // Matrix::operator* returns a Matrix, so assigning that to a rotation matrix is an invalid operation without
+    // this conversion constructor that aids in building a temporary RotationMatrix from the result of Matrix::operator*
+    RotationMatrix(Matrix<DataType, 4, 4>&& matrix)
+    :   Matrix<DataType, 4, 4>(matrix) {}
+
+    // Multiplication assignment operator to enable expressions of the form
+    // RotationMatrix r1, r2;
+    // ...
+    // r1 *= r2;
+    RotationMatrix& operator*=(RotationMatrix const& another) {
+        *this = *this * another;
+        return *this;
+    }
 
     // TODO: Add derivation
     RotationMatrix(Vector3<DataType> const& rotationAxis,
