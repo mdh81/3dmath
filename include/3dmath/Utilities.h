@@ -50,6 +50,17 @@ namespace math3d {
             return areEqual(v1.dot(v2), 1.0);
         }
 
+
+        template<typename T, unsigned size>
+        [[nodiscard]] static bool areEqual(Vector<T, size> const& v1, Vector<T, size> const& v2) {
+            bool result{true};
+            for (auto i = 0u; result && i < size; ++i) {
+                result = areEqual(v1[i], v2[i]);
+            }
+            return result;
+        }
+
+
         template<typename T, unsigned size>
         [[nodiscard]] static T distanceBetween(Vector<T, size> const& point1, Vector<T, size> const& point2) {
             auto dx = point1.x - point2.x;
