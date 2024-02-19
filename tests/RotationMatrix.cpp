@@ -62,6 +62,28 @@ TEST(RotationMatrix, RotateAboutArbitraryAxis) {
 
 }
 
+TEST(RotationMatrix, MatrixStructure) {
+    // Rotation matrix used to inherit from identity, but to allow
+    // matrix multiplication-assignment, its base type was changed to
+    // Matrix. This test asserts that the matrix constructed via all
+    // constructors have the right structure i.e. are identity by default
+    // and when built via the axis angle constructor the 4th column is
+    // {0, 0, 0, 1}
+    RotationMatrix<double> r1;
+    Vector4<double> column1 = r1[0];
+    Vector4<double> column2 = r1[1];
+    Vector4<double> column3 = r1[2];
+    Vector4<double> column4 = r1[3];
+    ASSERT_TRUE(Utilities::areEqual(column1, Vector4<double>{1, 0, 0, 0}));
+    ASSERT_TRUE(Utilities::areEqual(column2, Vector4<double>{0, 1, 0, 0}));
+    ASSERT_TRUE(Utilities::areEqual(column3, Vector4<double>{0, 0, 1, 0}));
+    ASSERT_TRUE(Utilities::areEqual(column4, Vector4<double>{0, 0, 0, 1}));
+
+    RotationMatrix<double> rotateAboutArbitraryVector({1, 0, 0}, 0);
+    column4 = rotateAboutArbitraryVector[3];
+    ASSERT_TRUE(Utilities::areEqual(column4, Vector4<double>{0, 0, 0, 1}));
+}
+
 TEST(RotationMatrix, Multiplication) {
 
     // The reason this test exists is that matrix multiplication is implemented in base class Matrix. The result of

@@ -33,9 +33,9 @@ public:
         return *this;
     }
 
-    // TODO: Add derivation
     RotationMatrix(Vector3<DataType> const& rotationAxis,
-                   DataType const rotationInDegrees) {
+                   DataType const rotationInDegrees)
+    : Matrix<DataType, 4, 4>(IdentityMatrix<DataType, 4, 4>{}) {
 
         auto cosTheta = static_cast<DataType>(cos(Utilities::asRadians(rotationInDegrees)));
         auto oneMinusCosTheta = 1 - cosTheta;
