@@ -76,12 +76,12 @@ class Matrix {
         }
         
         // Copy construction 
-        Matrix(const Matrix& other) {
+        Matrix(Matrix const& other) {
             assign(other);
         }
         
         // Copy assignment
-        Matrix& operator=(const Matrix& other) {
+        Matrix& operator=(Matrix const& other) {
             assign(other);
             return *this;
         }
