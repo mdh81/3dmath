@@ -115,3 +115,13 @@ TEST(RotationMatrix, Multiplication) {
     ASSERT_TRUE(Utilities::areEqual(r1 * testVec, testVec))
     << "Rotation matrix multiplication/conversion logic is incorrect";
 }
+
+TEST(RotationMatrix, Concatenation) {
+
+    RotationMatrix<float> r1 = RotationMatrix<float>::rotateAboutX(90);
+    RotationMatrix<float> r2 = RotationMatrix<float>::rotateAboutZ(90);
+    cout << r1 << endl;
+    cout << r2 << endl;
+    r1 *= r2;
+    cout << r1 << endl;
+}
