@@ -100,7 +100,8 @@ class Matrix {
         // Destructor 
         ~Matrix()  = default;
 
-        // Access data
+        // Conversion operator to get the data as const pointer. Useful for calling OpenGL functions that expect a
+        // pointer with a matrix argument instead and have the matrix converted implicitly to a pointer
         operator DataType const*() { // NOLINT: Implicit conversion is the point of defining this operator
             return data.get();
         }
@@ -150,7 +151,7 @@ class Matrix {
             return data.get();
         }
 
-        // TODO: This looks like a duplicate of the earlier conversion operator
+        // const version of conversion operator to get the data as const pointer
         [[nodiscard]]
         operator const DataType*() const {
             return data.get();
