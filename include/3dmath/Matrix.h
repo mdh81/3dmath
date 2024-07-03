@@ -35,16 +35,13 @@ enum class Order {
 
 template<typename DataType, unsigned numRows, unsigned numCols>
 class Matrix {
+
+    static_assert(std::is_fundamental_v<DataType>, "Matrix elements should be of fundamental type");
     
     public:
 
-        // Default construction
-        Matrix() : data(new DataType[numRows * numCols]) {
-            for(unsigned row = 0; row < numRows; ++row) {
-                for (unsigned col = 0; col < numCols; ++col) {
-                    data[row * numCols + col] = DataType{};
-                }
-            }
+        // Default construction. Elements of the new matrix will be zero-initialized
+        Matrix() : data(std::make_unique<DataType[]>(numRows * numCols)) {
         }
         
         // Construction via an initializer list of initializer lists 
@@ -56,7 +53,7 @@ class Matrix {
         Matrix(std::initializer_list<std::initializer_list<DataType>> const& initList, Order const& order = Order::RowMajor) {
             
             // allocate memory
-            data.reset(new DataType[numRows * numCols]);
+            data = std::make_unique<DataType[]>(numRows * numCols);
             
             // read and store data in data as per the format of the input data
             order == Order::ColumnMajor ? readColumnMajor(initList) : readRowMajor(initList);
@@ -65,7 +62,7 @@ class Matrix {
         // Construct with data from a 1D vector. This is useful to build minors and cofactors
         Matrix(std::vector<DataType> const& inputData, Order const& order = Order::RowMajor) {
             // allocate memory
-            data.reset(new DataType[numRows * numCols]);
+            data = std::make_unique<DataType[]>(numRows * numCols);
             for (int i = 0; i < numRows; ++i) {
                 for (int j = 0; j < numCols; ++j) {
                     data[i * numRows + j] =
@@ -345,11 +342,13 @@ protected:
         }
 
         void assign(Matrix const& other) {
-            data.reset(new DataType[numRows * numCols]);
-            for(unsigned col = 0; col < numCols; ++col) {
-                for (unsigned row = 0; row < numRows; ++row) {
-                    auto index = col * numRows + row;
-                    data[index] = other.data[index];
+            if (this != &other) {
+                data = std::make_unique<DataType[]>(numRows * numCols);
+                for (unsigned col = 0; col < numCols; ++col) {
+                    for (unsigned row = 0; row < numRows; ++row) {
+                        auto index = col * numRows + row;
+                        data[index] = other.data[index];
+                    }
                 }
             }
         }
