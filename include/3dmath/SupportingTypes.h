@@ -14,6 +14,7 @@ namespace math3d {
         T max;
         T length() const { return max - min; }
         T center() const { return 0.5f*(max + min); }
+        void scale(T const scale) { min *= scale; max *= scale; }
     };
 
     template<typename T>
@@ -92,6 +93,23 @@ namespace math3d {
 
             return withinXExtent && withinYExtent && withinZExtent;
         }
+
+        enum class Direction {
+            x,
+            y,
+            z,
+            All
+        };
+
+        void scale(T const scaleFactor, Direction direction = Direction::All) {
+            if (direction == Direction::All || direction == Direction::x)
+                x.scale(scaleFactor);
+            if (direction == Direction::All || direction == Direction::y)
+                y.scale(scaleFactor);
+            if (direction == Direction::All || direction == Direction::z)
+                z.scale(scaleFactor);
+        }
+
     };
 
     template<typename T>

@@ -87,3 +87,31 @@ TEST(Bounds3D, ConstructFrom2DBounds) {
     ASSERT_FLOAT_EQ(bounds.x.length(), 2.f);
     ASSERT_FLOAT_EQ(bounds.y.length(), 2.f);
 }
+
+TEST(Bounds3D, UniformScaling) {
+    Bounds3D<float> bounds{{-1, -1, -1},
+                           {+1, +1, +1}};
+    auto oldLength = bounds.length();
+    bounds.scale(1.5f);
+    ASSERT_FLOAT_EQ(bounds.length(), oldLength * 1.5f);
+}
+
+TEST(Bounds3D, NonUniformScaling) {
+    Bounds3D<float> bounds{{-1, -1, -1},
+                           {+1, +1, +1}};
+    auto xLen = bounds.x.length();
+    auto yLen = bounds.y.length();
+    auto zLen = bounds.z.length();
+    bounds.scale(1.5f, Bounds3D<float>::Direction::y);
+    ASSERT_FLOAT_EQ(bounds.x.length(), xLen);
+    ASSERT_FLOAT_EQ(bounds.y.length(), yLen*1.5f);
+    ASSERT_FLOAT_EQ(bounds.z.length(), zLen);
+    bounds.scale(1.5f, Bounds3D<float>::Direction::x);
+    ASSERT_FLOAT_EQ(bounds.x.length(), xLen*1.5f);
+    ASSERT_FLOAT_EQ(bounds.y.length(), yLen*1.5f);
+    ASSERT_FLOAT_EQ(bounds.z.length(), zLen);
+    bounds.scale(1.5f, Bounds3D<float>::Direction::z);
+    ASSERT_FLOAT_EQ(bounds.x.length(), xLen*1.5f);
+    ASSERT_FLOAT_EQ(bounds.y.length(), yLen*1.5f);
+    ASSERT_FLOAT_EQ(bounds.z.length(), zLen*1.5f);
+}
