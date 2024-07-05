@@ -115,7 +115,7 @@ namespace math3d {
     template<typename T>
     inline std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D) {
         os << "Min:[" << bounds3D.x.min << "," << bounds3D.y.min << "," << bounds3D.z.min << "] ";
-        os << "Max:[" << bounds3D.y.max << "," << bounds3D.y.max << "," << bounds3D.z.max << "]";
+        os << "Max:[" << bounds3D.x.max << "," << bounds3D.y.max << "," << bounds3D.z.max << "]";
         return os;
     }
 
