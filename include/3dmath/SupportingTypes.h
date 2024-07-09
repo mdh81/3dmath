@@ -110,6 +110,13 @@ namespace math3d {
                 z.scale(scaleFactor);
         }
 
+        // Convenience conversion operator to convert string to allow quick-and-easy expressions such as std::puts(Bounds{})
+        [[nodiscard]]
+        std::string asString() const {
+            std::stringstream ss;
+            ss << *this;
+            return ss.str();
+        }
     };
 
     template<typename T>
