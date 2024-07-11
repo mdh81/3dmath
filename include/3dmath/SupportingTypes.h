@@ -8,6 +8,12 @@
 #include "TypeAliases.h"
 
 namespace math3d {
+
+    enum class CoordinateSystemHandedness {
+        LeftHanded,
+        RightHanded
+    };
+
     template <typename T>
     struct Extent {
         T min;
