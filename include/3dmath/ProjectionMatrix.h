@@ -12,8 +12,7 @@ namespace math3d {
     public:
         // Allow users to create an empty matrix and then call update when the projection needs to be recomputed
         ProjectionMatrix() = default;
-        virtual void update(Bounds3D<DataType> const& bounds3D, bool invertZ = true) = 0;
-
+        virtual void update(Bounds3D<DataType> const& bounds3D) = 0;
     };
 
 }
