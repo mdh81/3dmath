@@ -123,6 +123,10 @@ namespace math3d {
             ss << *this;
             return ss.str();
         }
+
+        bool isValid() const {
+            return x.min < x.max && y.min < y.max && z.min < z.max;
+        }
     };
 
     template<typename T>

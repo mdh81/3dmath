@@ -115,3 +115,10 @@ TEST(Bounds3D, NonUniformScaling) {
     ASSERT_FLOAT_EQ(bounds.y.length(), yLen*1.5f);
     ASSERT_FLOAT_EQ(bounds.z.length(), zLen*1.5f);
 }
+
+TEST(Bounds3D, Validity) {
+    ASSERT_FALSE(Bounds3D<float>{}.isValid()) << "Uninitialized bounds should have been classified as invalid";
+    Bounds3D<float> bounds{{-0.5, -0.5, -0.5},
+                           {+0.5, +0.5, +0.5}};
+    ASSERT_TRUE(bounds.isValid()) << "Bounds initialized with a unit cube must have been classified as valid";
+}
