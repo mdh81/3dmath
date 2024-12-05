@@ -10,7 +10,7 @@ public:
     // Allow users to create an empty matrix and then call update when the projection needs to be recomputed
     OrthographicProjectionMatrix() = default;
 
-    OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D)
+    explicit OrthographicProjectionMatrix(Bounds3D<DataType> const& bounds3D)
     : ProjectionMatrix<DataType>() {
         update(bounds3D);
     }
