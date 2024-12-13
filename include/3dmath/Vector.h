@@ -15,7 +15,7 @@ namespace math3d {
         // Proxy to an element in the vector
         struct Proxy;
     public:
-        // Vector data accessors that allow 1,2, 3 and 4D vectors to be used in semantically meaningful fashion.
+        // Vector data accessors that allow 1,2,3 and 4D vectors to be used in semantically meaningful fashion.
         // For example:
         //      using Point2D = Vector<float, 2>
         //      Point2D origin{10, 10};
@@ -342,9 +342,13 @@ namespace math3d {
 
             [[nodiscard]]
             std::string asString() const {
-                return '[' + std::to_string(x) + ' ' +
-                             std::to_string(y) + ' ' +
-                             std::to_string(z) + ']';
+                std::string result{'['};
+                for (auto i = 0; i < Size; ++i) {
+                    result += std::to_string((*this)[i]) + ' ';
+                }
+                result.erase(result.size() - 1);
+                result += ']';
+                return result;
             }
 
             void print(std::ostream& os) const {
