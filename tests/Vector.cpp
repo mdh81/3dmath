@@ -236,9 +236,26 @@ TEST(Vector, BuildAsCopyWithAnAdditionalElement) {
 TEST(Vector, TypeConversion) {
     Vector3<float> v{5.5, 10.5, 15.5};
     Vector3<double> v_double = static_cast<Vector3<float>>(v);
-    Vector3<float> v_float = static_cast<Vector3<float>>(v_double);
+    auto v_float = static_cast<Vector3<float>>(v_double);
     for(auto i = 0u; i < 3; ++i) {
         ASSERT_FLOAT_EQ(v_float[i], v[i]);
         ASSERT_FLOAT_EQ(v_double[i], v[i]);
     }
+}
+
+TEST(Vector, AddressOfProxies) {
+    Vector3<float> v{5.5, 10.5, 15.5};
+    ASSERT_EQ(&v.x, &v[0]);
+    ASSERT_EQ(&v.y, &v[1]);
+    ASSERT_EQ(&v.z, &v[2]);
+
+    Vector3<int> v1;
+    auto l = [](int* a, int* b, int* c) {
+        *a = 10; *b = 20; *c = 30;
+    };
+    l(&v1.x, &v1.y, &v1.z);
+    ASSERT_TRUE(v1.x == 10);
+    ASSERT_TRUE(v1.y == 20);
+    ASSERT_TRUE(v1.z == 30);
+
 }

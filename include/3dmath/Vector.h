@@ -61,6 +61,14 @@ namespace math3d {
                 return *data;
             }
 
+            // Convert the address of the proxy to the address of the object
+            // Allows conversions of this form:
+            // Point2D windowSize;
+            // getWindowSize(..., &windowSize.x, &windowSize.y);
+            T* operator&() {        // NOLINT
+                return data;
+            }
+
             // Convenience functions for using vector's convenience members in shorthand expressions
             void operator+=(T const& another) {
                 *data += another;
@@ -131,7 +139,7 @@ namespace math3d {
 
         public:
             Vector() {
-                SET_CONVENIENCE_MEMBERS;
+                SET_CONVENIENCE_MEMBERS
             }
 
             Vector(std::initializer_list<T> const& vals) {
@@ -143,7 +151,7 @@ namespace math3d {
                 for (size_t i = 0; i < vals.size(); ++i) {
                     data[i] = std::data(vals)[i];
                 }
-                SET_CONVENIENCE_MEMBERS;
+                SET_CONVENIENCE_MEMBERS
             }
 
             // Convenience constructor to build a vector with a different last component
@@ -152,12 +160,12 @@ namespace math3d {
                     data[i] = another[i];
                 }
                 data[Size-1] = val;
-                SET_CONVENIENCE_MEMBERS;
+                SET_CONVENIENCE_MEMBERS
             }
 
             Vector(Vector const& other) {
                this->operator=(other);
-               SET_CONVENIENCE_MEMBERS;
+               SET_CONVENIENCE_MEMBERS
             }
 
             Vector& operator=(Vector const& rhs) {
@@ -171,14 +179,14 @@ namespace math3d {
 
             Vector(Vector&& other) noexcept {
                 data = std::move(other.data);
-                SET_CONVENIENCE_MEMBERS;
-                RESET_CONVENIENCE_MEMBERS(other);
+                SET_CONVENIENCE_MEMBERS
+                RESET_CONVENIENCE_MEMBERS(other)
             }
 
             Vector& operator=(Vector&& other) noexcept {
                 if (&other != this) {
                     data = std::move(other.data);
-                    RESET_CONVENIENCE_MEMBERS(other);
+                    RESET_CONVENIENCE_MEMBERS(other)
                 }
                 return *this;
             }
@@ -193,7 +201,7 @@ namespace math3d {
                 for (size_t i = 0; i < v.size(); ++i) {
                     data[i] = v[i];
                 }
-                SET_CONVENIENCE_MEMBERS;
+                SET_CONVENIENCE_MEMBERS
             }
 
             // Add this vector to another and return the sum
@@ -313,7 +321,7 @@ namespace math3d {
             }
 
             template<typename AnotherType>
-            operator Vector<AnotherType, Size>() const {
+            operator Vector<AnotherType, Size>() const { // NOLINT
                 static_assert(std::is_floating_point<AnotherType>::value, "Cannot convert vector to non-floating point types");
                 Vector<AnotherType, Size> result;
                 for (unsigned i = 0; i < Size; ++i) {
