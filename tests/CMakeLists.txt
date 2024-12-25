@@ -20,7 +20,6 @@ file(MAKE_DIRECTORY ${testBinDirectory})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${testBinDirectory})
 
 # Convenience target to build all tests
-message(STATUS "Running tests in ${CMAKE_CURRENT_SOURCE_DIR}/testBin")
 add_custom_target(allTests COMMAND ctest --output-on-failure ${CMAKE_SOURCE_DIR}/testBin)
 
 # Build all tests. Create a separate build target for each test and enable google test discovery
