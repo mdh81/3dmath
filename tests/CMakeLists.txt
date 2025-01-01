@@ -14,13 +14,8 @@ add_compile_options(-g -DLLDB)
 # All c++ sources in the test directory are considered to be tests
 file(GLOB allTestSources *.cpp)
 
-# Put test executables in a separate sub-directory so they can be kept out of IDE
-set(testBinDirectory ${CMAKE_CURRENT_SOURCE_DIR}/testBin)
-file(MAKE_DIRECTORY ${testBinDirectory})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${testBinDirectory})
-
-# Convenience target to build all tests
-add_custom_target(allTests COMMAND ctest --output-on-failure ${CMAKE_SOURCE_DIR}/testBin)
+# Convenience target to build and run all tests
+add_custom_target(3dmathTests COMMAND ctest --output-on-failure ${CMAKE_BINARY_DIR})
 
 # Build all tests. Create a separate build target for each test and enable google test discovery
 foreach(test ${allTestSources})
@@ -29,5 +24,5 @@ foreach(test ${allTestSources})
     target_include_directories(${testTarget} PRIVATE ../include)
     target_link_libraries(${testTarget} gtest_main gmock_main)
     gtest_discover_tests(${testTarget})
-    add_dependencies(allTests ${testTarget})
+    add_dependencies(3dmathTests ${testTarget})
 endforeach()
