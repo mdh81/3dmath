@@ -125,7 +125,7 @@ namespace math3d {
             }
         };
 
-        using RandomPoint = RandomVector;
+        using RandomPoint = RandomVector<>;
 
         class Timer {
         public:
