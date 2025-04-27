@@ -23,7 +23,7 @@ namespace math3d::test {
             double distance = 0;
             switch (containment) {
                 case Containment::Inside:
-                    distance = Utilities::RandomNumber(0, sphere.getRadius());
+                    distance = Utilities::RandomNumber(0.0, sphere.getRadius());
                     break;
                 case Containment::Outside:
                     distance = Utilities::RandomNumber(sphere.getRadius() + 1e-3, sphere.getRadius() + 100);
