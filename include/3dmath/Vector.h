@@ -2,10 +2,10 @@
 #include <ostream>
 #include <string>
 #include <initializer_list>
-#include <exception>
 #include <memory>
 #include <cmath>
 #include <array>
+#include <iostream>
 
 namespace math3d {
 
@@ -360,7 +360,7 @@ namespace math3d {
             }
 
             void print(std::ostream& os) const {
-                os << '['; 
+                os << '[';
                 for (auto i = 0; i < Size; ++i) {
                     os << (*this)[i];
                     os << ((i == Size - 1) ? ']' : ',');
