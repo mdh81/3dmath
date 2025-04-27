@@ -4,7 +4,8 @@
 #include <cmath>
 #include <random>
 #include <chrono>
-#include <iostream>
+#include <type_traits>
+#include <print>
 
 namespace math3d {
 
@@ -96,28 +97,31 @@ namespace math3d {
         static constexpr double defaultRandomNumberRangeMin = -100;
         static constexpr double defaultRandomNumberRangeMax = +100;
 
+        template<typename T=double>
         class RandomNumber {
+        static_assert(std::is_floating_point_v<T>, "Random numbers supported only for floating point values");
         public:
-            RandomNumber(double rangeMin = defaultRandomNumberRangeMin, double rangeMax = defaultRandomNumberRangeMax)
+            explicit RandomNumber(T rangeMin = defaultRandomNumberRangeMin, T rangeMax = defaultRandomNumberRangeMax)
             : rangeMin(rangeMin)
             , rangeMax(rangeMax) {};
-            operator double() const { // NOLINT
+            operator T() const { // NOLINT
                 std::random_device rd;
                 std::mt19937 gen(rd());
-                std::uniform_real_distribution<double> dist(rangeMin, rangeMax);
+                std::uniform_real_distribution<T> dist(rangeMin, rangeMax);
                 return dist(gen);
             }
-            double rangeMin;
-            double rangeMax;
+            T rangeMin;
+            T rangeMax;
         };
 
+        template<typename T=double>
         class RandomVector {
         public:
-            operator Vector3<double>() { // NOLINT
-                return {RandomNumber(), RandomNumber(), RandomNumber()};
+            operator Vector3<T>() { // NOLINT
+                return {RandomNumber<T>(), RandomNumber<T>(), RandomNumber<T>()};
             }
-            operator Vector2<double>() { // NOLINT
-                return {RandomNumber(), RandomNumber()};
+            operator Vector2<T>() { // NOLINT
+                return {RandomNumber<T>(), RandomNumber<T>()};
             }
         };
 
@@ -131,9 +135,9 @@ namespace math3d {
                 start = std::chrono::high_resolution_clock::now();
             }
             ~Timer() {
-                auto end = std::chrono::high_resolution_clock::now();
-                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                outputStream << operation << " in " <<  duration.count() << " milliseconds" << std::endl;
+                auto const end = std::chrono::high_resolution_clock::now();
+                auto const duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                std::println("{} in {} milliseconds", operation, duration.count());
             }
             Timer(Timer const&) = delete;
             Timer& operator=(Timer const&) = delete;
