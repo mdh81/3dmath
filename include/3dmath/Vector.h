@@ -6,6 +6,7 @@
 #include <cmath>
 #include <array>
 #include <iostream>
+#include <vector>
 
 namespace math3d {
 
