@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools", "pybind11", "scikit-build-core"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "math3d"
+version = "0.0.1"
+description = "Python bindings for 3dmath"
+authors = [{ name = "Murali Dhanakoti", email = "dhanakoti.murali@gmail.com" }]
+requires-python = ">=3.12"

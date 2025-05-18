@@ -114,7 +114,7 @@ namespace math3d {
             T* data {};
 
             // Allow the outer class Vector to call reset() to facilitate move operations
-            friend Vector<T, Size>;
+            friend Vector;
         };
 
         // These macros prevent code duplication in vector's constructors and operators
@@ -207,7 +207,7 @@ namespace math3d {
 
             // Add this vector to another and return the sum
             Vector operator+(Vector const& another) const {
-                Vector <T, Size> result;
+                Vector result;
                 for (unsigned i = 0; i < Size; ++i) {
                     result.data[i] = this->data[i] + another.data[i];
                 }
@@ -216,7 +216,7 @@ namespace math3d {
 
             // Subtract this vector from another and return the difference
             Vector operator-(Vector const& another) const {
-                Vector <T, Size> result;
+                Vector result;
                 for (unsigned i = 0; i < Size; ++i) {
                     result.data[i] = this->data[i] - another.data[i];
                 }
@@ -240,7 +240,7 @@ namespace math3d {
             // Compute cross product of this vector and another and return the mutually orthonormal vector
             Vector operator*(Vector const& another) const {
                 static_assert(Size == 3, "Cross product can only be computed for 3D vectors");
-                Vector<T, Size> result;
+                Vector result;
                 auto* v1 = getData();
                 auto* v2 = another.getData();
                 result[0] = v1[1]*v2[2] - v1[2]*v2[1];
@@ -250,7 +250,7 @@ namespace math3d {
             }
 
             Vector operator*(T const scalar) const {
-                Vector<T, Size> result;
+                Vector result;
                 for(auto i = 0; i < Size; ++i) {
                     result[i] = scalar * data[i];
                 }
@@ -258,7 +258,7 @@ namespace math3d {
             }
 
             Vector operator-() const {
-                Vector<T, Size> result;
+                Vector result;
                 for(auto i = 0; i < Size; ++i) {
                     result[i] = -data[i];
                 }
@@ -275,7 +275,7 @@ namespace math3d {
 
             Vector normalize() const {
                 T norm = length();
-                Vector<T, Size> result;
+                Vector result;
                 for (size_t i = 0; i < Size; ++i) {
                     result.data[i] /= norm;
                 }
@@ -332,8 +332,8 @@ namespace math3d {
             }
 
             struct VectorProjection {
-                Vector<T, Size> parallel;
-                Vector<T, Size> perpendicular;
+                Vector parallel;
+                Vector perpendicular;
             };
 
             // TODO: Add derivation for this

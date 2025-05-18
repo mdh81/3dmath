@@ -27,3 +27,6 @@ tests/*.obj
 tests/*.stl
 *.cbp
 octave-workspace
+py/math3d/__pycache__/
+py/math3d/math3d*.so
+tests/perf_test.tar.gz
