@@ -23,3 +23,5 @@ if (enableTesting)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+add_subdirectory(py)
