@@ -2,7 +2,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/operators.h"
 #include "pybind11/stl.h"
-
+#include "util.h"
 #include "Vector.h"
 
 namespace py = pybind11;
@@ -16,7 +16,7 @@ void bind_Vector(py::module_ const& module, char const* className) {
         .def(py::init())
         .def(py::init([](py::list const& list) {
             auto const input = list.cast<std::vector<T>>();
-            return vector_n(input);
+            return vector_n{input};
         }))
         // Member access
         .def_property("x",
@@ -47,8 +47,12 @@ void bind_Vector(py::module_ const& module, char const* className) {
             }
         )
         // Formatted output
-        .def("__str__", &vector_n::asString)
-        .def("__repr__", &vector_n::asString)
+        .def("__str__", [](vector_n const& v) {
+            return util::convertSpaceToNewLine(v.asString());
+        })
+        .def("__repr__", [](vector_n const& v) {
+            return util::convertSpaceToNewLine(v.asString());
+        })
         // Operations
         .def(py::self + py::self)
         .def(py::self - py::self)
