@@ -15,7 +15,7 @@ TEST(LinearSystem, Identity) {
 
     Vector<float, 3> b {21.f, 67.f, 16.f};
 
-    Vector<float, 3> x = LinearSystem::solveLinearSystem<float, 3>(A, b);
+    Vector<float, 3> x = LinearSystem<float, 3>::solveLinearSystem(A, b);
 
     ASSERT_FLOAT_EQ(x[0], 21.f);
     ASSERT_FLOAT_EQ(x[1], 67.f);
@@ -31,7 +31,7 @@ TEST(LinearSystem, UpperTriangular) {
 
     Vector<float, 3> b {21.f, 67.f, 16.f};
 
-    Vector<float, 3> x = LinearSystem::solveLinearSystem<float, 3>(A, b);
+    Vector<float, 3> x = LinearSystem<float, 3>::solveLinearSystem(A, b);
 
     ASSERT_FLOAT_EQ(x[0], 0.f);
     ASSERT_FLOAT_EQ(x[1], 1.f);
@@ -51,7 +51,7 @@ TEST(LinearSystem, ThreeByThree) {
         0.788695
     };
 
-    Vector<float, 3> x = LinearSystem::solveLinearSystem<float, 3>(A, b);
+    Vector<float, 3> x = LinearSystem<float, 3>::solveLinearSystem(A, b);
 
     ASSERT_NEAR(x[0], +1.01808, 1e-4);
     ASSERT_NEAR(x[1], -0.278914, 1e-4);
@@ -75,7 +75,7 @@ TEST(LinearSystem, TenByTen) {
        65.6284, 12.8682, 76.4991, 66.2634, 58.2422, 40.7078, 74.4473, 44.3651, 2.7081, 93.1322
     };
 
-    Vector<float, 10> x = LinearSystem::solveLinearSystem<float, 10>(A, b);
+    Vector<float, 10> x = LinearSystem<float, 10>::solveLinearSystem(A, b);
 
     std::array<float, 10> expectedResult = {
         0.5709, 0.1570, -1.8675, -0.5550, -0.5475, 0.9204, 3.2058, -2.9134, 0.3467, 3.1498
