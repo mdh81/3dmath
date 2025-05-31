@@ -16,9 +16,14 @@ $ cd <path to 3dmath>
 $ python3 -m venv .venv
 $ source .venv/bin/activate
 $ cmake --build <build_dir> --parallel -t math3d
-$ pip -install py/
+$ cd py
 $ python
 > import math3d
 ```
 
+### To install math3d python module (native extension module) 
 
+```
+$ cd <path to 3dmath>
+$ pip install py
+```
