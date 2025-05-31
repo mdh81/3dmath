@@ -7,10 +7,10 @@
 namespace math3d {
     template<typename DataType, unsigned numRows, unsigned numCols>
     void Matrix<DataType, numRows, numCols>::readFromFile(std::filesystem::path const& matrixFile,
-                                                          Matrix<DataType, numRows, numCols>& matrix,
+                                                          Matrix& matrix,
                                                           char const delimiter) {
 
-        if (!std::filesystem::exists(matrixFile)) {
+        if (!exists(matrixFile)) {
             throw std::runtime_error(matrixFile.string() + " does not exist");
         }
 

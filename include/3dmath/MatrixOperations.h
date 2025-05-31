@@ -3,15 +3,12 @@
 #include "Matrix.h"
 #include "IdentityMatrix.h"
 #include "Utilities.h"
-#include <limits>
-#include <algorithm>
-#include <iostream>
 
 namespace math3d {
 
     // Convert a square matrix or the square matrix portion of an augmented matrix to an upper triangular matrix
     template<typename DataType, unsigned numRows, unsigned numCols>
-    unsigned Matrix<DataType, numRows, numCols>::convertToUpperTriangular(Matrix<DataType, numRows, numCols>& upperTriangular) const {
+    unsigned Matrix<DataType, numRows, numCols>::convertToUpperTriangular(Matrix& upperTriangular) const {
 
         // Convert to upper triangular using Gaussian elimination with partial pivoting
         upperTriangular = *this;

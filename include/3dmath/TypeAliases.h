@@ -8,7 +8,7 @@ namespace math3d::types {
     using Vector3D = Vector3<double>;
     using Vertex = Vector3<float>;
     using Vertices = std::vector<Vertex>;
-    struct Tri : public std::array<unsigned, 3> {
+    struct Tri : std::array<unsigned, 3> {
         // Emplace support constructor
         Tri(unsigned a, unsigned b, unsigned c)
         : std::array<unsigned, 3>{a, b, c} {

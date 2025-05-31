@@ -8,7 +8,6 @@
 #include <iomanip>
 #include <filesystem>
 #include "Vector.h"
-#include "Constants.h"
 
 namespace math3d {
 
@@ -59,8 +58,16 @@ class Matrix {
             order == Order::ColumnMajor ? readColumnMajor(initList) : readRowMajor(initList);
         }
 
+        explicit Matrix(std::vector<std::vector<DataType>> const& input, Order const& order = Order::RowMajor) {
+            // allocate memory
+            data = std::make_unique<DataType[]>(numRows * numCols);
+
+            // read and store data in data as per the format of the input data
+            order == Order::ColumnMajor ? readColumnMajor(input) : readRowMajor(input);
+        }
+
         // Construct with data from a 1D vector. This is useful to build minors and cofactors
-        Matrix(std::vector<DataType> const& inputData, Order const& order = Order::RowMajor) {
+        explicit Matrix(std::vector<DataType> const& inputData, Order const& order = Order::RowMajor) {
             // allocate memory
             data = std::make_unique<DataType[]>(numRows * numCols);
             for (int i = 0; i < numRows; ++i) {
@@ -134,12 +141,12 @@ class Matrix {
         }
 
         [[nodiscard]]
-        unsigned getNumberOfRows() const {
+        unsigned getNumberOfRows() const { //NOLINT: Ignore static member function suggestion
             return numRows;
         }
 
         [[nodiscard]]
-        unsigned getNumberOfColumns() const {
+        unsigned getNumberOfColumns() const { //NOLINT: Ignore static member function suggestion
             return numCols;
         }
 
@@ -150,12 +157,12 @@ class Matrix {
 
         // const version of conversion operator to get the data as const pointer
         [[nodiscard]]
-        operator const DataType*() const {
+        operator const DataType*() const { // NOLINT: Conversion to pointer is the purpose of this method
             return data.get();
         }
 
         // Column access
-        Vector<DataType, numRows> operator[](unsigned index) const {
+        Vector<DataType, numRows> operator[](unsigned const index) const {
             if (index >= numCols) {
                 throw std::runtime_error(
                         "Matrix::operator[]() : Invalid access. " + std::to_string(index) + " is not a valid column"
@@ -169,7 +176,7 @@ class Matrix {
         }
 
         // Row access
-        Vector<DataType, numCols> operator()(unsigned rowIndex) const {
+        Vector<DataType, numCols> operator()(unsigned const rowIndex) const {
             Vector<DataType, numCols> result;
             for (unsigned i = 0, index = rowIndex; i < numCols; ++i, index += numRows) {
                 result[i] = data[index];
@@ -179,7 +186,7 @@ class Matrix {
 
         // These two operators allow assignment expression of the form
         // matrix[i] = columnVector
-        Matrix& operator[](unsigned index) {
+        Matrix& operator[](unsigned const index) {
             if (currentColumn != -1) {
                 throw std::runtime_error(
                         "Matrix::operator[]() : Invalid access. Previous column access operation is still in progress");
@@ -193,7 +200,7 @@ class Matrix {
             return *this;
         }
 
-        void operator=(Vector<DataType, numCols> const& vector) {
+        void operator=(Vector<DataType, numCols> const& vector) { // NOLINT: Specific use case to assign columns to matrix
             if(currentColumn == -1) {
                 throw std::runtime_error("Invalid assignment. Check assignment expressions");
             }
@@ -203,7 +210,7 @@ class Matrix {
 
         // Conversion to vector
         // Allows expression of the form Vector<DataType, numRows> column0 = Matrix[0]
-        operator Vector<DataType, numRows>() const {
+        operator Vector<DataType, numRows>() const { // NOLINT: Specific use case to assign columns to matrix
             if(currentColumn == -1) {
                 throw std::runtime_error("Invalid conversion to vector. Check assignment expressions");
             }
@@ -217,14 +224,14 @@ class Matrix {
 
         // Element access operators to allow assignment of individual elements in the form of expression
         // matrix(a, b) = c
-        Matrix& operator()(unsigned rowIndex, unsigned columnIndex) {
+        Matrix& operator()(unsigned const rowIndex, unsigned const columnIndex) {
             validateElementAccess(rowIndex, columnIndex);
             currentColumn = columnIndex;
             currentRow = rowIndex;
             return *this;
         }
 
-        void operator=(DataType value) {
+        void operator=(DataType value) { //NOLINT: Specific for element assignment
             if (currentColumn != -1 && currentRow != -1) {
                 data[currentColumn * numRows + currentRow] = value;
                 currentColumn = -1;
@@ -240,7 +247,7 @@ class Matrix {
         // or
         // ASSERT_EQ(matrix(a,b), someScalar)
         // NOTE: Matrix& Matrix::operator(row, column) will be resolved in assignment expressions
-        operator DataType() const {
+        operator DataType() const { // NOLINT: Specific for element access
             DataType scalar;
             if (currentColumn != -1 && currentRow != -1) {
                 scalar = data[currentColumn * numRows + currentRow];
@@ -253,14 +260,14 @@ class Matrix {
         }
 
         // Element access for const objects
-        DataType operator()(unsigned rowIndex, unsigned columnIndex) const {
+        DataType operator()(unsigned const rowIndex, unsigned const columnIndex) const {
             validateElementAccess(rowIndex, columnIndex);
             return data[columnIndex * numRows + rowIndex];
         }
 
         // Extract a range of elements into a new matrix
         template<unsigned newNumRows, unsigned newNumCols>
-        Matrix<DataType, newNumRows, newNumCols> extract(unsigned startingRow = 0, unsigned startingColumn = 0) {
+        Matrix<DataType, newNumRows, newNumCols> extract(unsigned const startingRow = 0, unsigned const startingColumn = 0) {
            if (startingRow >= numRows || startingColumn >= numCols) {
                throw std::runtime_error(
                    "Matrix::extract() [" + std::to_string(startingRow) + ',' + std::to_string(startingColumn) + ']' +
@@ -313,8 +320,7 @@ class Matrix {
         void subtractRow(unsigned rowIndex, Vector<DataType, numCols> const& anotherRow);
 
         // Defined in MatrixUtil.h
-        static void readFromFile(std::filesystem::path const& matrixFile, Matrix<DataType, numRows, numCols>& delimiterPosition,
-                                 char const delimiter = ',');
+        static void readFromFile(std::filesystem::path const& matrixFile, Matrix&, char delimiter = ',');
 
 protected:
         std::unique_ptr<DataType[]> data;
@@ -323,9 +329,9 @@ protected:
 
 
     private:
-        void validateElementAccess(unsigned rowIndex, unsigned columnIndex) const {
-            auto badRowIndex = rowIndex >= numRows;
-            auto badColumnIndex = columnIndex >= numCols;
+        static void validateElementAccess(unsigned const rowIndex, unsigned const columnIndex) {
+            auto const badRowIndex = rowIndex >= numRows;
+            auto const badColumnIndex = columnIndex >= numCols;
             if (badRowIndex || badColumnIndex) {
                 std::stringstream errorMessage;
                 errorMessage << "Invalid access: ";
@@ -353,7 +359,7 @@ protected:
             }
         }
         
-        void readColumnMajor(std::initializer_list<std::initializer_list<DataType>> const& initList) {
+        void readColumnMajor(auto const& initList) {
 
             // Number of columns in input data should match numCols 
             if (numCols != initList.size()) {
@@ -382,7 +388,7 @@ protected:
             }
         }
         
-        void readRowMajor(std::initializer_list<std::initializer_list<DataType>> const& initList) {
+        void readRowMajor(auto const& initList) {
 
             // Number of rows in input data should match numRows 
             if (numRows != initList.size()) {
@@ -451,7 +457,8 @@ class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
 };
 
 template<typename DataType, unsigned numRows, unsigned numCols>
-inline std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCols>& m) {
+inline std::ostream& operator<<(std::ostream& os, const Matrix<DataType, numRows, numCols>& m) { // NOLINT: clang-tidy is being greedy.
+                                                                                                  // Non-member templates have to be inline to avoid ODR violations
     m.print(os);
     return os;
 }
