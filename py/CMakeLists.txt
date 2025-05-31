@@ -10,7 +10,6 @@ if(Python_NOT_FOUND)
     message(FATAL_ERROR "Unable to find python from a virtual environment. Has a virtual environment been defined and activated")
 endif()
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
-set (PYBIND11_PYTHON_VERSION "3.13")
 include(FetchContent)
 FetchContent_Declare(
     pybind11
@@ -24,6 +23,12 @@ include_directories(
     ${Python_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/3dmath
 )
+
+if (NOT MAX_DIMENSIONS)
+    set(MAX_DIMENSIONS 4)
+endif()
+message(STATUS "Generating vector and matrices of size ${MAX_DIMENSIONS}")
+add_compile_definitions(MAX_DIMENSIONS=${MAX_DIMENSIONS})
 
 file(GLOB bindingSrcs "./math3d/*.cpp")
 pybind11_add_module(math3d MODULE ${bindingSrcs})
