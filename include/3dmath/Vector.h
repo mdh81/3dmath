@@ -377,13 +377,13 @@ namespace math3d {
     };
 
     template<typename DataType, unsigned numRows>
-    inline std::ostream& operator << (std::ostream& os, Vector<DataType, numRows> const& v) {
+    std::ostream& operator << (std::ostream& os, Vector<DataType, numRows> const& v) {
         v.print(os);
         return os;
     }
 
     template <typename DataType, unsigned numRows>
-    inline Vector<DataType, numRows> operator*(DataType scalar, Vector<DataType, numRows> const& vector) {
+    Vector<DataType, numRows> operator*(DataType scalar, Vector<DataType, numRows> const& vector) {
         return vector * scalar;
     }
 
