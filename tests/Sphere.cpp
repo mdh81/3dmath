@@ -2,6 +2,7 @@
 #include "3dmath/Vector.h"
 #include "TestSupport.h"
 #include "support/PrimitivesTestSupport.h"
+#include <algorithm>
 #include <vector>
 
 using namespace math3d::test;
