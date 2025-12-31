@@ -73,4 +73,10 @@ namespace math3d {
             T wComponent;
             Vector<T,3> vComponent;
     };
+
+    // Post multiply
+    template<typename T>
+    Quaternion<T> operator*(T const scalar, Quaternion<T> const& quaternion) {
+        return quaternion * scalar;
+    }
 }
