@@ -11,10 +11,12 @@ namespace math3d {
     class PolarCoordinates {
 
     public:
-        PolarCoordinates(double radius, double theta)
-        : radius(radius)
-        , theta(theta) {
+        PolarCoordinates(double const radius, double const theta)
+        : theta(theta)
+        , radius(radius) {
         }
+
+        virtual ~PolarCoordinates() = default;
 
         [[nodiscard]]
         virtual Vector3<double> getCartesianCoordinates() const {
@@ -48,10 +50,10 @@ namespace math3d {
     };
 
     // Describes a point P in space using the spherical coordinates (r, theta, phi)
-    class SphericalCoordinates : public PolarCoordinates {
+    class SphericalCoordinates final : public PolarCoordinates {
 
     public:
-        SphericalCoordinates(double radius, double theta, double phi)
+        SphericalCoordinates(double const radius, double const theta, double const phi)
         : PolarCoordinates(radius, theta)
         , phi(phi) {
         }
