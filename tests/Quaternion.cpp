@@ -17,7 +17,18 @@ TEST(Quaternion, Conjugate) {
 }
 
 TEST(Quaternion, Inverse) {
+}
 
+TEST(Quaternion, ScalarMultiplication) {
+    math3d::Quaternion<double> const quaternion {math3d::Utilities::RandomNumber{},
+    math3d::Utilities::RandomVector{}};
+    double scalar {-1};
+    auto postMultiplied = quaternion * scalar;
+    ASSERT_DOUBLE_EQ(quaternion.angle(), scalar * postMultiplied.angle());
+    ASSERT_TRUE(math3d::Utilities::areEqual(quaternion.axis(), scalar * postMultiplied.axis()));
+    auto preMultiplied= scalar * quaternion;
+    ASSERT_DOUBLE_EQ(quaternion.angle(), scalar * preMultiplied.angle());
+    ASSERT_TRUE(math3d::Utilities::areEqual(quaternion.axis(), scalar * preMultiplied.axis()));
 }
 
 
