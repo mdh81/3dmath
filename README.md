@@ -4,6 +4,16 @@ A header-only 3D math library used for building apps like [MeshViewer](https://g
 
 [![Quality](https://github.com/mdh81/3dmath/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/mdh81/3dmath/actions/workflows/cmake-single-platform.yml)
 
+## Build and Test
+
+```bash
+$ cd <path to 3dmath> && mkdir <build dir>
+$ cmake -S . -B <build dir>
+$ cmake --build <build dir>/ --parallel
+$ ctest --test-dir <build dir>
+```
+
+
 ## Python Bindings
 
 Python bindings are generated using the excellent [pybind11](https://github.com/pybind/pybind11) library
