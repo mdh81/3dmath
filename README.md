@@ -10,20 +10,14 @@ Python bindings are generated using the excellent [pybind11](https://github.com/
 
 ### Building and testing python bindings
 
-```
-# Activate a python virtual environment
+Poetry is a prerequisite. Install it via usual channels (e.g. `brew install poetry`) 
+
+```bash
 $ cd <path to 3dmath>
-$ python3 -m venv .venv
+$ poetry config --local virtualenvs.in-project true (optional, use if in-project venvs are not set globally)
+$ poetry install 
+$ poetry run python -m build
 $ source .venv/bin/activate
-$ cmake --build <build_dir> --parallel -t math3d
-$ cd py
 $ python
 > import math3d
-```
-
-### To install math3d python module (native extension module) 
-
-```
-$ cd <path to 3dmath>
-$ pip install py
 ```
