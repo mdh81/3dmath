@@ -21,7 +21,7 @@ void bind_Vector(py::module_ const& module, char const* className) {
         .def(py::init([](math3d::Vector3<T> const& vec3) {
             std::vector<T> input {vec3.x, vec3.y, vec3.z, 1.F};
             return vector{input};
-        })
+        }))
         // Member access
         .def_property("x",
             [](vector const& self) {
