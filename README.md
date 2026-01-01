@@ -13,11 +13,15 @@ Python bindings are generated using the excellent [pybind11](https://github.com/
 Poetry is a prerequisite. Install it via usual channels (e.g. `brew install poetry`) 
 
 ```bash
-$ cd <path to 3dmath>
 $ poetry config --local virtualenvs.in-project true (optional, use if in-project venvs are not set globally)
+$ cd <path to 3dmath> && mkdir build
+$ cmake -S . -B build -DenableTesting=OFF
+$ cmake --build build/ --parallel --target math3d
 $ poetry install 
-$ poetry run python -m build
 $ source .venv/bin/activate
 $ python
 > import math3d
 ```
+
+Any changes to python bindings or to the core C++ code requires a rebuild of the pybind11 target `math3d` before python
+will see those changes. Rebuild with `cmake --build build/ --parallel --target math3d`
