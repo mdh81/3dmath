@@ -24,9 +24,9 @@ Poetry is a prerequisite. Install it via usual channels (e.g. `brew install poet
 
 ```bash
 $ poetry config --local virtualenvs.in-project true (optional, use if in-project venvs are not set globally)
-$ cd <path to 3dmath> && mkdir build
-$ cmake -S . -B build -DenableTesting=OFF
-$ cmake --build build/ --parallel --target math3d
+$ cd <path to 3dmath> && mkdir <build dir>
+$ cmake -S . -B <build dir> -DenableTesting=OFF
+$ cmake --build <build dir>/ --parallel --target math3d
 $ poetry install 
 $ source .venv/bin/activate
 $ python
