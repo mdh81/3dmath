@@ -33,3 +33,9 @@ add_compile_definitions(MAX_DIMENSIONS=${MAX_DIMENSIONS})
 file(GLOB bindingSrcs "./math3d/*.cpp")
 pybind11_add_module(math3d MODULE ${bindingSrcs})
 set_target_properties(math3d PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/math3d)
+install(
+    TARGETS math3d
+    LIBRARY DESTINATION math3d
+    RUNTIME DESTINATION math3d
+    ARCHIVE DESTINATION math3d
+)
