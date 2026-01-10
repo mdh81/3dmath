@@ -14,6 +14,7 @@ if [[ $# -eq 1 && "$1" == "patch_ver" ]]; then
     poetry version patch
 fi
 
+rm -rf dist/*
 CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl -n hw.ncpu) \
 CMAKE_ARGS="-DenableTesting=OFF" poetry run python -m build
 poetry run twine upload dist/*
