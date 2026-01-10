@@ -47,3 +47,11 @@ void bind_Matrix(py::module_ const& module, char const* className) {
     .def("inverse", &matrix::inverse)
     ;
 }
+
+template<typename T, uint32_t Rows, uint32_t Cols>
+void bind_identityMatrix(py::module_ const& module, char const* className) {
+    using identityMatrix = math3d::IdentityMatrix<T, Rows, Cols>;
+    using matrix = math3d::Matrix<T, Rows, Cols>;
+    py::class_<identityMatrix, matrix>(module, className)
+    .def(py::init());
+}

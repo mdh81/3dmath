@@ -16,12 +16,14 @@ namespace {
     enum class Type : uint8_t {
         Vector,
         Matrix,
-        LinearSystem
+        LinearSystem,
+        IdentityMatrix
     };
     std::unordered_map<Type, char const*> TypePrefixMap {
         {Type::Vector, "vector"},
         {Type::Matrix, "matrix"},
-        {Type::LinearSystem, "linear_system"}
+        {Type::LinearSystem, "linear_system"},
+        {Type::IdentityMatrix, "identity"}
     };
 
     template<typename Type, Type Start, Type End>
@@ -60,6 +62,10 @@ namespace {
                 break;
             case Type::LinearSystem:
                 bind_linearSystem<double, dimension>(pythonModule, typeName.c_str());
+                break;
+            case Type::IdentityMatrix:
+                bind_identityMatrix<double, dimension, dimension>(pythonModule, typeName.c_str());
+                break;
             default:
                 break;
         }
@@ -83,4 +89,5 @@ PYBIND11_MODULE(math3d, module) {
         .export_values();
     createPythonTypes(Type::Matrix, module, intSeq);
     createPythonTypes(Type::LinearSystem, module, intSeq);
+    createPythonTypes(Type::IdentityMatrix, module, intSeq);
 }
