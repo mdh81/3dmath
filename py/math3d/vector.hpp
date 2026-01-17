@@ -14,7 +14,7 @@ void bind_Vector(py::module_ const& module, char const* className) {
         py::class_<vector>(module, className)
         // Construction
         .def(py::init())
-        .def(py::init([](py::list const& list) {
+        .def(py::init([](py::iterable const& list) {
             auto const input = list.cast<std::vector<T>>();
             return vector{input};
         }))
@@ -69,6 +69,15 @@ void bind_Vector(py::module_ const& module, char const* className) {
         .def("projection", &vector::getVectorProjection);
     if constexpr (Size == 3) {
         vec_class
+        .def(py::init([](T x, T y, T z) {
+            return vector({x, y, z});
+        }))
         .def(py::self * py::self);
+    }
+    if constexpr (Size == 4) {
+        vec_class
+        .def(py::init([](T x, T y, T z, T w) {
+            return vector({x, y, z, w});
+        }));
     }
 }
