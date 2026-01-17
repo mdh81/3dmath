@@ -34,17 +34,15 @@ namespace math3d {
         }
 
         Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
-            std::string invalidListErrorMessage =
-                    "Incorrect initializer list. "
-                    "Use format:"
-                    "{{Minimum X, Minimum Y, Minimum Z}, {Maximum X, Maximum Y, Maximum Z}} "
-                    "For 2D bounds, Z extents can be skipped";
-            bool formatIsCorrect =
+            auto const formatIsCorrect =
                     initializerList.size() == 2 &&
                     (data(initializerList)[0].size() == 2 ||  data(initializerList)[0].size() == 3) &&
                     data(initializerList)[0].size() == data(initializerList)[1].size();
             if (!formatIsCorrect) {
-                throw std::runtime_error(invalidListErrorMessage);
+                throw std::runtime_error("Incorrect initializer list. "
+                        "Use format:"
+                        "{{Minimum X, Minimum Y, Minimum Z}, {Maximum X, Maximum Y, Maximum Z}} "
+                        "For 2D bounds, Z extents can be skipped");
             }
 
             x.min = data(data(initializerList)[0])[0];
@@ -85,17 +83,20 @@ namespace math3d {
         }
 
         bool contains(Vector<T, 3> const& point) const {
-            bool withinXExtent = (point.x > x.min && point.x < x.max) ||
-                                 fabs(point.x - x.min) < constants::tolerance ||
-                                 fabs(point.x - x.max) < constants::tolerance;
+            auto const withinXExtent =
+                (point.x > x.min && point.x < x.max) ||
+                 fabs(point.x - x.min) < constants::tolerance ||
+                 fabs(point.x - x.max) < constants::tolerance;
 
-            bool withinYExtent = (point.y > y.min && point.y < y.max) ||
-                                 fabs(point.y - y.min) < constants::tolerance ||
-                                 fabs(point.y - y.max) < constants::tolerance;
+            auto const withinYExtent =
+                (point.y > y.min && point.y < y.max) ||
+                 fabs(point.y - y.min) < constants::tolerance ||
+                 fabs(point.y - y.max) < constants::tolerance;
 
-            bool withinZExtent = (point.z > z.min && point.z < z.max) ||
-                                 fabs(point.z - z.min) < constants::tolerance ||
-                                 fabs(point.z - z.max) < constants::tolerance;
+            auto const withinZExtent =
+                (point.z > z.min && point.z < z.max) ||
+                 fabs(point.z - z.min) < constants::tolerance ||
+                 fabs(point.z - z.max) < constants::tolerance;
 
             return withinXExtent && withinYExtent && withinZExtent;
         }
@@ -130,7 +131,7 @@ namespace math3d {
     };
 
     template<typename T>
-    inline std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D) {
+    std::ostream& operator<<(std::ostream& os, Bounds3D<T> const& bounds3D) {
         os << "Min:[" << bounds3D.x.min << "," << bounds3D.y.min << "," << bounds3D.z.min << "] ";
         os << "Max:[" << bounds3D.x.max << "," << bounds3D.y.max << "," << bounds3D.z.max << "]";
         return os;
