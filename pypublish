@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 isPoetryInstalled=$(which poetry > /dev/null && echo $?)
 
 if [[ $isPoetryInstalled -eq 1 ]]; then
