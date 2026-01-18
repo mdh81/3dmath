@@ -122,3 +122,27 @@ TEST(Bounds3D, Validity) {
                            {+0.5, +0.5, +0.5}};
     ASSERT_TRUE(bounds.isValid()) << "Bounds initialized with a unit cube must have been classified as valid";
 }
+
+TEST(Extent, Merging) {
+    Extent e1 {-10.F, 0.F};
+    Extent constexpr e2 {5.F, 10.F};
+    e1.merge(e2);
+    ASSERT_EQ(e1.min, -10.F);
+    ASSERT_EQ(e1.max, 10.F);
+}
+
+TEST(Bounds, Merging) {
+    Bounds3D smallerBounds {{-10, -10, -10}, {10, 10, 10}};
+    Bounds3D const biggerBounds {{-100, -100, -100}, {100, 100, 100}};
+    ASSERT_FALSE(smallerBounds.contains({-100, -100, -100}));
+    smallerBounds.merge(biggerBounds);
+    ASSERT_TRUE(smallerBounds.contains({-100, -100, -100}));
+    ASSERT_TRUE(smallerBounds.contains({100, 100, 100}));
+
+    Bounds3D boundsA {{-10, -10, -10}, { 10,  10,  10}};
+    Bounds3D const boundsB {{-100,  -1,  -2}, {  5, 200,   3}};
+    boundsA.merge(boundsB);
+    ASSERT_NEAR((boundsA.min() - Vector3{-100, -10, -10}).lengthSquared(), 0, 1e-6);
+    ASSERT_NEAR((boundsA.max() - Vector3{10, 200, 10}).lengthSquared(), 0, 1e-6);
+
+}
