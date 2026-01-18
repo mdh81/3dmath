@@ -21,8 +21,12 @@ namespace math3d {
         T length() const { return max - min; }
         T center() const { return static_cast<T>(0.5*(max + min)); }
         void scale(T const scale) { min *= scale; max *= scale; }
-        std::string asString() const {
+        [[nodiscard]] std::string asString() const {
             return std::format("[{},{}]", min, max);
+        }
+        void merge(Extent const& another) {
+            min = std::min(min, another.min);
+            max = std::max(max, another.max);
         }
     };
 
@@ -130,8 +134,24 @@ namespace math3d {
             return ss.str();
         }
 
-        bool isValid() const {
+        [[nodiscard]] bool isValid() const {
             return x.min < x.max && y.min < y.max && z.min < z.max;
+        }
+
+        void merge(Bounds3D const& another) {
+            x.merge(another.x);
+            y.merge(another.y);
+            z.merge(another.z);
+        }
+
+        [[nodiscard]]
+        Vector3<T> min() const {
+            return {x.min, y.min, z.min};
+        }
+
+        [[nodiscard]]
+        Vector3<T> max() const {
+            return {x.max, y.max, z.max};
         }
     };
 
