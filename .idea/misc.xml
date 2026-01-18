@@ -10,6 +10,7 @@
   <component name="CidrRootsConfiguration">
     <sourceRoots>
       <file path="$PROJECT_DIR$/include" />
+      <file path="$PROJECT_DIR$/py" />
     </sourceRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/.cmake" />
