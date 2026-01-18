@@ -27,8 +27,8 @@ if [[ $# -eq 1 && "$1" == "major_ver" ]]; then
 fi
 
 rm -rf dist/*
-CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl -n hw.ncpu) \
-CMAKE_ARGS="-DenableTesting=OFF" poetry run python -m build
 touch py/math3d/py.typed
 poetry run pybind11-stubgen math3d -o py
+CMAKE_BUILD_PARALLEL_LEVEL="$(sysctl -n hw.ncpu)" \
+CMAKE_ARGS="-DenableTesting=OFF" poetry run python -m build
 poetry run twine upload dist/*
