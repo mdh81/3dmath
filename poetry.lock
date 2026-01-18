@@ -602,6 +602,18 @@ files = [
 ]
 
 [[package]]
+name = "pybind11-stubgen"
+version = "2.5.5"
+description = "PEP 561 type stubs generator for pybind11 modules"
+optional = false
+python-versions = "~=3.7"
+groups = ["dev"]
+files = [
+    {file = "pybind11_stubgen-2.5.5-py3-none-any.whl", hash = "sha256:10824cd2fc5cbbee032b8fb39e6f6c08de232deb309bc66d786a6c6e8a4601bd"},
+    {file = "pybind11_stubgen-2.5.5.tar.gz", hash = "sha256:758d6d6bbeefc62ad7f78d5e5bbf357ccf6af83cd4504f5f549403f452942708"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.23"
 description = "C parser in Python"
@@ -808,5 +820,5 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.12"
-content-hash = "fc7d6baab109e922d3f5e3105b7fd9b7bdbb0e61ecc17507caa96f38d60d8114"
+python-versions = ">=3.13,<3.14"
+content-hash = "b28953b4a983d0d9a3fc879f54b22797298d9389ea0adad43ae21b53497f2730"
