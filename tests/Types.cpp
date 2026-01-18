@@ -144,5 +144,13 @@ TEST(Bounds, Merging) {
     boundsA.merge(boundsB);
     ASSERT_NEAR((boundsA.min() - Vector3{-100, -10, -10}).lengthSquared(), 0, 1e-6);
     ASSERT_NEAR((boundsA.max() - Vector3{10, 200, 10}).lengthSquared(), 0, 1e-6);
+}
 
+TEST(Bounds, Corners) {
+    Bounds3D const bounds {{-10, -10, -10}, { 10,  10,  10}};
+    auto const corners = bounds.corners();
+    ASSERT_EQ((bounds.min() - corners.at(0)).lengthSquared(), 0);
+    ASSERT_EQ(((bounds.min() + Vector3{bounds.x.length(), bounds.y.length(), 0}) - corners.at(2)).lengthSquared(), 0);
+    ASSERT_EQ((bounds.max() - corners.at(6)).lengthSquared(), 0);
+    ASSERT_EQ(((bounds.max() - Vector3{bounds.x.length(), bounds.y.length(), 0}) - corners.at(4)).lengthSquared(), 0);
 }

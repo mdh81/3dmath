@@ -153,6 +153,45 @@ namespace math3d {
         Vector3<T> max() const {
             return {x.max, y.max, z.max};
         }
+
+        /// @brief Gets the corner vertices of this bounding box
+        ///
+        /// The corners are returned lower back to front with the bottom corners appearing before the top ones
+        [[nodiscard]]
+        std::array<Vector3<T>, 8> corners() const {
+            using Vec3 = Vector3<T>;
+
+            auto lower_left_back = min();
+            auto lower_right_back = lower_left_back + Vec3{x.length(), 0, 0};
+            auto upper_right_back= lower_right_back + Vec3{0, y.length(), 0};
+            auto upper_left_back = upper_right_back - Vec3{x.length(), 0, 0};
+
+            auto upper_right_front = max();
+            auto upper_left_front = upper_right_front - Vec3{x.length(), 0, 0};
+            auto lower_left_front  = upper_left_front - Vec3{0, y.length(), 0};
+            auto lower_right_front = lower_left_front + Vec3{x.length(), 0, 0};
+
+            return {lower_left_back, lower_right_back, upper_right_back, upper_left_back,
+                    lower_left_front, lower_right_front, upper_right_front, upper_left_front};
+        }
+
+        /// @brief Gets vertex indices of the quadrilateral faces of this bounding box
+        ///
+        /// Edges are returned in the following face order: front, right, back, left, bottom, and top
+        [[nodiscard]]
+        static constexpr std::array<std::array<uint8_t , 4>, 6> edges() {
+
+            using Face = std::array<uint8_t, 4>;
+
+            return {
+                    Face{4, 5, 6, 7},
+                    Face{5, 1, 2, 6},
+                    Face{0, 1, 2, 3},
+                    Face{0, 4, 7, 3},
+                    Face{0, 1, 5, 4},
+                    Face{6, 2, 3, 7}
+                };
+        }
     };
 
     template<typename T>
