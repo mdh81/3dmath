@@ -18,10 +18,6 @@ void bind_Vector(py::module_ const& module, char const* className) {
             auto const input = list.cast<std::vector<T>>();
             return vector{input};
         }))
-        .def(py::init([](math3d::Vector3<T> const& vec3) {
-            std::vector<T> input {vec3.x, vec3.y, vec3.z, 1.F};
-            return vector{input};
-        }))
         // Formatted output
         .def("__str__", [](vector const& v) {
             return util::convertSpaceToNewLine(v.asString());
@@ -53,6 +49,10 @@ void bind_Vector(py::module_ const& module, char const* className) {
         pyVecClass
         .def(py::init([](T x, T y, T z, T w) {
             return vector({x, y, z, w});
+        }))
+        .def(py::init([](math3d::Vector3<T> const& vec3) {
+            std::vector<T> input {vec3.x, vec3.y, vec3.z, 1.F};
+            return vector{input};
         }));
     }
 
