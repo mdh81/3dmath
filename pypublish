@@ -19,4 +19,5 @@ fi
 rm -rf dist/*
 CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl -n hw.ncpu) \
 CMAKE_ARGS="-DenableTesting=OFF" poetry run python -m build
+poetry run pybind11-stubgen math3d -o py
 poetry run twine upload dist/*
