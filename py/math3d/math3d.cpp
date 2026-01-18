@@ -77,7 +77,7 @@ namespace {
         }
     };
 
-    constexpr void createSimpleType(Type const type, pybind11::module_ const& module) {
+    void createSimpleType(Type const type, pybind11::module_ const& module) {
         auto const typeName = TypePrefixMap.at(type);
         switch (type) {
             case Type::Extent:
@@ -93,7 +93,7 @@ namespace {
     }
 
     template <uint8_t... integers>
-    constexpr void createCompositeType(Type const type, pybind11::module_& module, std::integer_sequence<uint8_t, integers...>) {
+    void createCompositeType(Type const type, pybind11::module_& module, std::integer_sequence<uint8_t, integers...>) {
         (pyCompositeTypeCreator(type, module, std::integral_constant<uint8_t, integers>{}), ...);
     }
 }
