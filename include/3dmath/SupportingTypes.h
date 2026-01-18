@@ -19,8 +19,11 @@ namespace math3d {
         T min;
         T max;
         T length() const { return max - min; }
-        T center() const { return 0.5f*(max + min); }
+        T center() const { return static_cast<T>(0.5*(max + min)); }
         void scale(T const scale) { min *= scale; max *= scale; }
+        std::string asString() const {
+            return std::format("[{},{}]", min, max);
+        }
     };
 
     template<typename T>
@@ -32,6 +35,8 @@ namespace math3d {
         Bounds3D() {
             reset();
         }
+
+        Bounds3D(Extent<T> const& x, Extent<T> const& y, Extent<T> const& z) : x(x), y(y), z(z) {}
 
         Bounds3D(std::initializer_list<std::initializer_list<T>> const& initializerList) {
             auto const formatIsCorrect =
@@ -66,7 +71,7 @@ namespace math3d {
         }
 
         T length() const {
-            return sqrt((x.length() * x.length()) + (y.length() * y.length()) + (z.length() * z.length()));
+            return sqrt(x.length() * x.length() + y.length() * y.length() + z.length() * z.length());
         }
 
         [[nodiscard]] Vector3<T> center() const {
