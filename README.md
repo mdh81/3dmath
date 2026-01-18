@@ -19,16 +19,16 @@ $ ctest --test-dir <build dir>
 Python bindings are generated using the excellent [pybind11](https://github.com/pybind/pybind11) library
 
 ### Building and testing python bindings
-
-Poetry is a prerequisite. Install it via usual channels (e.g. `brew install poetry`) 
+1. Python 3.13 is prerequisite. Install it via pyenv or uv
+2. Poetry is a prerequisite. Install it via usual channels (e.g. `brew install poetry`). 
 
 ```bash
-$ poetry config --local virtualenvs.in-project true (optional, use if in-project venvs are not set globally)
+$ poetry use python 3.13
+$ source .venv/bin/activate
 $ cd <path to 3dmath> && mkdir <build dir>
 $ cmake -S . -B <build dir> -DenableTesting=OFF
 $ cmake --build <build dir>/ --parallel --target math3d
 $ poetry install 
-$ source .venv/bin/activate
 $ python
 > import math3d
 ```
