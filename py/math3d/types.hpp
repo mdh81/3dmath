@@ -11,17 +11,43 @@ template<typename T>
 void bind_Extent(py::module_ const& module, std::string_view className) {
     using Extent = m3d::Extent<T>;
     py::class_<Extent>(module, className.data())
+    .def(py::init([] {
+        Extent extent;
+        extent.min = std::numeric_limits<T>::max();
+        extent.max = -std::numeric_limits<T>::max();
+        return extent;
+    }))
     .def(py::init([](T min, T max) {
         Extent extent {};
         extent.min = min;
         extent.max = max;
         return extent;
     }))
+    .def_property("min",
+        [](Extent const& extent) {
+            return extent.min;
+        },
+        [](Extent& extent, T min) {
+           extent.min = min;
+        }
+    )
+    .def_property("max",
+        [](Extent const& extent) {
+            return extent.max;
+        },
+        [](Extent& extent, T max) {
+           extent.max = max;
+        }
+    )
     .def("length", [](Extent const& extent) {
         return extent.length();
     })
     .def("center", [](Extent const& extent) {
         return extent.center();
+    })
+    .def("update", [](Extent& extent, T val) {
+        extent.min = std::min(extent.min, val);
+        extent.max = std::max(extent.max, val);
     })
     .def("__str__", [](Extent const& extent) {
         return extent.asString();
@@ -39,6 +65,9 @@ void bind_Bounds(py::module_ const& module, std::string_view className) {
     .def(py::init([](m3d::Extent<T> const& x, m3d::Extent<T> const& y, m3d::Extent<T> const& z) {
         return Bounds {x, y, z};
     }))
+    .def("merge", [](Bounds& self, Bounds const& another) {
+        self.merge(another);
+    })
     .def("__str__", [](Bounds const& bounds) {
         return bounds.asString();
     })
