@@ -16,8 +16,19 @@ if [[ $# -eq 1 && "$1" == "patch_ver" ]]; then
     poetry version patch
 fi
 
+if [[ $# -eq 1 && "$1" == "minor_ver" ]]; then
+    echo "Upgrading minor version"
+    poetry version minor
+fi
+
+if [[ $# -eq 1 && "$1" == "major_ver" ]]; then
+    echo "Upgrading major version"
+    poetry version major
+fi
+
 rm -rf dist/*
 CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl -n hw.ncpu) \
 CMAKE_ARGS="-DenableTesting=OFF" poetry run python -m build
+touch py/math3d/py.typed
 poetry run pybind11-stubgen math3d -o py
 poetry run twine upload dist/*
