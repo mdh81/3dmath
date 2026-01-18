@@ -338,7 +338,7 @@ namespace math3d {
 
             // TODO: Add derivation for this
             [[nodiscard]]
-            VectorProjection getVectorProjection(Vector const& u) {
+            VectorProjection getVectorProjection(Vector const& u) const {
                 VectorProjection result;
                 auto uNormalized = u / u.length();
                 result.parallel = uNormalized * this->dot(uNormalized);
