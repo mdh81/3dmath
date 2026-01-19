@@ -192,6 +192,23 @@ namespace math3d {
                     Face{6, 2, 3, 7}
                 };
         }
+
+        [[nodiscard]]
+        Extent<T> extent(Direction dir) const {
+            if (dir == Direction::x) {
+                return x;
+            }
+            if (dir == Direction::y) {
+                return y;
+            }
+            if (dir == Direction::z) {
+                return z;
+            }
+            throw std::runtime_error(
+                std::format("Direction {} is not supported in the extent accessor",
+                            std::underlying_type_t<Direction>(dir))
+            );
+        }
     };
 
     template<typename T>
