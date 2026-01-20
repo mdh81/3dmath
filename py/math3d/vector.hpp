@@ -20,7 +20,7 @@ void bind_Vector(py::module_ const& module, char const* className) {
         }))
         // Formatted output
         .def("__str__", [](vector const& v) {
-            return util::convertSpaceToNewLine(v.asString());
+            return v.asString();
         })
         .def("__repr__", [](vector const& v) {
             return util::convertSpaceToNewLine(v.asString());
