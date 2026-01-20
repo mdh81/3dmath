@@ -65,6 +65,9 @@ void bind_Bounds(py::module_ const& module, std::string_view className) {
     .def(py::init([](m3d::Extent<T> const& x, m3d::Extent<T> const& y, m3d::Extent<T> const& z) {
         return Bounds {x, y, z};
     }))
+    .def(py::init([](m3d::Vector3<T> const& min, m3d::Vector3<T> const& max) {
+        return Bounds(m3d::Extent<T>{min.x, max.x}, m3d::Extent<T>{min.y, max.y}, m3d::Extent<T>{min.z, max.z});
+    }))
     .def("min", [](Bounds const& self) {
         return self.min();
     })
