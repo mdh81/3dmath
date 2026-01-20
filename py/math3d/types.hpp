@@ -83,14 +83,12 @@ void bind_Bounds(py::module_ const& module, std::string_view className) {
     .def("merge", [](Bounds& self, Bounds const& another) {
         self.merge(another);
     })
-    .def("x_extent", [](Bounds const& self) {
-        return self.extent(Bounds::Direction::x);
-    })
-    .def("y_extent", [](Bounds const& self) {
-        return self.extent(Bounds::Direction::y);
-    })
-    .def("z_extent", [](Bounds const& self) {
-        return self.extent(Bounds::Direction::z);
+    .def("transform", [](Bounds const& self, m3d::Matrix<T, 4, 4> const& transform) {
+        auto min = m3d::Vector4<T>{self.min(), 1.0};
+        auto max = m3d::Vector4<T>{self.max(), 1.0};
+        auto newMin = transform * min;
+        auto newMax = transform * max;
+        return Bounds({newMin.x, newMax.x}, {newMin.y, newMax.y}, {newMin.z, newMax.z});
     })
     .def("__str__", [](Bounds const& bounds) {
         return bounds.asString();
