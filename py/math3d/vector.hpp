@@ -29,6 +29,7 @@ void bind_Vector(py::module_ const& module, char const* className) {
         .def(py::self + py::self)
         .def(py::self - py::self)
         .def(py::self * T{})
+        .def(T{} * py::self)
         .def(py::self / T{})
         .def("dot", &vector::dot)
         .def("normalize", [](vector& v) { v.normalize(); return v; })
