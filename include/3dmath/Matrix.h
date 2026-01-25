@@ -35,7 +35,8 @@ enum class Order {
 template<typename DataType, unsigned numRows, unsigned numCols>
 class Matrix {
 
-    static_assert(std::is_fundamental_v<DataType>, "Matrix elements should be of fundamental type");
+    static_assert(std::is_integral_v<DataType> ||
+        std::is_floating_point_v<DataType>, "Matrix elements should be of fundamental type");
     
     public:
 
@@ -425,7 +426,7 @@ protected:
         friend class Matrix<DataType, numRows, numCols-1>;
 };
 
-template<typename DataType, unsigned numRows, unsigned numCols>
+template<typename DataType, size_t numRows, size_t numCols>
 class AugmentedMatrix : public Matrix<DataType, numRows, numCols> {
     using BaseClass = Matrix<DataType, numRows, numCols>;
 
