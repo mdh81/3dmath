@@ -13,8 +13,8 @@ def test_bounds_transform():
     bounds: AABB = AABB(x, y, z)
     transform: Matrix4 = Identity4()
     transformed_bounds = bounds.transform(transform)
-    assert (transformed_bounds.min() - bounds.min()).length_sqr() == 0
-    assert (transformed_bounds.max() - bounds.max()).length_sqr() == 0
+    assert (transformed_bounds.min - bounds.min).length_sqr() == 0
+    assert (transformed_bounds.max - bounds.max).length_sqr() == 0
 
     # a : Vector3 = Vector3(random.random(), random.random(), random.random())
     # a.normalize()
