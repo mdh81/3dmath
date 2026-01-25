@@ -154,3 +154,11 @@ TEST(Bounds, Corners) {
     ASSERT_EQ((bounds.max() - corners.at(6)).lengthSquared(), 0);
     ASSERT_EQ(((bounds.max() - Vector3{bounds.x.length(), bounds.y.length(), 0}) - corners.at(4)).lengthSquared(), 0);
 }
+
+TEST(Bounds, Remap) {
+    Bounds3D<float> const boundsA {{-10, -10, -10}, { 10,  10,  10}};
+    Bounds3D<float> const boundsB {{-1, -1, -1}, { 1,  1,  1}};
+    Remapper const remapper {boundsA, boundsB};
+    ASSERT_TRUE(Utilities::areEqual(remapper({-10, -10, -10}), {-1, -1, -1}));
+    ASSERT_TRUE(Utilities::areEqual(remapper({10, 10, 10}), {1, 1, 1}));
+}
