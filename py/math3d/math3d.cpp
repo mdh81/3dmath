@@ -21,7 +21,8 @@ namespace {
         LinearSystem,
         IdentityMatrix,
         Extent,
-        Bounds
+        Bounds,
+        Remapper,
     };
     std::unordered_map<Type, char const*> TypePrefixMap {
         {Type::Vector, "Vector"},
@@ -29,7 +30,8 @@ namespace {
         {Type::LinearSystem, "LinearSystem"},
         {Type::IdentityMatrix, "Identity"},
         {Type::Bounds, "AABB"},
-        {Type::Extent, "Extent"}
+        {Type::Extent, "Extent"},
+        {Type::Remapper, "Remap"}
     };
 
     template<typename Type, Type Start, Type End>
@@ -86,6 +88,9 @@ namespace {
             case Type::Bounds:
                 bind_Bounds<double>(module, typeName);
                 break;
+            case Type::Remapper:
+                bind_Remapper<double>(module, typeName);
+                break;
             default:
                 throw std::runtime_error(std::format("Unknown simple type {}", std::to_underlying(type)));
         }
@@ -113,4 +118,5 @@ PYBIND11_MODULE(math3d, module) {
     createCompositeType(Type::IdentityMatrix, module, intSeq);
     createSimpleType(Type::Extent, module);
     createSimpleType(Type::Bounds, module);
+    createSimpleType(Type::Remapper, module);
 }

@@ -39,12 +39,8 @@ void bind_Extent(py::module_ const& module, std::string_view className) {
            extent.max = max;
         }
     )
-    .def("length", [](Extent const& extent) {
-        return extent.length();
-    })
-    .def("center", [](Extent const& extent) {
-        return extent.center();
-    })
+    .def_property_readonly("length", &Extent::length)
+    .def_property_readonly("center", &Extent::center)
     .def("update", [](Extent& extent, T val) {
         extent.min = std::min(extent.min, val);
         extent.max = std::max(extent.max, val);
@@ -68,21 +64,11 @@ void bind_Bounds(py::module_ const& module, std::string_view className) {
     .def(py::init([](m3d::Vector3<T> const& min, m3d::Vector3<T> const& max) {
         return Bounds(m3d::Extent<T>{min.x, max.x}, m3d::Extent<T>{min.y, max.y}, m3d::Extent<T>{min.z, max.z});
     }))
-    .def("min", [](Bounds const& self) {
-        return self.min();
-    })
-    .def("max", [](Bounds const& self) {
-        return self.max();
-    })
-    .def("corners", [](Bounds const& self) {
-        return self.corners();
-    })
-    .def("edges", [](Bounds const& self) {
-        return self.edges();
-    })
-    .def("merge", [](Bounds& self, Bounds const& another) {
-        self.merge(another);
-    })
+    .def_property_readonly("min", &Bounds::min)
+    .def_property_readonly("max", &Bounds::max)
+    .def_property_readonly("corners", &Bounds::corners)
+    .def_property_readonly("edges", &Bounds::edges)
+    .def("merge", &Bounds::merge)
     .def("transform", [](Bounds const& self, m3d::Matrix<T, 4, 4> const& transform) {
         auto min = m3d::Vector4<T>{self.min(), 1.0};
         auto max = m3d::Vector4<T>{self.max(), 1.0};
@@ -103,4 +89,17 @@ void bind_Bounds(py::module_ const& module, std::string_view className) {
             "Diagonal Length {}", bounds.asString(), bounds.isValid(), bounds.center().asString(),
             bounds.x.length(), bounds.y.length(), bounds.z.length(), bounds.length());
     });
+}
+
+template<typename T>
+void bind_Remapper(py::module_ const& module, std::string_view className) {
+    using Bounds = m3d::Bounds3D<T>;
+    using Remapper = m3d::Remapper<T>;
+    py::class_<Remapper>(module, className.data())
+    .def(py::init([](Bounds const& source, Bounds const& destination) {
+        return Remapper {source, destination};
+    }))
+    .def("remap", &Remapper::operator());
+
+
 }
