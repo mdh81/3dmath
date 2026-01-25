@@ -231,6 +231,13 @@ namespace math3d {
             return {remappedPoint.x, remappedPoint.y, remappedPoint.z};
         }
 
+        Matrix<T, 4, 4> getInverseTransform() {
+            if (!remapTransform) {
+                computeRemapTransform();
+            }
+            return remapTransform->inverse();
+        }
+
         Bounds3D<T> const& getSource() const {
             return source;
         }
