@@ -3,6 +3,9 @@
 #include <cmath>
 #include <string>
 #include <initializer_list>
+
+#include "IdentityMatrix.h"
+#include "ScalingMatrix.h"
 #include "Vector.h"
 #include "Utilities.h"
 #include "TypeAliases.h"
@@ -209,6 +212,67 @@ namespace math3d {
                             std::underlying_type_t<Direction>(dir))
             );
         }
+    };
+
+    template<typename T>
+    class Remapper final {
+    public:
+        Remapper(Bounds3D<T> const& source, Bounds3D<T> const& destination)
+            : source{source}
+            , destination{destination}
+            , remapTransform(std::nullopt) {
+        }
+
+        Vector3<T> operator()(Vector3<T> const& sourcePoint) const {
+            if (!remapTransform) {
+                computeRemapTransform();
+            }
+            auto remappedPoint = *remapTransform * Vector4<T>(sourcePoint, T{1});
+            return {remappedPoint.x, remappedPoint.y, remappedPoint.z};
+        }
+
+        Bounds3D<T> const& getSource() const {
+            return source;
+        }
+
+        Bounds3D<T> const& getDestination() const {
+            return destination;
+        }
+
+    private:
+        void computeRemapTransform() const {
+            // For each source extent map [min, max] to [0, 1]
+            // Then map [0, 1] to destination extent [min, max]
+            Mat4 normalize = Identity4{};
+            Mat4 remap = Identity4{};
+            auto sourceExtentX = source.extent(Bounds3D<T>::Direction::x);
+            auto sourceExtentY = source.extent(Bounds3D<T>::Direction::y);
+            auto sourceExtentZ = source.extent(Bounds3D<T>::Direction::z);
+
+            normalize(0, 0) = T{1} / sourceExtentX.length();
+            normalize(1, 1) = T{1} / sourceExtentY.length();
+            normalize(2, 2) = T{1} / sourceExtentZ.length();
+            normalize(0, 3) = -sourceExtentX.min / sourceExtentX.length();
+            normalize(1, 3) = -sourceExtentY.min / sourceExtentY.length();
+            normalize(2, 3) = -sourceExtentZ.min / sourceExtentZ.length();
+            auto destinationExtentX = destination.extent(Bounds3D<T>::Direction::x);
+            auto destinationExtentY = destination.extent(Bounds3D<T>::Direction::y);
+            auto destinationExtentZ = destination.extent(Bounds3D<T>::Direction::z);
+            remap(0, 0) = destinationExtentX.length();
+            remap(1 ,1) = destinationExtentY.length();
+            remap(2, 2) = destinationExtentZ.length();
+            remap(0, 3) = destinationExtentX.min;
+            remap(1, 3) = destinationExtentY.min;
+            remap(2, 3) = destinationExtentZ.min;
+            remapTransform = std::make_optional(remap * normalize);
+        }
+
+        Bounds3D<T> const& source;
+        Bounds3D<T> const& destination;
+        using Mat4 = Matrix<T, 4, 4>;
+        using Identity4 = IdentityMatrix<T, 4, 4>;
+        using Scale4 = ScalingMatrix<T>;
+        mutable std::optional<Mat4> remapTransform;
     };
 
     template<typename T>
