@@ -99,7 +99,6 @@ void bind_Remapper(py::module_ const& module, std::string_view className) {
     .def(py::init([](Bounds const& source, Bounds const& destination) {
         return Remapper {source, destination};
     }))
-    .def("remap", &Remapper::operator());
-
-
+    .def("remap", &Remapper::operator())
+    .def("decode", &Remapper::getInverseTransform);
 }
