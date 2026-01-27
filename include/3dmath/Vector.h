@@ -275,7 +275,7 @@ namespace math3d {
 
             Vector normalize() const {
                 T norm = length();
-                Vector result;
+                Vector result{*this};
                 for (size_t i = 0; i < Size; ++i) {
                     result.data[i] /= norm;
                 }

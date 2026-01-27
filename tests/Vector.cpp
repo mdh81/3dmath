@@ -108,10 +108,13 @@ TEST(Vector, Length) {
 
 TEST(Vector, Normalize) {
     Vector<float, 3> v1({5, 0, 0});
-    Vector<float, 3> v2({0, 5, 0});
+    const Vector<float, 3> v2({0, 5, 0});
     Vector<float, 3> v3 = v1 * v2;
     v3.normalize();
     ASSERT_FLOAT_EQ(v3.length(), 1);
+    auto v4 = v2.normalize();
+    ASSERT_FLOAT_EQ(v4.lengthSquared(), 1);
+    ASSERT_FLOAT_EQ(v4.dot({0, 1, 0}), 1);
 }
 
 TEST(Vector, Difference) {
