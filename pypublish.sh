@@ -27,8 +27,6 @@ if [[ $# -eq 1 ]]; then
     fi
 fi
 
-echo "New math3d version $(poetry version)"
-
 # Ensure build is clean
 cmake -S . -B build/
 cmake --build build --parallel
