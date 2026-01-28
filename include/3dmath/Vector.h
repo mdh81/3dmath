@@ -372,6 +372,10 @@ namespace math3d {
                 print(std::cout);
             }
 
+            std::array<T, Size> const& getComponents() const {
+                return data;
+            }
+
         protected:
             std::array<T, Size> data{};
     };
