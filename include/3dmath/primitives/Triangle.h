@@ -44,7 +44,7 @@ namespace math3d {
         bool isPointInTriangle(Point3D const& pointInSpace) const {
             auto barycentricCoordinates = getBarycentricCoordinates(pointInSpace);
             return fabs(barycentricCoordinates.x + barycentricCoordinates.y + barycentricCoordinates.z - 1) <
-                constants::Tolerance;
+                constants::tolerance;
         }
 
     private:

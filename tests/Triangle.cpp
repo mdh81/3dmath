@@ -11,13 +11,13 @@ using namespace math3d;
 TEST(Triangle, CrossProductBasedArea) {
     Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
     auto [a, b, c] = tri.getPoints();
-    auto ab = b -a;
-    auto ac = c -a;
+    auto ab = b - a;
+    auto ac = c - a;
     auto theta = atan2((ab * ac).length(), ab.dot(ac));
-    auto base = (b-a).length();
-    auto height = (c-a).length() * sin(theta);
-    ASSERT_NEAR(0.5 * base * height, tri.getArea(), constants::Tolerance);
-    ASSERT_NEAR(0.5 * (ab * ac).length(), tri.getArea(), constants::Tolerance);
+    auto base = ab.length();
+    auto height = ac.length() * sin(theta);
+    ASSERT_NEAR(0.5 * base * height, tri.getArea(), constants::tolerance);
+    ASSERT_NEAR(0.5 * (ab * ac).length(), tri.getArea(), constants::tolerance);
 }
 
 TEST(Triangle, PointContainment) {
@@ -39,7 +39,7 @@ TEST(Triangle, BaryCentricCoordinates) {
         auto [a, b, c] = tri.getPoints();
         auto barycentricCoordinates = tri.getBarycentricCoordinates(a);
         ASSERT_TRUE(std::ranges::any_of(barycentricCoordinates.getComponents(), [](auto component) {
-            return fabs(component) < math3d::constants::Tolerance;
+            return fabs(component) < math3d::constants::tolerance;
         }));
     }
 }
