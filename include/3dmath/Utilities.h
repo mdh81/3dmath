@@ -70,20 +70,17 @@ namespace math3d {
             return sqrt((dx*dx) + (dy*dy) + (dz*dz));
         }
 
-        // TODO: Derive this
         template<typename T, unsigned size>
         [[nodiscard]]
-        static Vector<T, size> getPerpendicular(Vector<T, size>& vector) {
+        static Vector<T, size> getPerpendicular(Vector<T, size> const& vector) {
             static_assert(size == 2 || size == 3, "Cannot compute perpendicular for higher dimensional vectors");
             if (size == 2) {
                 return {-vector.y, vector.x};
-            } else {
-                if (areParallel(vector, Vector<double, size>(constants::zAxis))) {
-                    return constants::yAxis;
-                } else {
-                    return {-vector.y, vector.x, 0};
-                }
             }
+            if (areParallel(vector, Vector<double, size>(constants::zAxis))) {
+                return constants::yAxis;
+            }
+            return {-vector.y, vector.x, 0};
         }
 
         static float asFloat(double value) {
