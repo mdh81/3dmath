@@ -63,10 +63,15 @@ namespace math3d {
         }
 
         // Compute projection of the given point on this plane
-        types::Point3D getProjection(types::Point3D const& point) {
-            auto planeOriginToPoint = point - origin;
-            auto distanceToPlane = planeOriginToPoint.dot(normal);
-            return point + (distanceToPlane * -normal);
+        [[nodiscard]]
+        types::Point3D getProjection(types::Point3D const& point) const {
+            return point + getDistanceToPoint(point) * -normal;
+        }
+
+
+        double getDistanceToPoint(types::Point3D const& point) const {
+            auto const planeOriginToPoint = point - origin;
+            return  planeOriginToPoint.dot(normal);
         }
 
         // Refer to https://github.com/mdh81/3dmath/blob/master/derivations/RayPlaneIntersection.jpg
