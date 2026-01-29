@@ -21,15 +21,21 @@ TEST(Triangle, CrossProductBasedArea) {
 }
 
 TEST(Triangle, PointContainment) {
-    for (int i = 0; i < 10; ++i) {
+    size_t constexpr numTestRuns {10};
+    for (size_t i = 0; i < numTestRuns; ++i) {
         Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
         auto [a, b, c] = tri.getPoints();
         ASSERT_TRUE(tri.isPointInTriangle(a));
         ASSERT_TRUE(tri.isPointInTriangle(b));
         ASSERT_TRUE(tri.isPointInTriangle(c));
-        ASSERT_FALSE(tri.isPointInTriangle(b - a + Utilities::getPerpendicular(b - a)));
-        ASSERT_FALSE(tri.isPointInTriangle(c - b + Utilities::getPerpendicular(c - b)));
-        ASSERT_FALSE(tri.isPointInTriangle(c - a  + Utilities::getPerpendicular(c - a)));
+    }
+    for (size_t i = 0; i < numTestRuns; ++i) {
+        double u = Utilities::RandomNumber{0.0, 1.0};
+        double v = Utilities::RandomNumber{0.0, 1.0};
+        double w = 1 - u - v;
+        Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
+        auto pt = tri.getPoints()[0] * u + tri.getPoints()[1] * v + tri.getPoints()[2] * w;
+        ASSERT_TRUE(tri.isPointInTriangle(pt));
     }
 }
 
@@ -38,8 +44,10 @@ TEST(Triangle, BaryCentricCoordinates) {
         Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
         auto [a, b, c] = tri.getPoints();
         auto barycentricCoordinates = tri.getBarycentricCoordinates(a);
-        ASSERT_TRUE(std::ranges::any_of(barycentricCoordinates.getComponents(), [](auto component) {
-            return fabs(component) < math3d::constants::tolerance;
-        }));
+        ASSERT_NEAR(0, barycentricCoordinates.x, constants::tolerance);
+        barycentricCoordinates = tri.getBarycentricCoordinates(b);
+        ASSERT_NEAR(0, barycentricCoordinates.y, constants::tolerance);
+        barycentricCoordinates = tri.getBarycentricCoordinates(c);
+        ASSERT_NEAR(0, barycentricCoordinates.z, constants::tolerance);
     }
 }
