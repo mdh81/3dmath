@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Constants.h"
+
 namespace math3d {
 
     // A vector whose elements are stored in contiguous memory
@@ -267,8 +269,10 @@ namespace math3d {
 
             Vector& normalize() {
                 T norm = length();
-                for (size_t i = 0; i < Size; ++i) {
-                    data[i] /= norm;
+                if (norm > constants::tolerance) {
+                    for (size_t i = 0; i < Size; ++i) {
+                        data[i] /= norm;
+                    }
                 }
                 return *this;
             }
@@ -372,8 +376,12 @@ namespace math3d {
                 print(std::cout);
             }
 
-            std::array<T, Size> const& getComponents() const {
-                return data;
+            T* begin() {
+                return data.begin();
+            }
+
+            T* end() {
+                return data.end();
             }
 
         protected:

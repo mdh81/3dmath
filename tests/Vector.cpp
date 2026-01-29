@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 #include "3dmath/Vector.h"
+
+#include <algorithm>
 #include <vector>
 using namespace std;
 using namespace math3d;
@@ -115,6 +117,15 @@ TEST(Vector, Normalize) {
     auto v4 = v2.normalize();
     ASSERT_FLOAT_EQ(v4.lengthSquared(), 1);
     ASSERT_FLOAT_EQ(v4.dot({0, 1, 0}), 1);
+    Vector<float, 3> v5 = {0, 0, 0};
+    v5.normalize();
+    ASSERT_FALSE(std::ranges::any_of(v5, [](auto const comp) {
+        return std::isnan(comp);
+    })) << "Normalize did not avoid divide by zero as expected";
+    ASSERT_TRUE(std::ranges::all_of(v5, [](auto const comp) {
+        return comp < constants::tolerance;
+    })) << "Normalizing a zero vector should return yield a zero vector";
+
 }
 
 TEST(Vector, Difference) {
