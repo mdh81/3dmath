@@ -55,24 +55,8 @@ namespace math3d {
             if (auto const pointDistance = getDistanceToPoint(pointInSpace);
                 fabs(pointDistance) < constants::tolerance) {
                 auto barycentricCoordinates = getBarycentricCoordinates(pointInSpace);
-                // Point is on the edge
-                if (auto const pointOnEdge = std::ranges::any_of(barycentricCoordinates, [](auto const comp) {
-                    return fabs(comp) < constants::tolerance;
-                }); pointOnEdge) {
-                    return true;
-                }
-                // Point is within the triangle that could be wound in any order
-                if (std::ranges::all_of(barycentricCoordinates, [](auto const comp) {
-                    return comp > 0;
-                })) {
-                    return true;
-                }
-                // Point is within the triangle that could be wound in any order
-                if (std::ranges::all_of(barycentricCoordinates, [](auto const comp) {
-                    return comp < 0;
-                })) {
-                    return true;
-                }
+                return fabs(barycentricCoordinates.x + barycentricCoordinates.y + barycentricCoordinates.z - 1) <
+                    constants::tolerance;
             }
             return false;
         }
