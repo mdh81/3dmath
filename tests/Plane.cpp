@@ -91,3 +91,18 @@ TEST(Plane, RayIntersectionEdgeCases) {
     ASSERT_FLOAT_EQ(result2.intersectionPoint.y, ray3.getOrigin().y);
     ASSERT_FLOAT_EQ(result2.intersectionPoint.z, ray3.getOrigin().z);
 }
+
+TEST(Plane, DistanceToPoint) {
+    using namespace math3d;
+    auto constexpr numTestRuns{10U};
+    auto plane = Plane(Utilities::RandomPoint{}, Utilities::RandomVector{});
+    auto planeAxisX = Utilities::getPerpendicular(plane.getNormal());
+    auto planeAxisY = planeAxisX * plane.getNormal();
+    planeAxisX.normalize();
+    planeAxisY.normalize();
+    for (size_t i = 0; i < numTestRuns; ++i) {
+        double xLength = Utilities::RandomNumber{}, yLength = Utilities::RandomNumber{};
+        auto planePoint = plane.getOrigin() + xLength * planeAxisX + yLength * planeAxisY;
+        ASSERT_NEAR(0, plane.getDistanceToPoint(planePoint), math3d::constants::tolerance);
+    }
+}
