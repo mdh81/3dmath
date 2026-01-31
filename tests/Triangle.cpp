@@ -25,18 +25,35 @@ TEST(Triangle, PointContainment) {
     for (size_t i = 0; i < numTestRuns; ++i) {
         Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
         auto [a, b, c] = tri.getPoints();
-        ASSERT_TRUE(tri.isPointInTriangle(a));
-        ASSERT_TRUE(tri.isPointInTriangle(b));
-        ASSERT_TRUE(tri.isPointInTriangle(c));
+        ASSERT_TRUE(
+            tri.isPointInTriangle(a) &&
+            tri.isPointInTriangle(b) &&
+            tri.isPointInTriangle(c)) << "Triangle vertex incorrectly classified as outside the triangle";
     }
     for (size_t i = 0; i < numTestRuns; ++i) {
-        double u = Utilities::RandomNumber{0.0, 1.0};
-        double v = Utilities::RandomNumber{0.0, 1.0};
-        double w = 1 - u - v;
+        std::array<double, 3> weights = {Utilities::PositiveRandomNumber{}, Utilities::PositiveRandomNumber{}, Utilities::PositiveRandomNumber{} };
+        double sum{};
+        std::ranges::for_each(weights, [&](double const weight) {
+            sum += weight;
+        });
+        std::ranges::for_each(weights, [&](double& weight) {
+            weight /= sum;
+        });
+        Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
+        auto pt = tri.getPoints()[0] * weights[0] + tri.getPoints()[1] * weights[1] + tri.getPoints()[2] * weights[2];
+        ASSERT_TRUE(tri.isPointInTriangle(pt))
+            << "Convex barycentric combination of triangle vertices cannot be outside the triangle";
+    }
+    for (size_t i = 0; i < numTestRuns; ++i) {
+        double u = Utilities::NegativeRandomNumber{};
+        double v = Utilities::PositiveRandomNumber{};
+        double w = Utilities::NegativeRandomNumber{};
         Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
         auto pt = tri.getPoints()[0] * u + tri.getPoints()[1] * v + tri.getPoints()[2] * w;
-        ASSERT_TRUE(tri.isPointInTriangle(pt));
+        ASSERT_FALSE(tri.isPointInTriangle(pt)) << "Only convex barycentric combinations of triangle vertices can be inside the triangle";
     }
+
+
 }
 
 TEST(Triangle, BaryCentricCoordinates) {
