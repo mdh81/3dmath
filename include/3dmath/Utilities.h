@@ -100,7 +100,7 @@ namespace math3d {
         public:
             explicit RandomNumber(T rangeMin = defaultRandomNumberRangeMin, T rangeMax = defaultRandomNumberRangeMax)
             : rangeMin(rangeMin)
-            , rangeMax(rangeMax) {};
+            , rangeMax(rangeMax) {}
             operator T() const { // NOLINT
                 std::random_device rd;
                 std::mt19937 gen(rd());
@@ -109,6 +109,18 @@ namespace math3d {
             }
             T rangeMin;
             T rangeMax;
+        };
+
+        template<typename T=double>
+        class PositiveRandomNumber : public RandomNumber<T> {
+        public:
+            PositiveRandomNumber() : RandomNumber<T>(0, defaultRandomNumberRangeMax) {}
+        };
+
+        template<typename T=double>
+        class NegativeRandomNumber : public RandomNumber<T> {
+        public:
+            NegativeRandomNumber() : RandomNumber<T>(defaultRandomNumberRangeMin, -constants::tolerance) {}
         };
 
         template<typename T=double>
