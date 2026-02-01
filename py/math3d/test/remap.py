@@ -5,8 +5,6 @@ from math3d import AABB, Extent, Remap, Vector4
 
 from math3d import Vector3
 
-import pytest
-
 class OBJReader:
 
     def __init__(self, filename:str):
