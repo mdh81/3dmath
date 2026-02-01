@@ -3,6 +3,7 @@
 #include "pybind11/pybind11.h"
 
 #include "SupportingTypes.h"
+#include "primitives/Triangle.h"
 
 namespace py = pybind11;
 namespace m3d = math3d;
@@ -101,4 +102,25 @@ void bind_Remapper(py::module_ const& module, std::string_view className) {
     }))
     .def("remap", &Remapper::operator())
     .def("decode", &Remapper::getInverseTransform);
+}
+
+inline void bind_Triangle(py::module_ const& module, std::string_view className) {
+    using Tri = m3d::Triangle;
+    using Points = m3d::Triangle::Points;
+
+    py::class_<Tri>(module, className.data())
+    .def(py::init([](Points const& vertices){
+        return Tri{vertices};
+    }))
+    .def(py::init([](Tri::Point3D const& a, Tri::Point3D const& b, Tri::Point3D const& c) {
+        return Tri{a, b, c};
+    }))
+    .def_property_readonly("points", &Tri::getPoints)
+    .def_property_readonly("area", &Tri::getArea)
+    .def_property_readonly("signed_area", &Tri::getSignedArea)
+    .def("barycentric", &Tri::getBarycentricCoordinates)
+    .def("contains", &Tri::isPointInTriangle)
+    .def("projection", &Tri::getProjection)
+    .def("distance", &Tri::getDistanceToPoint, py::arg("point"), py::arg("absolute") = true)
+    .def_property_readonly("normal", &Tri::getNormal);
 }

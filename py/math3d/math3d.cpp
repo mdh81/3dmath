@@ -23,6 +23,7 @@ namespace {
         Extent,
         Bounds,
         Remapper,
+        Triangle,
     };
     std::unordered_map<Type, char const*> TypePrefixMap {
         {Type::Vector, "Vector"},
@@ -31,7 +32,8 @@ namespace {
         {Type::IdentityMatrix, "Identity"},
         {Type::Bounds, "AABB"},
         {Type::Extent, "Extent"},
-        {Type::Remapper, "Remap"}
+        {Type::Remapper, "Remap"},
+        {Type::Triangle, "Triangle"}
     };
 
     template<typename Type, Type Start, Type End>
@@ -91,6 +93,9 @@ namespace {
             case Type::Remapper:
                 bind_Remapper<double>(module, typeName);
                 break;
+            case Type::Triangle:
+                bind_Triangle(module, typeName);
+                break;
             default:
                 throw std::runtime_error(std::format("Unknown simple type {}", std::to_underlying(type)));
         }
@@ -119,4 +124,5 @@ PYBIND11_MODULE(math3d, module) {
     createSimpleType(Type::Extent, module);
     createSimpleType(Type::Bounds, module);
     createSimpleType(Type::Remapper, module);
+    createSimpleType(Type::Triangle, module);
 }
