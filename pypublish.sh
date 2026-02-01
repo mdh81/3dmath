@@ -31,9 +31,7 @@ fi
 cmake -S . -B build/
 cmake --build build --parallel
 ctest --test-dir build/
-pushd py/math3d || exit
-pytest
-popd || exit
+pytest py/math3d 
 
 rm -rf dist/*
 touch py/math3d/py.typed
