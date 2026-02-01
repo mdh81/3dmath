@@ -126,12 +126,24 @@ namespace math3d {
         template<typename T=double>
         class RandomVector {
         public:
+            explicit RandomVector(bool const positiveComponents = false) : positiveComponents(positiveComponents) {}
             operator Vector3<T>() { // NOLINT
-                return {RandomNumber<T>(), RandomNumber<T>(), RandomNumber<T>()};
+                auto min= positiveComponents ? 0.0 : defaultRandomNumberRangeMin;
+                return {
+                    RandomNumber<T>{min, defaultRandomNumberRangeMax},
+                    RandomNumber<T>{min, defaultRandomNumberRangeMax},
+                    RandomNumber<T>{min, defaultRandomNumberRangeMax}
+                };
             }
             operator Vector2<T>() { // NOLINT
-                return {RandomNumber<T>(), RandomNumber<T>()};
+                auto min= positiveComponents ? 0.0 : defaultRandomNumberRangeMin;
+                return {
+                    RandomNumber<T>{min, defaultRandomNumberRangeMax},
+                    RandomNumber<T>{min, defaultRandomNumberRangeMax},
+                };
             }
+        private:
+            bool positiveComponents;
         };
 
         using RandomPoint = RandomVector<>;
