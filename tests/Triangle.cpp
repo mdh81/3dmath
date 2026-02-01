@@ -31,7 +31,7 @@ TEST(Triangle, PointContainment) {
             tri.isPointInTriangle(c)) << "Triangle vertex incorrectly classified as outside the triangle";
     }
     for (size_t i = 0; i < numTestRuns; ++i) {
-        std::array<double, 3> weights = {Utilities::PositiveRandomNumber{}, Utilities::PositiveRandomNumber{}, Utilities::PositiveRandomNumber{} };
+        Vector3<double> weights {Utilities::RandomVector{/*positiveComponents=*/true} };
         double sum{};
         std::ranges::for_each(weights, [&](double const weight) {
             sum += weight;
@@ -40,20 +40,28 @@ TEST(Triangle, PointContainment) {
             weight /= sum;
         });
         Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
-        auto pt = tri.getPoints()[0] * weights[0] + tri.getPoints()[1] * weights[1] + tri.getPoints()[2] * weights[2];
-        ASSERT_TRUE(tri.isPointInTriangle(pt))
+        Vector3<double> pointInTri;
+        for (auto index = 0; index < 3; ++index) {
+            pointInTri += tri.getPoints()[index] * weights[index];
+        }
+        ASSERT_TRUE(tri.isPointInTriangle(pointInTri))
             << "Convex barycentric combination of triangle vertices cannot be outside the triangle";
     }
     for (size_t i = 0; i < numTestRuns; ++i) {
-        double u = Utilities::NegativeRandomNumber{};
-        double v = Utilities::PositiveRandomNumber{};
-        double w = Utilities::NegativeRandomNumber{};
+        Vector3<double> pointOutsideTri;
+        double u = Utilities::RandomNumber{0.0, 1.0 - constants::tolerance};
+        double v = u - 1;
+        double w = 1 - u - v;
+        Vector3 nonConvexWeights {u, v, w};
         Triangle tri { Utilities::RandomPoint{}, Utilities::RandomPoint{}, Utilities::RandomPoint{} };
-        auto pt = tri.getPoints()[0] * u + tri.getPoints()[1] * v + tri.getPoints()[2] * w;
-        ASSERT_FALSE(tri.isPointInTriangle(pt)) << "Only convex barycentric combinations of triangle vertices can be inside the triangle";
+        for (auto index = 0; index < 3; ++index) {
+            pointOutsideTri += nonConvexWeights[index] * tri.getPoints()[index];
+        }
+        ASSERT_NEAR(tri.getDistanceToPoint(pointOutsideTri), 0, constants::tolerance)
+            << "Sanity check failed. Point weights are not barycentric";
+        ASSERT_FALSE(tri.isPointInTriangle(pointOutsideTri))
+            << "Only convex barycentric combinations of triangle vertices can be inside the triangle";
     }
-
-
 }
 
 TEST(Triangle, BaryCentricCoordinates) {

@@ -55,8 +55,12 @@ namespace math3d {
             if (auto const pointDistance = getDistanceToPoint(pointInSpace);
                 fabs(pointDistance) < constants::tolerance) {
                 auto barycentricCoordinates = getBarycentricCoordinates(pointInSpace);
-                return fabs(barycentricCoordinates.x + barycentricCoordinates.y + barycentricCoordinates.z - 1) <
-                    constants::tolerance;
+                auto const isConvex =
+                    fabs(barycentricCoordinates.x + barycentricCoordinates.y + barycentricCoordinates.z - 1) < constants::tolerance &&
+                    std::ranges::all_of(barycentricCoordinates, [](auto const component) {
+                        return component >= -constants::tolerance;
+                    });
+                return isConvex;
             }
             return false;
         }
